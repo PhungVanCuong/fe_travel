@@ -75,7 +75,7 @@
 
           <p class="duong-dan-dang-ky">
             Chưa có tài khoản?
-            <router-link to="/dang-ky"> Đăng ký ngay </router-link>
+            <router-link to="/client/dang-ky"> Đăng ký ngay </router-link>
           </p>
         </div>
       </div>
