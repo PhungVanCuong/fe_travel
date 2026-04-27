@@ -21,6 +21,16 @@ const routes = [
     meta: { layout: "blank" },
     },
     {
+    path: "/tim-kiem-tour",
+    component: () => import("../components/Client/timkiemtour/index.vue"),
+    meta: { layout: "client" },
+    },
+    {
+    path: "/tour/tour-trong-nuoc",
+    component: () => import("../components/Client/Tourtrongnuoc/index.vue"),
+    meta: { layout: "client" },
+    },
+    {
     path: "/Dat-tour",
     component: () => import("../components/Client/DatTour/index.vue"),
     meta: { layout: "blank" },
