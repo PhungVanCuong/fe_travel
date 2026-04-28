@@ -36,10 +36,27 @@ const routes = [
     meta: { layout: "client" },
     },
     {
+    path: "/bai-viet",
+    component: () => import("../components/Client/BaiViet/index.vue"),
+    meta: { layout: "client" },
+    },
+    {
+        path: "/chi-tiet-bai-viet/:id_bai_viet",
+        component: () => import("../components/Client/ChiTietBaiViet/index.vue"),
+        meta: { layout: "client" },
+    },
+    {
     path: "/chi-tiet-tour/:id_tour",
     component: () => import("../components/Client/ChiTietTour/index.vue"),
     meta: { layout: "client" },
     },
+    {
+    path: "/lien-he",
+    component: () => import("../components/Client/LienHe/index.vue"),
+    meta: { layout: "client" },
+    },
+
+    // code test dat tour
     {
     path: "/Dat-tour",
     component: () => import("../components/Client/DatTour/index.vue"),
@@ -50,6 +67,8 @@ const routes = [
     component: () => import("../components/Client/DatTour/KetQuaThanhToan.vue"),
     meta: { layout: "blank" },
     },
+
+
     // {
     //     path: "/client/chi-tiet-don-hang/:ma_don_hang",
     //     component: () => import("../components/Client/ChiTietDonHang/index.vue"),

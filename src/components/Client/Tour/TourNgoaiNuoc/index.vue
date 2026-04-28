@@ -64,16 +64,18 @@
               <h6 class="fw-bold text-uppercase mb-3" style="color: #005baa;">
                 <i class="fa-solid fa-passport me-2"></i> Cẩm nang xuất ngoại
               </h6>
+              
               <div class="article-item mb-3 pb-2 border-bottom" v-for="(bai, index) in baiVietNoiBat" :key="index">
-                <a href="#" class="text-decoration-none text-dark d-flex gap-2 align-items-start">
+                <router-link :to="`/chi-tiet-bai-viet/${bai.id}`" class="text-decoration-none text-dark d-flex gap-2 align-items-start">
                   <img :src="bai.hinh_anh" class="rounded" style="width: 60px; height: 60px; object-fit: cover;" alt="">
                   <div>
                     <h6 class="mb-1" style="font-size: 0.85rem; font-weight: 600; line-height: 1.3;">{{ bai.tieu_de }}</h6>
                     <small class="text-muted" style="font-size: 0.75rem;">{{ bai.tag }}</small>
                   </div>
-                </a>
+                </router-link>
               </div>
-              <a href="#" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài viết <i class="fa-solid fa-arrow-right ms-1"></i></a>
+
+              <router-link to="/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài viết <i class="fa-solid fa-arrow-right ms-1"></i></router-link>
             </div>
 
           </div>
@@ -151,11 +153,8 @@
                         </h5>
                       </div>
                       <div class="d-flex gap-2">
-                        <button class="btn btn-outline-success btn-sm w-50 fw-bold rounded-pill" @click.stop="viewDetail(value.id)">
+                        <button class="btn btn-outline-success btn-sm w-100 fw-bold rounded-pill" @click.stop="viewDetail(value.id)">
                           Chi tiết
-                        </button>
-                        <button class="btn btn-danger btn-sm w-50 fw-bold rounded-pill shadow-sm" @click.stop="bookTour(value.id)">
-                          Đặt ngay
                         </button>
                       </div>
                     </div>
@@ -197,23 +196,9 @@ export default {
       allTours: [],
       filteredTours: [],
       
-      baiVietNoiBat: [
-        {
-          tieu_de: 'Hướng dẫn xin Visa du lịch Châu Á nhanh chóng',
-          tag: 'Thủ tục, Visa',
-          hinh_anh: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=150&q=80'
-        },
-        {
-          tieu_de: 'Bí kíp sắp xếp hành lý khi đi du lịch nước ngoài',
-          tag: 'Cẩm nang, Mẹo vặt',
-          hinh_anh: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=150&q=80'
-        },
-        {
-          tieu_de: 'Thanh toán VNPay quốc tế - An toàn, tiện lợi',
-          tag: 'Thanh toán',
-          hinh_anh: 'https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418196384.png'
-        }
-      ],
+      baiVietNoiBat: [], // Mảng rỗng chờ API đổ vào
+      // BẠN CÓ THỂ ĐỔI ID BÀI VIẾT Ở ĐÂY ĐỂ HIỂN THỊ (VD: Tour Ngoài Nước hiển thị bài 6, 7, 8)
+      danhSachIdBaiViet: [6, 7, 2], 
       
       filterSearch: '',
       filterDestinations: [],
@@ -249,6 +234,7 @@ export default {
   },
   mounted() {
     this.fetchInternationalTours();
+    this.fetchArticles(); // Gọi API lấy bài viết
   },
   watch: {
     filterSearch() { this.applyFilters(); },
@@ -263,7 +249,6 @@ export default {
       try {
         const response = await axios.get(apiUrl('client/tour/get-data'));
         if (response.data.status) {
-          // Lọc Tour NGOÀI NƯỚC (id > 1)
           this.allTours = response.data.data.filter(tour => tour.id_quoc_gia > 1 && tour.so_nguoi_toi_da > 0);
           this.applyFilters();
         }
@@ -271,6 +256,20 @@ export default {
         console.error(error);
       } finally {
         this.isLoading = false;
+      }
+    },
+
+    // Hàm gọi API bài viết và lọc theo ID
+    async fetchArticles() {
+      try {
+        const response = await axios.get(apiUrl('client/trang-chu/get-data'));
+        if (response.data.status) {
+          const tatCaBaiViet = response.data.data.baiViets || [];
+          // Chỉ giữ lại những bài viết có ID nằm trong mảng danhSachIdBaiViet
+          this.baiVietNoiBat = tatCaBaiViet.filter(bai => this.danhSachIdBaiViet.includes(bai.id));
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải bài viết:", error);
       }
     },
     
@@ -320,8 +319,7 @@ export default {
       return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
     },
     
-    viewDetail(id) { this.$router.push(`/chi-tiet-tour/${id}`); },
-    bookTour(id) { this.$router.push(`/dat-tour/${id}`); }
+    viewDetail(id) { this.$router.push(`/chi-tiet-tour/${id}`); }
   }
 }
 </script>

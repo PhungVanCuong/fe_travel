@@ -37,9 +37,8 @@
                 <li><router-link class="dropdown-item" to="/tour/tour-ngoai-nuoc">Nước ngoài</router-link></li>
               </ul>
             </li>
-            <li class="nav-item"><router-link to="#" class="nav-link px-3">Ưu đãi</router-link></li>
-            <li class="nav-item"><router-link to="#" class="nav-link px-3">Đánh giá</router-link></li>
-            <li class="nav-item"><router-link to="#" class="nav-link px-3">Blog</router-link></li>
+            <li class="nav-item"><router-link to="/bai-viet" class="nav-link px-3">Blog</router-link></li>
+            <li class="nav-item"><router-link to="/lien-he" class="nav-link px-3">Liên hệ</router-link></li>
 
             <div class="d-flex align-items-center ms-lg-4 nhom-bieu-tuong">
               <a href="#" class="bieu-tuong-item me-3"><i class="fa-regular fa-heart"></i></a>
