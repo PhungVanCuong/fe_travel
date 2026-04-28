@@ -1,29 +1,47 @@
 <template>
     <div class="result-wrapper">
-        <div class="result-container">
+        <div class="result-container animate__animated animate__fadeIn">
             <div v-if="isLoading" class="loading-box">
                 <div class="loader"></div>
-                <h2>Đang xử lý kết quả giao dịch...</h2>
-                <p>Vui lòng không tắt trình duyệt lúc này.</p>
+                <h2 class="fw-bold mt-3">Đang xác thực giao dịch...</h2>
+                <p class="text-muted">Hệ thống đang kiểm tra kết quả từ VNPAY, vui lòng không thoát trang.</p>
             </div>
-            
+
             <div v-else-if="isSuccess" class="success-box">
                 <div class="icon-circle success-icon">✓</div>
-                <h2 style="color: #28a745;">Thanh toán thành công!</h2>
-                <p>Cảm ơn bạn đã sử dụng dịch vụ. Hóa đơn và vé của bạn đã được cập nhật.</p>
+                <h2 class="fw-bold text-success">Thanh toán thành công!</h2>
+                <p>Cảm ơn bạn đã sử dụng dịch vụ của <b>IxtalTour</b>. Đơn hàng của bạn đã được xác nhận và cập nhật vào
+                    hệ thống.</p>
+
+                <div class="transaction-info text-start bg-light p-3 rounded mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Số tiền:</span>
+                        <b class="text-danger">{{ formatVND(orderInfo.amount) }}</b>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Mã giao dịch:</span>
+                        <b>{{ orderInfo.transactionId }}</b>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Ngân hàng:</span>
+                        <b>{{ orderInfo.bank }}</b>
+                    </div>
+                </div>
+
                 <div class="action-buttons">
-                    <button @click="goHome" class="btn-primary">Quay về trang chủ</button>
-                    <button @click="goProfile" class="btn-outline">Xem vé của tôi</button>
+                    <button @click="goHome" class="btn btn-primary px-4 py-2  fw-bold">Về trang chủ</button>
+                    <button @click="goProfile" class="btn btn-outline-primary px-4 py-2 fw-bold">Lịch sử đặt
+                        tour</button>
                 </div>
             </div>
 
             <div v-else class="error-box">
                 <div class="icon-circle error-icon">✗</div>
-                <h2 style="color: #dc3545;">Thanh toán thất bại</h2>
-                <p>{{ errorMessage }}</p>
-                <p>Vui lòng thử lại hoặc chọn phương thức thanh toán khác.</p>
+                <h2 class="fw-bold text-danger">Giao dịch không thành công</h2>
+                <p class="mb-4">{{ errorMessage }}</p>
                 <div class="action-buttons">
-                    <button @click="goHome" class="btn-outline">Quay về trang chủ</button>
+                    <button @click="goHome" class="btn btn-outline-secondary px-4 py-2 fw-bold">Quay về trang
+                        chủ</button>
                 </div>
             </div>
         </div>
@@ -32,7 +50,7 @@
 
 <script>
 import axios from 'axios';
-import apiUrl from '../../../utils/api'; 
+import apiUrl from '../../../utils/api'; // Đường dẫn tới file config api của bạn
 
 export default {
     name: 'KetQuaThanhToan',
@@ -40,133 +58,132 @@ export default {
         return {
             isLoading: true,
             isSuccess: false,
-            errorMessage: ''
+            errorMessage: '',
+            countdown: 10,
+            orderInfo: {
+                amount: 0,
+                transactionId: '',
+                bank: ''
+            }
         }
     },
     mounted() {
-        // Lấy toàn bộ query string trên URL do VNPay trả về
-        const queryParams = this.$route.query;
-
-        // Nếu không có tham số nào từ VNPay, báo lỗi luôn
-        if (Object.keys(queryParams).length === 0) {
-            this.isLoading = false;
-            this.isSuccess = false;
-            this.errorMessage = 'Không tìm thấy dữ liệu giao dịch.';
-            return;
-        }
-
-        // Gửi xuống API Laravel để kiểm tra chữ ký bảo mật
-        // Lưu ý: Đã sửa đúng thành /client/vnpay/check-return
-        axios.get(apiUrl('/client/vnpay/check-return'), { params: queryParams })
-            .then(response => {
-                this.isLoading = false;
-                if (response.data.status) {
-                    this.isSuccess = true;
-                } else {
-                    this.isSuccess = false;
-                    this.errorMessage = response.data.message;
-                }
-            })
-            .catch(error => {
-                console.error("Lỗi xác thực VNPay:", error);
-                this.isLoading = false;
-                this.isSuccess = false;
-                this.errorMessage = 'Lỗi hệ thống khi xác thực giao dịch với máy chủ.';
-            });
+        this.verifyPayment();
     },
     methods: {
-        goHome() {
-            this.$router.push('/'); // Đổi URL theo router trang chủ của bạn
+        verifyPayment() {
+            // 1. Lấy dữ liệu VNPAY trả về trên URL (?vnp_Amount=...&vnp_ResponseCode=...)
+            const queryParams = this.$route.query;
+
+            // 2. Kiểm tra nhanh: Nếu vnp_ResponseCode != 00 là user đã hủy hoặc lỗi thẻ
+            if (queryParams.vnp_ResponseCode !== '00') {
+                this.isLoading = false;
+                this.isSuccess = false;
+                this.errorMessage = 'Giao dịch đã bị hủy hoặc gặp lỗi trong quá trình thực hiện tại VNPAY.';
+                return;
+            }
+
+            // 3. Gửi toàn bộ queryParams về BE để check chữ ký (vnp_SecureHash)
+            axios.get(apiUrl("client/vnpay/check-thanh-toan"), {
+                params: queryParams,
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_client')
+                }
+            })
+                .then(res => {
+                    this.isLoading = false;
+                    if (res.data.status) {
+                        this.isSuccess = true;
+                        // Gán thông tin hiển thị
+                        this.orderInfo.amount = queryParams.vnp_Amount / 100;
+                        this.orderInfo.transactionId = queryParams.vnp_TransactionNo;
+                        this.orderInfo.bank = queryParams.vnp_BankCode;
+
+                    } else {
+                        this.isSuccess = false;
+                        this.errorMessage = res.data.message || 'Xác thực chữ ký thanh toán thất bại.';
+                    }
+                })
+                .catch(err => {
+                    this.isLoading = false;
+                    this.isSuccess = false;
+                    this.errorMessage = 'Không thể kết nối với máy chủ để xác thực giao dịch.';
+                    console.error(err);
+                });
         },
-        goProfile() {
-            this.$router.push('/thong-tin-ca-nhan'); // Đổi URL theo router quản lý vé của bạn
+        goHome() { this.$router.push('/'); },
+        goProfile() { this.$router.push('/client/lich-su-dat-tour'); },
+        formatVND(value) {
+            return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
         }
     }
 }
 </script>
 
 <style scoped>
-.result-wrapper {
+/* CSS giữ nguyên như của bạn, có thể bổ sung thêm animation trượt */
+.action-buttons {
     display: flex;
-    justify-content: center;
+    /* Thay đổi từ center sang space-between */
+    justify-content: space-between; 
     align-items: center;
-    min-height: 70vh;
-    background-color: #f4f7f6;
-    padding: 20px;
+    width: 100%; /* Đảm bảo khung nút chiếm hết chiều ngang của container */
+    margin-top: 20px;
+}
+.result-wrapper {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
 }
 
-.result-container { 
+.result-container {
     background: white;
-    text-align: center; 
-    padding: 40px; 
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    max-width: 500px;
+    padding: 3rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    max-width: 550px;
     width: 100%;
 }
 
 .icon-circle {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 40px;
-    color: white;
-    margin: 0 auto 20px;
-}
-
-.success-icon { background-color: #28a745; }
-.error-icon { background-color: #dc3545; }
-
-h2 { margin-bottom: 15px; font-size: 24px; }
-p { color: #6c757d; margin-bottom: 30px; line-height: 1.6; }
-
-.action-buttons {
-    display: flex;
-    gap: 15px;
     justify-content: center;
-}
-
-button { 
-    padding: 12px 24px; 
-    border-radius: 6px; 
-    font-size: 15px; 
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.btn-primary {
-    background-color: #005baa;
+    margin: 0 auto 1.5rem;
+    font-size: 30px;
     color: white;
-    border: none;
-}
-.btn-primary:hover { background-color: #004282; }
-
-.btn-outline {
-    background-color: transparent;
-    color: #005baa;
-    border: 1px solid #005baa;
-}
-.btn-outline:hover {
-    background-color: #e6f0fa;
 }
 
-/* Spinner CSS */
+.success-icon {
+    background: #28a745;
+}
+
+.error-icon {
+    background: #dc3545;
+}
+
 .loader {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #005baa;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
     border-radius: 50%;
     width: 50px;
     height: 50px;
     animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+    margin: 0 auto;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>
