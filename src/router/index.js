@@ -70,7 +70,37 @@ const routes = [
     {
         path: "/admin/dang-nhap",
         component: () => import("../components/Admin/dangnhap/index.vue"),
-       // beforeEnter: checkAdmin,
+       meta: { layout: "blank" },
+    },
+    {
+        path: "/admin/phan-quyen",
+        component: () => import("../components/Admin/PhanQuyen/index.vue"),
+       beforeEnter: checkAdmin,
+    },
+    {
+        path: "/admin/khach-hang",
+        component: () => import("../components/Admin/KhachHang/index.vue"),
+       beforeEnter: checkAdmin,
+    },
+     {
+        path: "/admin/nhan-vien",
+        component: () => import("../components/Admin/NhanVien/index.vue"),
+       beforeEnter: checkAdmin,
+    },
+     {
+        path: "/admin/ve",
+        component: () => import("../components/Admin/ve/index.vue"),
+       beforeEnter: checkAdmin,
+    },
+    {
+        path: "/admin/hoa-don",
+        component: () => import("../components/Admin/hoadon/index.vue"),
+       beforeEnter: checkAdmin,
+    },
+    {
+        path: "/admin/thong-ke",
+        component: () => import("../components/Admin/thongke/index.vue"),
+       beforeEnter: checkAdmin,
     },
     // {
     //     path: "/admin/phong-chieu",
