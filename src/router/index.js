@@ -27,7 +27,7 @@ const routes = [
     },
     {
     path: "/tour/tour-trong-nuoc",
-    component: () => import("../components/Client/Tour/TourTrongNuoc/index.vue"),
+    component: () => import("../components/Client/Tour/Tourtrongnuoc/index.vue"),
     meta: { layout: "client" },
     },
     {
@@ -64,17 +64,17 @@ const routes = [
     // ============= Admin ==================
     {
         path: "/admin/quan-ly-phuong-tien",
-        component: () => import("../components/Admin/quanlydiemden/index.vue"),
+        component: () => import("../components/Admin/QuanLyPhuongTien/index.vue"),
         beforeEnter: checkAdmin,
     },
     {
         path: "/admin/quan-ly-tour",
-        component: () => import("../components/Admin/quanlytour/index.vue"),
+        component: () => import("../components/Admin/QuanLyTour/index.vue"),
        beforeEnter: checkAdmin,
     },
     {
         path: "/admin/dang-nhap",
-        component: () => import("../components/Admin/dangnhap/index.vue"),
+        component: () => import("../components/Admin/DangNhap/index.vue"),
        meta: { layout: "blank" },
     },
     {
@@ -94,17 +94,17 @@ const routes = [
     },
      {
         path: "/admin/ve",
-        component: () => import("../components/Admin/ve/index.vue"),
+        component: () => import("../components/Admin/Ve/index.vue"),
        beforeEnter: checkAdmin,
     },
     {
         path: "/admin/hoa-don",
-        component: () => import("../components/Admin/hoadon/index.vue"),
+        component: () => import("../components/Admin/HoaDon/index.vue"),
        beforeEnter: checkAdmin,
     },
     {
         path: "/admin/thong-ke",
-        component: () => import("../components/Admin/thongke/index.vue"),
+        component: () => import("../components/Admin/ThongKe/index.vue"),
        beforeEnter: checkAdmin,
     },
     // {
