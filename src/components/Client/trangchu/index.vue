@@ -118,9 +118,9 @@
                       {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                     </h5>
                   </div>
-                  <a href="javascript:;" class="btn btn-primary btn-sm rounded-pill px-3">
+                  <router-link :to="'/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
                     <i class="bx bx-star"></i> Chi tiết
-                  </a>
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -183,9 +183,9 @@
                       {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                     </h5>
                   </div>
-                  <a href="javascript:;" class="btn btn-primary btn-sm rounded-pill px-3">
+                  <router-link :to="'/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
                     <i class="bx bx-star"></i> Chi tiết
-                  </a>
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -250,9 +250,9 @@
                       {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                     </h5>
                   </div>
-                  <a href="javascript:;" class="btn btn-primary btn-sm rounded-pill px-3">
+                  <router-link :to="'/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
                     <i class="bx bx-star"></i> Chi tiết
-                  </a>
+                  </router-link>
                 </div>
               </div>
             </div>
