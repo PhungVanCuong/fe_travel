@@ -131,7 +131,9 @@
 
   <div class="section-background py-4">
     <div class="container ">
-      <h1>Tour trong nước</h1>
+      <div class="" style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Tour trong nước</h1> <a style="font-size: large;" href="/tour/tour-trong-nuoc" class="">Xem Thêm</a>
+      </div>
       <div class="row">
         <template
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0 && x.id_quoc_gia == '1').slice(0, 4)"
@@ -191,20 +193,14 @@
           </div>
         </template>
       </div>
-      <div class="text-center mb-5 mt-3">
-        <router-link to="/tour/tour-trong-nuoc">
-          <button class="btn rounded-pill"
-            style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
-            onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
-            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Trong Nước</button>
-        </router-link>
-      </div>
     </div>
   </div>
 
   <div class="section-background py-4">
     <div class="container ">
-      <h1>Tour nước ngoài</h1>
+      <div class="" style="display: flex; justify-content: space-between; align-items: center;">
+        <h1>Tour nước ngoài</h1> <a style="font-size: large;" href="/tour/tour-ngoai-nuoc" class="">Xem Thêm</a>
+      </div>
       <div class="row">
         <template
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0 && x.id_quoc_gia != '1').slice(0, 4)"
@@ -265,14 +261,6 @@
             </div>
           </div>
         </template>
-      </div>
-      <div class="text-center mb-5 mt-3 mb-5">
-        <router-link to="/tour/tour-ngoai-nuoc">
-          <button class="btn rounded-pill"
-            style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
-            onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
-            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Nước Ngoài</button>
-        </router-link>
       </div>
     </div>
   </div>
@@ -339,16 +327,20 @@
                 style="position: absolute; top: -10px; left: 20px; font-size: 8rem; color: rgba(0, 91, 170, 0.04); z-index: 0;"></i>
 
               <transition name="slide-fade" mode="out-in">
-                
+
                 <div v-if="activeTab === 1" key="1" class="position-relative" style="z-index: 1;">
                   <div class="mb-3 text-warning fs-5">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                   </div>
                   <p class="fst-italic mb-4 text-dark lh-base review-text">
-                    "Chuyến đi Đà Nẵng - Hội An thực sự tuyệt vời. Hướng dẫn viên nhiệt tình, lịch trình hợp lý và dịch vụ khách sạn chuẩn 5 sao. Gia đình tôi đã có một kỳ nghỉ trọn vẹn nhờ Ixtal Tour!"
+                    "Chuyến đi Đà Nẵng - Hội An thực sự tuyệt vời. Hướng dẫn viên nhiệt tình, lịch trình hợp lý và dịch
+                    vụ
+                    khách sạn chuẩn 5 sao. Gia đình tôi đã có một kỳ nghỉ trọn vẹn nhờ Ixtal Tour!"
                   </p>
                   <div class="d-flex align-items-center mt-4 pt-3" style="border-top: 1px solid rgba(0,0,0,0.05);">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-3 avatar-glow" width="65" height="65">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-3 avatar-glow"
+                      width="65" height="65">
                     <div>
                       <h5 class="mb-0 fw-bold text-dark">Trần Hoàng Nam</h5>
                       <small class="text-muted fw-semibold">Khách du lịch gia đình</small>
@@ -358,13 +350,16 @@
 
                 <div v-else-if="activeTab === 2" key="2" class="position-relative" style="z-index: 1;">
                   <div class="mb-3 text-warning fs-5">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
                   </div>
                   <p class="fst-italic mb-4 text-dark lh-base review-text">
-                    "Giao diện website đặt tour rất dễ sử dụng, thanh toán nhanh chóng. Mình đặc biệt thích tính năng so sánh giá và lọc tour theo sở thích. Chắc chắn sẽ tiếp tục ủng hộ."
+                    "Giao diện website đặt tour rất dễ sử dụng, thanh toán nhanh chóng. Mình đặc biệt thích tính năng so
+                    sánh giá và lọc tour theo sở thích. Chắc chắn sẽ tiếp tục ủng hộ."
                   </p>
                   <div class="d-flex align-items-center mt-4 pt-3" style="border-top: 1px solid rgba(0,0,0,0.05);">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-3 avatar-glow" width="65" height="65">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-3 avatar-glow"
+                      width="65" height="65">
                     <div>
                       <h5 class="mb-0 fw-bold text-dark">Lê Thu Trang</h5>
                       <small class="text-muted fw-semibold">Travel Blogger</small>
@@ -374,13 +369,16 @@
 
                 <div v-else-if="activeTab === 3" key="3" class="position-relative" style="z-index: 1;">
                   <div class="mb-3 text-warning fs-5">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                      class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                   </div>
                   <p class="fst-italic mb-4 text-dark lh-base review-text">
-                    "Tour đi Thái Lan giá quá tốt so với chất lượng. Đồ ăn ngon, xe đưa đón xịn xò và không hề bị ép mua sắm. Cảm ơn Ixtal Tour đã mang đến trải nghiệm cực kỳ ưng ý."
+                    "Tour đi Thái Lan giá quá tốt so với chất lượng. Đồ ăn ngon, xe đưa đón xịn xò và không hề bị ép mua
+                    sắm. Cảm ơn Ixtal Tour đã mang đến trải nghiệm cực kỳ ưng ý."
                   </p>
                   <div class="d-flex align-items-center mt-4 pt-3" style="border-top: 1px solid rgba(0,0,0,0.05);">
-                    <img src="https://randomuser.me/api/portraits/men/65.jpg" class="rounded-circle me-3 avatar-glow" width="65" height="65">
+                    <img src="https://randomuser.me/api/portraits/men/65.jpg" class="rounded-circle me-3 avatar-glow"
+                      width="65" height="65">
                     <div>
                       <h5 class="mb-0 fw-bold text-dark">Phạm Minh Tuấn</h5>
                       <small class="text-muted fw-semibold">Nhân viên văn phòng</small>
@@ -395,31 +393,43 @@
           <div class="col-lg-5 ps-lg-4">
             <div class="d-flex flex-column gap-3">
 
-              <div @click="changeTab(1)" class="user-tab d-flex align-items-center p-3 rounded-4" :class="{'active-user': activeTab === 1}">
-                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-3" width="55" height="55" style="object-fit: cover;">
+              <div @click="changeTab(1)" class="user-tab d-flex align-items-center p-3 rounded-4"
+                :class="{ 'active-user': activeTab === 1 }">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" class="rounded-circle me-3" width="55"
+                  height="55" style="object-fit: cover;">
                 <div class="flex-grow-1">
                   <h6 class="mb-1 fw-bold text-dark">Trần Hoàng Nam</h6>
                   <small class="text-secondary">Khách du lịch gia đình</small>
                 </div>
-                <div v-if="activeTab === 1" class="text-success fs-4 bounce-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div v-if="activeTab === 1" class="text-success fs-4 bounce-icon"><i
+                    class="fa-solid fa-circle-check"></i>
+                </div>
               </div>
 
-              <div @click="changeTab(2)" class="user-tab d-flex align-items-center p-3 rounded-4" :class="{'active-user': activeTab === 2}">
-                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-3" width="55" height="55" style="object-fit: cover;">
+              <div @click="changeTab(2)" class="user-tab d-flex align-items-center p-3 rounded-4"
+                :class="{ 'active-user': activeTab === 2 }">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" class="rounded-circle me-3" width="55"
+                  height="55" style="object-fit: cover;">
                 <div class="flex-grow-1">
                   <h6 class="mb-1 fw-bold text-dark">Lê Thu Trang</h6>
                   <small class="text-secondary">Travel Blogger</small>
                 </div>
-                <div v-if="activeTab === 2" class="text-success fs-4 bounce-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div v-if="activeTab === 2" class="text-success fs-4 bounce-icon"><i
+                    class="fa-solid fa-circle-check"></i>
+                </div>
               </div>
 
-              <div @click="changeTab(3)" class="user-tab d-flex align-items-center p-3 rounded-4" :class="{'active-user': activeTab === 3}">
-                <img src="https://randomuser.me/api/portraits/men/65.jpg" class="rounded-circle me-3" width="55" height="55" style="object-fit: cover;">
+              <div @click="changeTab(3)" class="user-tab d-flex align-items-center p-3 rounded-4"
+                :class="{ 'active-user': activeTab === 3 }">
+                <img src="https://randomuser.me/api/portraits/men/65.jpg" class="rounded-circle me-3" width="55"
+                  height="55" style="object-fit: cover;">
                 <div class="flex-grow-1">
                   <h6 class="mb-1 fw-bold text-dark">Phạm Minh Tuấn</h6>
                   <small class="text-secondary">Nhân viên văn phòng</small>
                 </div>
-                <div v-if="activeTab === 3" class="text-success fs-4 bounce-icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div v-if="activeTab === 3" class="text-success fs-4 bounce-icon"><i
+                    class="fa-solid fa-circle-check"></i>
+                </div>
               </div>
 
             </div>
@@ -506,24 +516,31 @@ export default {
   background-size: cover;
   background-position: center;
 }
+
 /* --- HIỆU ỨNG CHO TAB KHÁCH HÀNG (CỘT PHẢI) --- */
 .user-tab {
-  background-color: #f8f9fa; /* Màu xám nhạt khi chưa chọn */
+  background-color: #f8f9fa;
+  /* Màu xám nhạt khi chưa chọn */
   border: 2px solid transparent;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Hiệu ứng mượt mà hơi nảy nhẹ */
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* Hiệu ứng mượt mà hơi nảy nhẹ */
 }
 
 .user-tab:hover {
   background-color: #f1f3f5;
-  transform: translateX(-5px); /* Trượt nhẹ sang trái khi lia chuột */
+  transform: translateX(-5px);
+  /* Trượt nhẹ sang trái khi lia chuột */
 }
 
 .user-tab.active-user {
   background-color: #ffffff;
-  border-color: #8fdfb5; /* Viền màu xanh nổi bật */
-  box-shadow: 0 10px 25px rgba(143, 223, 181, 0.25); /* Bóng đổ màu xanh */
-  transform: translateX(-15px) scale(1.02); /* Bay hẳn sang trái và phóng to ra 2% */
+  border-color: #8fdfb5;
+  /* Viền màu xanh nổi bật */
+  box-shadow: 0 10px 25px rgba(143, 223, 181, 0.25);
+  /* Bóng đổ màu xanh */
+  transform: translateX(-15px) scale(1.02);
+  /* Bay hẳn sang trái và phóng to ra 2% */
   z-index: 2;
 }
 
@@ -533,9 +550,19 @@ export default {
 }
 
 @keyframes bounceIn {
-  0% { transform: scale(0); opacity: 0; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* --- HIỆU ỨNG CHO NỘI DUNG REVIEW (CỘT TRÁI) --- */
@@ -555,13 +582,16 @@ export default {
 .slide-fade-enter-active {
   transition: all 0.5s ease-out;
 }
+
 .slide-fade-leave-active {
   transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
 }
+
 .slide-fade-enter-from {
   transform: translateX(30px);
   opacity: 0;
 }
+
 .slide-fade-leave-to {
   transform: translateX(-30px);
   opacity: 0;

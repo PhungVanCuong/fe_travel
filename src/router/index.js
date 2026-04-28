@@ -74,6 +74,13 @@ const routes = [
         beforeEnter: checkClient,
         props: true,
     },
+    {
+       path: "/client/lich-su-dat-tour",
+        component: () => import("../components/Client/LichSuDonHang/index.vue"),
+        meta: { layout: "client" },
+        beforeEnter: checkClient,
+        props: true, 
+    },
 
 
     // {

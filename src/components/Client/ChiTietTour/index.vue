@@ -182,9 +182,14 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold">Ghi chú:</label>
-                            <textarea class="form-control" rows="3" v-model="dat_tour.ghi_chu_danh_sach_nguoi_di"
-                                placeholder="Tên người đi, yêu cầu đặc biệt..."></textarea>
+                            <label class="fw-bold mb-1">Thông tin người đi cùng</label>
+                            <textarea class="form-control" rows="4" v-model="dat_tour.ghi_chu_danh_sach_nguoi_di"
+                                placeholder="Ví dụ: &#10;Nguyễn Văn A, 0922222222, 27/05/1990 &#10;Trần Thị B, 0911111111, 10/02/1995"></textarea>
+                            <div class="form-text text-muted">
+                                <i class="fa-solid fa-circle-info me-1"></i>
+                                Vui lòng nhập mỗi người một dòng theo định dạng: <b>Họ tên, Số điện thoại, Ngày
+                                    sinh</b>.
+                            </div>
                         </div>
 
                         <div class="p-3 mb-3" style="background-color: #f8f9fa; border-radius: 10px;">

@@ -42,7 +42,7 @@
 
             <div class="d-flex align-items-center ms-lg-4 nhom-bieu-tuong">
               <a href="#" class="bieu-tuong-item me-3"><i class="fa-regular fa-heart"></i></a>
-              <a href="#" class="bieu-tuong-item me-3 position-relative">
+              <a href="/client/lich-su-dat-tour" class="bieu-tuong-item me-3 position-relative">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="cham-thong-bao"></span>
               </a>
