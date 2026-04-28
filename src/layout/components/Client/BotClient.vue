@@ -1,18 +1,18 @@
 <template>
-    <footer class="text-white text-center" style="background-color: #000957;">
+    <footer class="text-dark text-center" style="background-color: #f5f5f5;">
         <div class="container py-4">
             <!-- Social Media Links -->
             <section class="mb-4">
-                <a class="btn btn-outline-light btn-floating m-1" href="https://facebook.com" role="button" target="_blank">
+                <a class="btn btn-outline-info btn-floating m-1" href="https://facebook.com" role="button" target="_blank">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a class="btn btn-outline-light btn-floating m-1" href="https://twitter.com" role="button" target="_blank">
+                <a class="btn btn-outline-info btn-floating m-1" href="https://twitter.com" role="button" target="_blank">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <a class="btn btn-outline-light btn-floating m-1" href="https://instagram.com" role="button" target="_blank">
+                <a class="btn btn-outline-info btn-floating m-1" href="https://instagram.com" role="button" target="_blank">
                     <i class="fab fa-instagram"></i>
                 </a>
-                <a class="btn btn-outline-light btn-floating m-1" href="https://linkedin.com" role="button" target="_blank">
+                <a class="btn btn-outline-info btn-floating m-1" href="https://linkedin.com" role="button" target="_blank">
                     <i class="fab fa-linkedin-in"></i>
                 </a>
             </section>
@@ -41,52 +41,52 @@
                 <div class="row text-start">
                     <!-- Brand Name -->
                     <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                        <h5 class="text-uppercase fw-bold mb-3 text-light">DZCinema</h5>
+                        <h5 class="text-uppercase fw-bold mb-3 text-dark">IxtalTour</h5>
                         <p>
-                            Đặt vé xem phim dễ dàng, nhanh chóng với trải nghiệm tuyệt vời!
+                            Đặt vé dễ dàng, nhanh chóng với trải nghiệm tuyệt vời!
                         </p>
                     </div>
 
                     <!-- Navigation Links -->
                     <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                        <h6 class="fw-bold mb-3 text-light">Điều hướng</h6>
+                        <h6 class="fw-bold mb-3 text-dark">Điều hướng</h6>
                         <ul class="list-unstyled">
                             <li class="mb-2">
-                                <a href="/" class="text-white text-decoration-none">Trang chủ</a>
+                                <a href="/" class="text-dark text-decoration-none">Trang chủ</a>
                             </li>
                             <li class="mb-2">
-                                <a href="/movies" class="text-white text-decoration-none">Phim đang chiếu</a>
+                                <a href="/movies" class="text-dark text-decoration-none">Phim đang chiếu</a>
                             </li>
                             <li class="mb-2">
-                                <a href="/news" class="text-white text-decoration-none">Tin tức</a>
+                                <a href="/news" class="text-dark text-decoration-none">Tin tức</a>
                             </li>
                             <li>
-                                <a href="/promotions" class="text-white text-decoration-none">Khuyến mãi</a>
+                                <a href="/promotions" class="text-dark text-decoration-none">Khuyến mãi</a>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Support Links -->
                     <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                        <h6 class="fw-bold mb-3 text-light">Hỗ trợ</h6>
+                        <h6 class="fw-bold mb-3 text-dark">Hỗ trợ</h6>
                         <ul class="list-unstyled">
                             <li class="mb-2">
-                                <a href="/contact" class="text-white text-decoration-none">Liên hệ</a>
+                                <a href="/contact" class="text-dark text-decoration-none">Liên hệ</a>
                             </li>
                             <li class="mb-2">
-                                <a href="/about" class="text-white text-decoration-none">Về chúng tôi</a>
+                                <a href="/about" class="text-dark text-decoration-none">Về chúng tôi</a>
                             </li>
                             <li>
-                                <a href="/privacy" class="text-white text-decoration-none">Chính sách bảo mật</a>
+                                <a href="/privacy" class="text-dark text-decoration-none">Chính sách bảo mật</a>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Company Info -->
                     <div class="col-lg-5 col-md-6 mb-4 mb-md-0">
-                        <h6 class="fw-bold mb-3 text-light">Thông tin công ty</h6>
+                        <h6 class="fw-bold mb-3 text-dark">Thông tin công ty</h6>
                         <p>
-                            CÔNG TY TNHH DZCINEMA<br>
+                            CÔNG TY TNHH IxtalTour<br>
                             Số ĐKKD: 0317891234<br>
                             Nơi cấp: Sở Kế hoạch và Đầu tư Tp. Hồ Chí Minh<br>
                             Ngày đăng ký: 15/06/2021<br>
@@ -98,8 +98,8 @@
         </div>
 
         <!-- Copyright -->
-        <div class="text-center p-3 bg-black">
-            © 2025 DZCINEMA. All rights reserved.
+        <div class="text-center p-3 bg-black text-white">
+            © 2025 IxtalTour. All rights reserved.
         </div>
     </footer>
 </template>

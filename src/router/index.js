@@ -36,6 +36,11 @@ const routes = [
     meta: { layout: "client" },
     },
     {
+    path: "/chi-tiet-tour/:id_tour",
+    component: () => import("../components/Client/ChiTietTour/index.vue"),
+    meta: { layout: "client" },
+    },
+    {
     path: "/Dat-tour",
     component: () => import("../components/Client/DatTour/index.vue"),
     meta: { layout: "blank" },
