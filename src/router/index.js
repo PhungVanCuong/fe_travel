@@ -67,6 +67,13 @@ const routes = [
     component: () => import("../components/Client/DatTour/KetQuaThanhToan.vue"),
     meta: { layout: "blank" },
     },
+    {
+        path: "/client/thanh-toan/:ma_hoa_don",
+        component: () => import("../components/Client/ThanhToan/index.vue"),
+        meta: { layout: "client" },
+        beforeEnter: checkClient,
+        props: true,
+    },
 
 
     // {

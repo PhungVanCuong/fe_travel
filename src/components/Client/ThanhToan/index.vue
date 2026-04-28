@@ -167,7 +167,6 @@
 
             <div class="drawer-body">
                 <p class="text-muted small mb-4">Vui lòng chọn phương thức thanh toán phù hợp cho đơn hàng của bạn.</p>
-
                 <div class="payment-item" :class="{ 'active': method === 1 }" @click="method = 1">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
