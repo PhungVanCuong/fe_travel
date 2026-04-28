@@ -7,7 +7,7 @@ const routes = [
     
     {
         path: "/",
-        component: () => import("../components/Client/trangchu/index.vue"),
+        component: () => import("../components/Client/TrangChu/index.vue"),
         meta: { layout: "client" },
     },
     {
