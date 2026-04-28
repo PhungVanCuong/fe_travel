@@ -2,7 +2,7 @@
   <div class="tour-browse-container" style="background-color: #F2F7FA; min-height: 100vh; padding-bottom: 50px;">
     
     <div class="page-header text-center py-5 text-white" style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1920&q=80') center/cover;">
-      <h1 class="display-4 fw-bold">Khám Phá Thế Giới</h1>
+      <h1 class="fw-bold text-white">Khám Phá Thế Giới</h1>
       <p class="fs-5 mt-2">Hành trình vươn tầm quốc tế, trải nghiệm văn hóa đa quốc gia cùng Ixtal Tour</p>
     </div>
 
