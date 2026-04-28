@@ -27,7 +27,12 @@ const routes = [
     },
     {
     path: "/tour/tour-trong-nuoc",
-    component: () => import("../components/Client/Tourtrongnuoc/index.vue"),
+    component: () => import("../components/Client/Tour/TourTrongNuoc/index.vue"),
+    meta: { layout: "client" },
+    },
+    {
+    path: "/tour/tour-ngoai-nuoc",
+    component: () => import("../components/Client/Tour/TourNgoaiNuoc/index.vue"),
     meta: { layout: "client" },
     },
     {

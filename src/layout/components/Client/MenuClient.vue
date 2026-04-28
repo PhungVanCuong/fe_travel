@@ -34,7 +34,7 @@
               </a>
               <ul class="dropdown-menu dropdown-menu-dark shadow">
                 <li><router-link class="dropdown-item" to="/tour/tour-trong-nuoc">Trong nước</router-link></li>
-                <li><router-link class="dropdown-item" to="/tour/tour-nuoc-ngoai">Nước ngoài</router-link></li>
+                <li><router-link class="dropdown-item" to="/tour/tour-ngoai-nuoc">Nước ngoài</router-link></li>
               </ul>
             </li>
             <li class="nav-item"><router-link to="#" class="nav-link px-3">Ưu đãi</router-link></li>

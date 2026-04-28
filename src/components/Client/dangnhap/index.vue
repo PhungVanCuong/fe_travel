@@ -21,10 +21,7 @@
                 <span class="bieu-tuong-o-nhap">
                   <i class="fa-solid fa-user"></i>
                 </span>
-                <input
-                  v-model="user.email"
-                  type="text" class="o-nhap-lieu" placeholder="Tên đăng nhập hoặc Email"
-                />
+                <input v-model="user.email" type="text" class="o-nhap-lieu" placeholder="Tên đăng nhập hoặc Email" />
               </div>
             </div>
 
@@ -33,12 +30,8 @@
                 <span class="bieu-tuong-o-nhap">
                   <i class="fa-solid fa-lock"></i>
                 </span>
-                <input
-                  v-model="user.password" 
-                  :type="hien_mat_khau ? 'text' : 'password'" 
-                  class="o-nhap-lieu" 
-                  placeholder="Mật khẩu"
-                />
+                <input v-model="user.password" :type="hien_mat_khau ? 'text' : 'password'" class="o-nhap-lieu"
+                  placeholder="Mật khẩu" />
                 <span class="an-hien-mat-khau" @click="hien_mat_khau = !hien_mat_khau">
                   <i :class="hien_mat_khau ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
                 </span>
@@ -253,12 +246,13 @@ export default {
   box-shadow: 0 0 0 3px rgba(27, 125, 107, 0.1);
 }
 
-  
+
 .an-hien-mat-khau {
   position: absolute;
   right: 16px;
   color: #b8bcc0;
-  cursor: pointer; /* Thêm để hiện bàn tay khi rà chuột vào */
+  cursor: pointer;
+  /* Thêm để hiện bàn tay khi rà chuột vào */
   font-size: 16px;
   display: flex;
   align-items: center;
@@ -268,6 +262,7 @@ export default {
 .an-hien-mat-khau:hover {
   color: #1b7d6b;
 }
+
 /* Nhom Ghi Nho */
 .nhom-ghi-nho {
   display: flex;
@@ -367,10 +362,23 @@ export default {
   color: #565a5e;
 }
 
-.nut-google { color: #4285f4; }
-.nut-google:hover { border-color: #4285f4; background: #f5f8ff; }
-.nut-facebook { color: #1877f2; }
-.nut-facebook:hover { border-color: #1877f2; background: #f5f8ff; }
+.nut-google {
+  color: #4285f4;
+}
+
+.nut-google:hover {
+  border-color: #4285f4;
+  background: #f5f8ff;
+}
+
+.nut-facebook {
+  color: #1877f2;
+}
+
+.nut-facebook:hover {
+  border-color: #1877f2;
+  background: #f5f8ff;
+}
 
 /* Link dang ky */
 .duong-dan-dang-ky {
@@ -388,18 +396,39 @@ export default {
 
 /* Animations */
 @keyframes truotXuong {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes truotLen {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Mobile */
 @media (max-width: 576px) {
-  .noi-dung-the { padding: 30px 20px; }
-  .nhom-ghi-nho { flex-direction: row; } /* Giu nguyen 1 hang tren mobile */
+  .noi-dung-the {
+    padding: 30px 20px;
+  }
+
+  .nhom-ghi-nho {
+    flex-direction: row;
+  }
+
+  /* Giu nguyen 1 hang tren mobile */
 }
 </style>
