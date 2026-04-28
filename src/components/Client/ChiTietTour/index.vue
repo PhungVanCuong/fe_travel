@@ -364,17 +364,17 @@ export default {
             const token = localStorage.getItem('key_client');
             if (!token) {
                 this.$toast.error("Vui lòng đăng nhập để thực hiện đặt tour.");
-                this.$router.push('/client/dang-nhap'); // Điều hướng người dùng đến trang đăng nhập
+                this.$router.push('/client/dang-nhap');
                 return;
             }
 
-            // 2. Kiểm tra số lượng người còn trống tại Client để tối ưu trải nghiệm
+            // 2. Kiểm tra số lượng người còn trống
             if (this.dat_tour.so_luong_nguoi > this.chi_tiet_tour.so_nguoi_toi_da) {
                 this.$toast.warning("Rất tiếc, tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
                 return;
             }
 
-            // 3. Chuẩn bị dữ liệu gửi đi (Payload)
+            // 3. Chuẩn bị dữ liệu gửi đi
             var payload = {
                 "id_tour": this.id,
                 "so_luong_nguoi": this.dat_tour.so_luong_nguoi,
@@ -394,28 +394,26 @@ export default {
                         // Thành công
                         this.$toast.success(res.data.message);
 
-                        // Cập nhật lại số chỗ còn trống hiển thị trên giao diện
+                        // Cập nhật lại số chỗ còn trống hiển thị trên giao diện (nếu cần)
                         this.chi_tiet_tour.so_nguoi_toi_da -= this.dat_tour.so_luong_nguoi;
 
-                        // Reset lại form đặt tour
-                        this.dat_tour.so_luong_nguoi = 1;
-                        this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
+                        // Lấy mã hóa đơn từ kết quả trả về của Backend
+                        // Giả sử backend trả về ma_hoa_don nằm trong res.data.ma_hoa_don hoặc res.data.data.ma_hoa_don
+                        const maHoaDon = res.data.data.hoa_don.ma_hoa_don;
 
-                        // Nếu có link QR code thanh toán từ backend, có thể mở nó tại đây
-                        if (res.data.data && res.data.data.link_qr_code) {
-                            // window.open(res.data.data.link_qr_code, '_blank');
+                        if (maHoaDon) {
+                            // CHUYỂN TRANG QUA /client/thanh-toan/:ma_hoa_don
+                            this.$router.push('/client/thanh-toan/' + maHoaDon);
+                        } else {
+                            this.dat_tour.so_luong_nguoi = 1;
+                            this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
                         }
 
                     } else {
-                        // Thất bại (Lỗi logic từ Backend như hết chỗ, tour đóng...)
                         this.$toast.error(res.data.message);
-
-                        // Nếu lỗi nghiêm trọng có thể đẩy về trang chủ
-                        // this.$router.push('/');
                     }
                 })
                 .catch((err) => {
-                    // Xử lý lỗi hệ thống hoặc lỗi 401/403/500
                     if (err.response && err.response.status === 401) {
                         this.$toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
                         this.$router.push('/client/dang-nhap');
