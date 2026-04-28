@@ -57,6 +57,21 @@ const routes = [
     // },
 
     // ============= Admin ==================
+    {
+        path: "/admin/quan-ly-phuong-tien",
+        component: () => import("../components/Admin/quanlydiemden/index.vue"),
+        beforeEnter: checkAdmin,
+    },
+    {
+        path: "/admin/quan-ly-tour",
+        component: () => import("../components/Admin/quanlytour/index.vue"),
+       beforeEnter: checkAdmin,
+    },
+    {
+        path: "/admin/dang-nhap",
+        component: () => import("../components/Admin/dangnhap/index.vue"),
+       // beforeEnter: checkAdmin,
+    },
     // {
     //     path: "/admin/phong-chieu",
     //     component: () => import("../components/Admin/PhongChieu/index.vue"),

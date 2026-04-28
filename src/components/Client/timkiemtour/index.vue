@@ -206,7 +206,7 @@ export default {
           id: 1,
           ten_tour: 'Tour khám phá Vĩnh Hạ Long 1 ngày',
           ma_tour: 'HL-1001',
-          hinh_anh: 'https://via.placeholder.com/100x100?text=Tour+1',
+          hinh_anh: 'https://hitour.vn/storage/images/upload/tour-du-lich-vinh-ha-long-4-ngay-3-dem-gallery-1666029595-18.webp',
           mo_ta: 'Khám phá vẻ đẹp thiên nhiên của vịnh Hạ Long',
           diem_don: 'TP. HCM',
           ngay_bat_dau: '2024-10-12',
@@ -219,7 +219,7 @@ export default {
           id: 2,
           ten_tour: 'Tour khám phá Vĩnh Hạ Long 2 ngày',
           ma_tour: 'HL-1002',
-          hinh_anh: 'https://via.placeholder.com/100x100?text=Tour+2',
+          hinh_anh: 'https://hitour.vn/storage/images/upload/tour-du-lich-vinh-ha-long-4-ngay-3-dem-gallery-1666029595-18.webp',
           mo_ta: 'Khám phá vẻ đẹp thiên nhiên của vịnh Hạ Long',
           diem_don: 'TP. HCM',
           ngay_bat_dau: '2024-10-12',
@@ -232,7 +232,7 @@ export default {
           id: 3,
           ten_tour: 'Tour khám phá Vĩnh Hạ Long 3 ngày',
           ma_tour: 'HL-1003',
-          hinh_anh: 'https://via.placeholder.com/100x100?text=Tour+3',
+          hinh_anh: 'https://hitour.vn/storage/images/upload/tour-du-lich-vinh-ha-long-4-ngay-3-dem-gallery-1666029595-18.webp',
           mo_ta: 'Khám phá vẻ đẹp thiên nhiên của vịnh Hạ Long',
           diem_don: 'TP. HCM',
           ngay_bat_dau: '2024-10-12',
@@ -245,7 +245,7 @@ export default {
           id: 4,
           ten_tour: 'Tour khám phá Vĩnh Hạ Long 4 ngày',
           ma_tour: 'HL-1004',
-          hinh_anh: 'https://via.placeholder.com/100x100?text=Tour+4',
+          hinh_anh: 'https://hitour.vn/storage/images/upload/tour-du-lich-vinh-ha-long-4-ngay-3-dem-gallery-1666029595-18.webp',
           mo_ta: 'Khám phá vẻ đẹp thiên nhiên của vịnh Hạ Long',
           diem_don: 'TP. HCM',
           ngay_bat_dau: '2024-10-12',
@@ -258,7 +258,7 @@ export default {
           id: 5,
           ten_tour: 'Tour khám phá Vĩnh Hạ Long 5 ngày',
           ma_tour: 'HL-1005',
-          hinh_anh: 'https://via.placeholder.com/100x100?text=Tour+5',
+          hinh_anh: 'https://hitour.vn/storage/images/upload/tour-du-lich-vinh-ha-long-4-ngay-3-dem-gallery-1666029595-18.webp',
           mo_ta: 'Khám phá vẻ đẹp thiên nhiên của vịnh Hạ Long',
           diem_don: 'TP. HCM',
           ngay_bat_dau: '2024-10-12',
@@ -372,12 +372,12 @@ export default {
     },
     
     viewDetail(tourId) {
-      // Navigate to tour detail page
+      
       this.$router.push(`/chi-tiet-tour/${tourId}`);
     },
     
     bookTour(tourId) {
-      // Navigate to booking page
+     
       this.$router.push(`/dat-tour/${tourId}`);
     }
   }
