@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"; // cài vue-router: npm install vue-router@next --save
 import checkAdmin from "./checkAdmin";
 import checkClient from "./checkClient";
+import checkHuongDanVien from "./checkHuongDanVien";
 
 const routes = [
     // ============= Client ==================
@@ -243,21 +244,25 @@ const routes = [
     {
         path: "/huong-dan-vien/lich-trinh",
         component: () => import("../components/HuongDanVien/LichTrinh/index.vue"),
+        beforeEnter: checkHuongDanVien,
         meta: { layout: "huong-dan-vien" }, 
     },
     {
         path: "/huong-dan-vien/profile",
         component: () => import("../components/HuongDanVien/Profile/index.vue"),
+        beforeEnter: checkHuongDanVien,
         meta: { layout: "huong-dan-vien" }, 
     },
     {
         path: "/huong-dan-vien/quan-ly-tour",
         component: () => import("../components/HuongDanVien/QuanLyTour/index.vue"),
+        beforeEnter: checkHuongDanVien,
         meta: { layout: "huong-dan-vien" }, 
     },
     {
         path: "/huong-dan-vien/quan-ly-khach-hang",
         component: () => import("../components/HuongDanVien/QuanLyKhachHang/index.vue"),
+        beforeEnter: checkHuongDanVien,
         meta: { layout: "huong-dan-vien" }, 
     },
 
