@@ -319,7 +319,7 @@ export default {
       return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
     },
     
-    viewDetail(id) { this.$router.push(`/chi-tiet-tour/${id}`); }
+    viewDetail(id) { this.$router.push(`/client/chi-tiet-tour/${id}`); }
   }
 }
 </script>

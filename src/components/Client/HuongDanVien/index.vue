@@ -42,7 +42,7 @@
                                 <small class="text-muted d-block" style="font-size: 0.7rem;">Liên hệ</small>
                                 <span class="text-dark fw-medium small"><i class="fa-solid fa-phone text-success me-1"></i> {{ hdv.so_dien_thoai || 'Đang cập nhật' }}</span>
                             </div>
-                            <router-link :to="`/chi-tiet-huong-dan-vien/${hdv.id}`" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold hover-btn">
+                            <router-link :to="`/client/chi-tiet-huong-dan-vien/${hdv.id}`" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold hover-btn">
                                 Xem Hồ Sơ
                             </router-link>
                         </div>

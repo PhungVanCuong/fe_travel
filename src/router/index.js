@@ -42,42 +42,42 @@ const routes = [
         meta: { layout: "client" },
     },
     {
-        path: "/tour/tour-trong-nuoc",
+        path: "/client/tour/tour-trong-nuoc",
         component: () => import("../components/Client/Tour/TourTrongNuoc/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/tour/tour-ngoai-nuoc",
+        path: "/client/tour/tour-ngoai-nuoc",
         component: () => import("../components/Client/Tour/TourNgoaiNuoc/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/bai-viet",
+        path: "/client/bai-viet",
         component: () => import("../components/Client/BaiViet/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/chi-tiet-bai-viet/:id_bai_viet",
+        path: "/client/chi-tiet-bai-viet/:id_bai_viet",
         component: () => import("../components/Client/ChiTietBaiViet/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/huong-dan-vien",
+        path: "/client/huong-dan-vien",
         component: () => import("../components/Client/HuongDanVien/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/chi-tiet-huong-dan-vien/:id_huong_dan_vien",
+        path: "/client/chi-tiet-huong-dan-vien/:id_huong_dan_vien",
         component: () => import("../components/Client/ChiTietHuongDanVien/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/chi-tiet-tour/:id_tour",
+        path: "/client/chi-tiet-tour/:id_tour",
         component: () => import("../components/Client/ChiTietTour/index.vue"),
         meta: { layout: "client" },
     },
     {
-        path: "/lien-he",
+        path: "/client/lien-he",
         component: () => import("../components/Client/LienHe/index.vue"),
         meta: { layout: "client" },
     },
@@ -210,8 +210,59 @@ const routes = [
     //     component: () => import("../components/Admin/PhongChieu/index.vue"),
     //     beforeEnter: checkAdmin,
     // },
-    
+
+
+    // ... code cũ của bạn ...
+
+    // ============= Hướng Dẫn Viên ==================
+    {
+        path: "/huong-dan-vien/dang-nhap",
+        component: () => import("../components/HuongDanVien/DangNhap/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/huong-dan-vien/dang-ky",
+        component: () => import("../components/HuongDanVien/DangKy/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/huong-dan-vien/xac-nhan-dang-ky",
+        component: () => import("../components/HuongDanVien/XacNhanDangKy/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/huong-dan-vien/quen-mat-khau",
+        component: () => import("../components/HuongDanVien/QuenMatKhau/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/huong-dan-vien/lay-lai-mat-khau",
+        component: () => import("../components/HuongDanVien/LayLaiMatKhau/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/huong-dan-vien/lich-trinh",
+        component: () => import("../components/HuongDanVien/LichTrinh/index.vue"),
+        meta: { layout: "huong-dan-vien" }, 
+    },
+    {
+        path: "/huong-dan-vien/profile",
+        component: () => import("../components/HuongDanVien/Profile/index.vue"),
+        meta: { layout: "huong-dan-vien" }, 
+    },
+    {
+        path: "/huong-dan-vien/quan-ly-tour",
+        component: () => import("../components/HuongDanVien/QuanLyTour/index.vue"),
+        meta: { layout: "huong-dan-vien" }, 
+    },
+    {
+        path: "/huong-dan-vien/quan-ly-khach-hang",
+        component: () => import("../components/HuongDanVien/QuanLyKhachHang/index.vue"),
+        meta: { layout: "huong-dan-vien" }, 
+    },
+
 ];
+
 
 const router = createRouter({
     history: createWebHistory(),

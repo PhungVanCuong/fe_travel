@@ -33,13 +33,13 @@
                 Tour
               </a>
               <ul class="dropdown-menu dropdown-menu-dark shadow">
-                <li><router-link class="dropdown-item" to="/tour/tour-trong-nuoc">Trong Nước</router-link></li>
-                <li><router-link class="dropdown-item" to="/tour/tour-ngoai-nuoc">Nước Ngoài</router-link></li>
+                <li><router-link class="dropdown-item" to="/client/tour/tour-trong-nuoc">Trong Nước</router-link></li>
+                <li><router-link class="dropdown-item" to="/client/tour/tour-ngoai-nuoc">Nước Ngoài</router-link></li>
               </ul>
             </li>
-            <li class="nav-item"><router-link to="/huong-dan-vien" class="nav-link px-3">Hướng Dẫn Viên</router-link></li>
-            <li class="nav-item"><router-link to="/bai-viet" class="nav-link px-3">Blog</router-link></li>
-            <li class="nav-item"><router-link to="/lien-he" class="nav-link px-3">Liên Hệ</router-link></li>
+            <li class="nav-item"><router-link to="/client/huong-dan-vien" class="nav-link px-3">Hướng Dẫn Viên</router-link></li>
+            <li class="nav-item"><router-link to="/client/bai-viet" class="nav-link px-3">Blog</router-link></li>
+            <li class="nav-item"><router-link to="/client/lien-he" class="nav-link px-3">Liên Hệ</router-link></li>
 
             <div class="d-flex align-items-center ms-lg-4 nhom-bieu-tuong">
               <router-link to="/client/lich-su-dat-tour" class="bieu-tuong-item me-3 position-relative">

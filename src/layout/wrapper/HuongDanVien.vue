@@ -13,10 +13,9 @@
 	</div>
 </template>
 <script>
-import TopRocker from "../components/Admin/TopRocker.vue";
-import BotRocker from "../components/Admin/BotRocker.vue";
-import MenuRocker from "../components/Admin/MenuRocker.vue";
-
+import TopRocker from "../components/HuongDanVien/TopRocker.vue";
+import BotRocker from "../components/HuongDanVien/BotRocker.vue";
+import MenuRocker from "../components/HuongDanVien/MenuRocker.vue";
 import "../../assets/js/bootstrap.bundle.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/plugins/simplebar/js/simplebar.min.js";

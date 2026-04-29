@@ -294,7 +294,7 @@
                                                 }).format(value.gia) }}
                                             </h5>
                                         </div>
-                                        <router-link :to="'/chi-tiet-tour/' + value.id"
+                                        <router-link :to="'/client/chi-tiet-tour/' + value.id"
                                             class="btn btn-outline-primary btn-sm rounded-pill px-3">
                                             Chi tiết
                                         </router-link>

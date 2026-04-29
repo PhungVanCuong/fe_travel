@@ -117,7 +117,7 @@
                       {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                     </h5>
                   </div>
-                  <router-link :to="'/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
+                  <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
                     <i class="bx bx-star"></i> Chi tiết
                   </router-link>
                 </div>
@@ -132,7 +132,7 @@
   <div class="section-background py-4">
     <div class="container ">
       <div class="" style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>Tour trong nước</h1> <a style="font-size: large;" href="/tour/tour-trong-nuoc" class="">Xem Thêm</a>
+        <h1>Tour trong nước</h1> <a style="font-size: large;" href="/client/tour/tour-trong-nuoc" class="">Xem Thêm</a>
       </div>
       <div class="row">
         <template
@@ -184,7 +184,7 @@
                       {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                     </h5>
                   </div>
-                  <router-link :to="'/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
+                  <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
                     <i class="bx bx-star"></i> Chi tiết
                   </router-link>
                 </div>
@@ -194,7 +194,7 @@
         </template>
       </div>
       <div class="text-center mb-5 mt-3">
-        <router-link to="/tour/tour-trong-nuoc">
+        <router-link to="/client/tour/tour-trong-nuoc">
           <button class="btn rounded-pill"
             style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
             onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
@@ -207,7 +207,7 @@
   <div class="section-background py-4">
     <div class="container ">
       <div class="" style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>Tour nước ngoài</h1> <a style="font-size: large;" href="/tour/tour-ngoai-nuoc" class="">Xem Thêm</a>
+        <h1>Tour nước ngoài</h1> <a style="font-size: large;" href="/client/tour/tour-ngoai-nuoc" class="">Xem Thêm</a>
       </div>
       <div class="row">
         <template
@@ -261,7 +261,7 @@
                       {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                     </h5>
                   </div>
-                  <router-link :to="'/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
+                  <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
                     <i class="bx bx-star"></i> Chi tiết
                   </router-link>
                 </div>
@@ -271,7 +271,7 @@
         </template>
       </div>
       <div class="text-center mb-5 mt-3 mb-5">
-        <router-link to="/tour/tour-ngoai-nuoc">
+        <router-link to="/client/tour/tour-ngoai-nuoc">
           <button class="btn rounded-pill"
             style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
             onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
@@ -287,7 +287,7 @@
       <div class="row">
         <template v-for="(value, index) in list_bv.slice(0, 3)" :key="index">
           <div class="col-lg-4 mb-4">
-            <router-link :to="`/chi-tiet-bai-viet/${value.id}`" class="text-decoration-none">
+            <router-link :to="`/client/chi-tiet-bai-viet/${value.id}`" class="text-decoration-none">
               <article class="article-card group cursor-pointer h-100">
                 <div class="overflow-hidden rounded-4 mb-3 position-relative"
                   style="height: 250px; border: 1px solid rgba(227, 204, 129, 0.3);">
@@ -305,7 +305,7 @@
         </template>
       </div>
       <div class="text-center mb-5 mt-3">
-        <router-link to="/bai-viet">
+        <router-link to="/client/bai-viet">
           <button class="btn rounded-pill"
             style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
             onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
