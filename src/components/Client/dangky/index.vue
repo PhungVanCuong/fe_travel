@@ -2,104 +2,111 @@
   <div class="khung-dang-ky">
     <div class="nen-dang-ky"></div>
 
-    <div class="bao-dang-ky">
-      <div class="vung-logo text-center mb-4">
-        <div class="bieu-tuong-logo mb-3">
-          <img src="https://i.pinimg.com/564x/48/e5/9e/48e59ef6ef580dad0e44420cf79f1f7a.jpg" alt="logo">
-        </div>
-        <h2 class="tieu-de-logo">IXTAL TOUR JOURNEYS</h2>
-      </div>
-
-      <div class="the-dang-ky">
-        <div class="noi-dung-the">
-          <h3 class="tieu-de-the">ĐĂNG KÝ</h3>
-
-          <form @submit.prevent="dangKy" class="bieu-mau-dang-ky">
-            <div class="nhom-nhap-lieu">
-              <div class="bao-o-nhap">
-                <span class="bieu-tuong-o-nhap">
-                  <i class="fa-solid fa-user"></i>
-                </span>
-                <input
-                  v-model="user.username"
-                  type="text"
-                  class="o-nhap-lieu"
-                  placeholder="Tên đăng nhập"
-                />
-              </div>
+    <div class="bao-dang-ky container">
+      <div class="row justify-content-center">
+        <!-- Đã thu hẹp cột lại (col-lg-6 col-xl-5) để form 1 cột không bị quá to/bè ra -->
+        <div class="col-12 col-md-8 col-lg-6 col-xl-5 mx-auto">
+          
+          <div class="vung-logo text-center mb-4">
+            <div class="bieu-tuong-logo mb-3">
+              <img src="https://i.pinimg.com/564x/48/e5/9e/48e59ef6ef580dad0e44420cf79f1f7a.jpg" alt="logo" class="rounded-circle shadow-sm">
             </div>
+            <h2 class="tieu-de-logo">IXTAL TOUR</h2>
+          </div>
 
-            <div class="nhom-nhap-lieu">
-              <div class="bao-o-nhap">
-                <span class="bieu-tuong-o-nhap">
-                  <i class="fa-solid fa-envelope"></i>
-                </span>
-                <input
-                  v-model="user.email"
-                  type="email"
-                  class="o-nhap-lieu"
-                  placeholder="Email"
-                />
-              </div>
+          <div class="the-dang-ky">
+            <div class="noi-dung-the">
+              <h3 class="tieu-de-the">TẠO TÀI KHOẢN</h3>
+              <p class="text-center text-muted mb-4 small">Đăng ký thành viên để nhận ngay nhiều ưu đãi hấp dẫn từ hệ thống.</p>
+
+              <form @submit.prevent="dangKy" class="bieu-mau-dang-ky">
+                <!-- Xếp tất cả thành hàng dọc bằng gap-3 (khoảng cách đều nhau) -->
+                <div class="d-flex flex-column gap-3">
+                  
+                  <!-- Họ và tên -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-solid fa-user"></i></span>
+                      <input v-model="user.ho_va_ten" type="text" class="o-nhap-lieu" placeholder="Họ và tên đầy đủ" />
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-solid fa-envelope"></i></span>
+                      <input v-model="user.email" type="email" class="o-nhap-lieu" placeholder="Địa chỉ Email" />
+                    </div>
+                  </div>
+
+                  <!-- Số điện thoại -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-solid fa-phone"></i></span>
+                      <input v-model="user.so_dien_thoai" type="text" class="o-nhap-lieu" placeholder="Số điện thoại" maxlength="10" />
+                    </div>
+                  </div>
+
+                  <!-- Số CCCD -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-regular fa-id-card"></i></span>
+                      <input v-model="user.cccd" type="text" class="o-nhap-lieu" placeholder="Số CCCD" maxlength="12" />
+                    </div>
+                  </div>
+
+                  <!-- Ngày sinh -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-regular fa-calendar-days"></i></span>
+                      <input v-model="user.ngay_sinh" type="date" class="o-nhap-lieu" title="Ngày sinh" />
+                    </div>
+                  </div>
+
+                  <!-- Mật khẩu -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-solid fa-lock"></i></span>
+                      <input v-model="user.password" :type="showPassword ? 'text' : 'password'" class="o-nhap-lieu" placeholder="Mật khẩu" />
+                      <span class="an-hien-mat-khau" @click="showPassword = !showPassword">
+                        <i :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Nhập lại mật khẩu -->
+                  <div class="nhom-nhap-lieu">
+                    <div class="bao-o-nhap">
+                      <span class="bieu-tuong-o-nhap"><i class="fa-solid fa-shield-halved"></i></span>
+                      <input v-model="user.re_password" :type="showRePassword ? 'text' : 'password'" class="o-nhap-lieu" placeholder="Nhập lại mật khẩu" />
+                      <span class="an-hien-mat-khau" @click="showRePassword = !showRePassword">
+                        <i :class="showRePassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+                      </span>
+                    </div>
+                  </div>
+
+                </div> <!-- Kết thúc d-flex column -->
+
+                <div class="form-check mt-3 mb-4 d-flex align-items-center">
+                  <input class="form-check-input me-2" type="checkbox" id="flexCheckDefault" checked>
+                  <label class="form-check-label text-muted small" for="flexCheckDefault" style="padding-top: 2px;">
+                    Tôi đồng ý với <a href="javascript:;" class="text-decoration-none fw-bold" style="color: #1b7d6b;">Điều khoản sử dụng</a> và <a href="javascript:;" class="text-decoration-none fw-bold" style="color: #1b7d6b;">Chính sách bảo mật</a>.
+                  </label>
+                </div>
+
+                <button type="submit" class="nut-dang-ky w-100 d-flex justify-content-center align-items-center gap-2">
+                  <span>XÁC NHẬN ĐĂNG KÝ</span>
+                  <i class="fa-solid fa-arrow-right"></i>
+                </button>
+              </form>
+
+              <p class="duong-dan-dang-nhap">
+                Bạn đã có tài khoản?
+                <router-link to="/client/dang-nhap">Đăng nhập tại đây</router-link>
+              </p>
             </div>
+          </div>
 
-            <div class="nhom-nhap-lieu">
-              <div class="bao-o-nhap">
-                <span class="bieu-tuong-o-nhap">
-                  <i class="fa-solid fa-phone"></i>
-                </span>
-                <input
-                  v-model="user.phone"
-                  type="text"
-                  class="o-nhap-lieu"
-                  placeholder="Số điện thoại"
-                />
-              </div>
-            </div>
-
-            <div class="nhom-nhap-lieu">
-              <div class="bao-o-nhap">
-                <span class="bieu-tuong-o-nhap">
-                  <i class="fa-solid fa-lock"></i>
-                </span>
-                <input
-                  v-model="user.password"
-                  :type="showPassword ? 'text' : 'password'"
-                  class="o-nhap-lieu"
-                  placeholder="Mật khẩu"
-                />
-                <span class="an-hien-mat-khau" @click="showPassword = !showPassword">
-                  <i :class="showPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
-                </span>
-              </div>
-            </div>
-
-            <div class="nhom-nhap-lieu">
-              <div class="bao-o-nhap">
-                <span class="bieu-tuong-o-nhap">
-                  <i class="fa-solid fa-lock"></i>
-                </span>
-                <input
-                  v-model="user.confirmPassword"
-                  :type="showConfirmPassword ? 'text' : 'password'"
-                  class="o-nhap-lieu"
-                  placeholder="Nhập lại mật khẩu"
-                />
-                <span class="an-hien-mat-khau" @click="showConfirmPassword = !showConfirmPassword">
-                  <i :class="showConfirmPassword ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
-                </span>
-              </div>
-            </div>
-
-            <button type="submit" class="nut-dang-ky">
-              ĐĂNG KÝ
-            </button>
-          </form>
-
-          <p class="duong-dan-dang-nhap">
-            Bạn đã có tài khoản?
-            <router-link to="/dang-nhap">Đăng nhập</router-link>
-          </p>
         </div>
       </div>
     </div>
@@ -109,49 +116,54 @@
 <script>
 import axios from "axios";
 import apiUrl from "../../../utils/api";
+
 export default {
   data() {
     return {
       user: {
-        username: "",
+        ho_va_ten: "",
         email: "",
-        phone: "",
+        so_dien_thoai: "",
+        cccd: "",
+        ngay_sinh: "",
         password: "",
-        confirmPassword: "",
+        re_password: "", 
       },
       showPassword: false,
-      showConfirmPassword: false,
+      showRePassword: false,
     };
   },
   methods: {
     dangKy() {
-      if (!this.user.username || !this.user.email || !this.user.phone || !this.user.password || !this.user.confirmPassword) {
-        this.$toast.error("Vui lòng điền đầy đủ thông tin");
+      if (!this.user.ho_va_ten || !this.user.email || !this.user.so_dien_thoai || !this.user.cccd || !this.user.ngay_sinh || !this.user.password || !this.user.re_password) {
+        this.$toast.error("Vui lòng điền đầy đủ tất cả thông tin!");
         return;
       }
 
-      if (this.user.password !== this.user.confirmPassword) {
-        this.$toast.error("Mật khẩu không khớp");
+      if (this.user.password !== this.user.re_password) {
+        this.$toast.error("Mật khẩu xác nhận không khớp!");
         return;
       }
 
-      const data = {
-        username: this.user.username,
-        email: this.user.email,
-        phone: this.user.phone,
-        password: this.user.password,
-      };
-
-      axios.post(apiUrl("client/dang-ky"), data).then((res) => {
-        if (res.data.status) {
-          this.$toast.success(res.data.message);
-          this.$router.push("/dang-nhap");
-        } else {
-          this.$toast.error(res.data.message);
-        }
-      }).catch((err) => {
-        this.$toast.error("Đăng ký thất bại");
-      });
+      axios.post(apiUrl("client/dang-ky"), this.user)
+        .then((res) => {
+          if (res.data.status) {
+            this.$toast.success(res.data.message);
+            this.$router.push("/client/dang-nhap");
+          } else {
+            this.$toast.error(res.data.message);
+          }
+        })
+        .catch((err) => {
+          if(err.response && err.response.data && err.response.data.errors) {
+            const listErr = Object.values(err.response.data.errors);
+            listErr.forEach((v) => {
+              this.$toast.error(v[0]);
+            });
+          } else {
+            this.$toast.error("Đăng ký thất bại, vui lòng thử lại sau!");
+          }
+        });
     },
   },
 };
@@ -170,6 +182,7 @@ export default {
   position: relative;
   background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 50px 0; /* Tăng padding trên dưới để form dài có không gian thở */
 }
 
 .nen-dang-ky {
@@ -188,12 +201,9 @@ export default {
 .bao-dang-ky {
   position: relative;
   z-index: 1;
-  width: 100%;
-  max-width: 500px;
-  padding: 20px;
 }
 
-/* Phan Logo */
+/* Phần Logo */
 .vung-logo {
   animation: truotXuong 0.6s ease-out;
 }
@@ -210,53 +220,43 @@ export default {
 .bieu-tuong-logo img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .tieu-de-logo {
   font-size: 24px;
-  font-weight: 700;
+  font-weight: 800;
   color: #1b7d6b;
   letter-spacing: 2px;
   margin: 0;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
 }
 
-/* Card Dang Ky */
+/* Card Đăng Ký */
 .the-dang-ky {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-radius: 24px; /* Bo góc mềm mại hơn */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); /* Bóng đổ sang trọng */
   overflow: hidden;
   animation: truotLen 0.6s ease-out;
+  border: 1px solid rgba(255,255,255,0.8);
 }
 
 .noi-dung-the {
-  padding: 40px 30px;
+  padding: 40px 35px;
 }
 
 .tieu-de-the {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   color: #1b7d6b;
   text-align: center;
-  margin: 0 0 30px 0;
-  letter-spacing: 3px;
-  text-transform: uppercase;
+  margin: 0 0 5px 0;
+  letter-spacing: 1px;
 }
 
-/* Bieu mau */
-.bieu-mau-dang-ky {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.nhom-nhap-lieu {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
+/* Biểu mẫu */
 .bao-o-nhap {
   position: relative;
   display: flex;
@@ -265,89 +265,115 @@ export default {
 
 .bieu-tuong-o-nhap {
   position: absolute;
-  left: 16px;
-  color: #b8bcc0;
+  left: 18px;
+  color: #a0a5aa;
   font-size: 16px;
   display: flex;
   align-items: center;
+  z-index: 5;
 }
 
 .o-nhap-lieu {
   width: 100%;
-  border: 1px solid #d4d7db;
-  border-radius: 8px;
-  padding: 12px 16px 12px 44px;
-  font-size: 14px;
+  border: 1.5px solid #e1e5eb; /* Viền nét đứt nhẹ */
+  border-radius: 12px; /* Bo góc ô nhập liệu */
+  padding: 15px 16px 15px 48px; /* Tăng padding để ô nhập liệu nhìn cao cấp */
+  font-size: 14.5px;
   font-family: inherit;
   transition: all 0.3s ease;
-  background: #f8f9fb;
+  background: #fcfcfd;
+  color: #333;
 }
 
 .o-nhap-lieu:focus {
   outline: none;
   border-color: #1b7d6b;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(27, 125, 107, 0.1);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(27, 125, 107, 0.1);
+}
+
+.o-nhap-lieu::placeholder {
+  color: #adb5bd;
+  font-weight: 400;
 }
 
 .an-hien-mat-khau {
   position: absolute;
-  right: 16px;
-  color: #b8bcc0;
+  right: 18px;
+  color: #a0a5aa;
   cursor: pointer;
   font-size: 16px;
   display: flex;
   align-items: center;
   transition: color 0.3s ease;
+  z-index: 5;
 }
 
 .an-hien-mat-khau:hover {
   color: #1b7d6b;
 }
 
-/* Nut Dang Ky */
+/* Form check checkbox màu đồng bộ */
+.form-check-input {
+  width: 1.2em;
+  height: 1.2em;
+  margin-top: 0;
+  cursor: pointer;
+}
+.form-check-input:checked {
+  background-color: #1b7d6b;
+  border-color: #1b7d6b;
+}
+
+/* Nút Đăng Ký */
 .nut-dang-ky {
-  background: #1b7d6b;
+  background: linear-gradient(135deg, #1b7d6b 0%, #229983 100%);
   color: #ffffff;
   border: none;
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 12px;
+  padding: 16px 24px;
+  font-size: 15px;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .nut-dang-ky:hover {
-  background: #e0e0e0;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #156254 0%, #1b7d6b 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(27, 125, 107, 0.3);
 }
 
-/* Link Dang Nhap */
+/* Link Đăng Nhập */
 .duong-dan-dang-nhap {
   text-align: center;
-  font-size: 14px;
-  color: #565a5e;
+  font-size: 14.5px;
+  color: #6c757d;
   margin: 25px 0 0 0;
 }
 
 .duong-dan-dang-nhap a {
   color: #1b7d6b;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
   transition: color 0.3s ease;
+}
+
+.duong-dan-dang-nhap a:hover {
+  text-decoration: underline;
+  color: #156254;
 }
 
 /* Animations */
 @keyframes truotXuong {
-  from { opacity: 0; transform: translateY(-30px); }
+  from { opacity: 0; transform: translateY(-20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes truotLen {
-  from { opacity: 0; transform: translateY(30px); }
+  from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -355,8 +381,7 @@ export default {
 @media (max-width: 576px) {
   .noi-dung-the { padding: 30px 20px; }
   .tieu-de-logo { font-size: 20px; }
-  .tieu-de-the { font-size: 22px; }
-  .o-nhap-lieu { padding: 10px 16px 10px 40px; font-size: 13px; }
-  .bao-dang-ky { max-width: 100%; }
+  .tieu-de-the { font-size: 20px; }
+  .o-nhap-lieu { padding: 12px 16px 12px 40px; font-size: 14px; }
 }
 </style>

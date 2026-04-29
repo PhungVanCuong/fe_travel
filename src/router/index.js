@@ -12,17 +12,28 @@ const routes = [
     },
     {
     path: "/client/dang-nhap",
-    component: () => import("../components/Client/dangnhap/index.vue"),
+    component: () => import("../components/Client/DangNhap/index.vue"),
     meta: { layout: "blank" },
     },
     {
     path: "/client/dang-ky",
-    component: () => import("../components/Client/dangky/index.vue"),
+    component: () => import("../components/Client/DangKy/index.vue"),
     meta: { layout: "blank" },
     },
     {
+    path: "/client/quen-mat-khau",
+    component: () => import("../components/Client/QuenMatKhau/index.vue"),
+    meta: { layout: "blank" },
+    },
+    {
+    path: "/client/lay-lai-mat-khau",
+    component: () => import("../components/Client/LayLaiMatKhau/index.vue"),
+    meta: { layout: "blank" },
+    },
+
+    {
     path: "/tim-kiem-tour",
-    component: () => import("../components/Client/timkiemtour/index.vue"),
+    component: () => import("../components/Client/TimKiemTour/index.vue"),
     meta: { layout: "client" },
     },
     {
