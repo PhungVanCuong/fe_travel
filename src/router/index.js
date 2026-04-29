@@ -137,7 +137,7 @@ const routes = [
     },
     {
         path: "/admin/quan-ly-tour",
-        component: () => import("../components/Admin/QuanLyTour/index.vue"),
+        component: () => import("../components/Admin/quanlytour/index.vue"),
         beforeEnter: checkAdmin,
     },
     {
