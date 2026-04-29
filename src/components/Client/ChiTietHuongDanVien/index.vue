@@ -114,7 +114,7 @@
                                 <div class="card-body p-4 p-md-5 d-flex flex-column h-100">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h4 class="fw-bold text-dark mb-0">{{ tour.ten_tour }}</h4>
-                                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" @click="$router.push(`/chi-tiet-tour/${tour.id}`)">
+                                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3" @click="$router.push(`/client/chi-tiet-tour/${tour.id}`)">
                                             Xem Tour
                                         </button>
                                     </div>
