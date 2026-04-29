@@ -1,398 +1,564 @@
 <template>
-    <div class="">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card radius-10 border-top border-0 border-3 border-info">
-                    <div class="card-header d-flex justify-content-between">
-                        <h4 class="mt-2"><b>DANH SÁCH NHÂN VIÊN</b></h4>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                            Thêm Nhân Viên
-                        </button>
+    <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
+        <!-- Header -->
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">👔 Quản Lý Tài Khoản Nhân Viên</h1>
+            <p style="color: #666; margin: 5px 0 0 0;">Quản lý thông tin và quyền hạn của nhân viên.</p>
+        </div>
+
+        <!-- Search & Filter Bar -->
+        <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 150px 150px; gap: 15px; align-items: flex-end;">
+                <!-- Search -->
+                <div style="position: relative;">
+                    <input v-model="searchQuery" 
+                        type="text" 
+                        placeholder="Tìm kiếm theo tên hoặc email..."
+                        @input="filterData"
+                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+                </div>
+
+                <!-- Position Filter -->
+                <select v-model="positionFilter" 
+                    @change="filterData"
+                    style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
+                    <option value="">Tất cả Chức Vụ</option>
+                    <option v-for="pos in positions" :key="pos.id" :value="pos.id">{{ pos.ten_chuc_vu }}</option>
+                </select>
+
+                <!-- Status Filter -->
+                <select v-model="statusFilter" 
+                    @change="filterData"
+                    style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
+                    <option value="">Tất cả Trạng Thái</option>
+                    <option value="1">Hoạt Động</option>
+                    <option value="0">Tạm Tắt</option>
+                </select>
+
+                <!-- Add Button -->
+                <button @click="openAddModal" class="btn-primary-gradient">
+                    <i class="fa-solid fa-user-plus me-2"></i>Thêm Mới
+                </button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tên Nhân Viên</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Email</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Số Điện Thoại</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Chức Vụ</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="filteredEmployees.length === 0">
+                            <td colspan="6" style="padding: 30px; text-align: center; color: #999;">
+                                <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i>
+                                <p style="margin: 10px 0 0 0;">Không có nhân viên nào</p>
+                            </td>
+                        </tr>
+                        <tr v-for="employee in filteredEmployees" :key="employee.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
+                            @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'"
+                            @mouseleave="(e) => e.currentTarget.style.background = ''">
+                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ employee.ho_va_ten }}</td>
+                            <td style="padding: 15px; color: #666;">{{ employee.email }}</td>
+                            <td style="padding: 15px; color: #666;">{{ employee.so_dien_thoai }}</td>
+                            <td style="padding: 15px; color: #667eea; font-weight: 600;">{{ getPositionName(employee.id_chuc_vu) }}</td>
+                            <td style="padding: 15px; text-align: center;">
+                                <span :style="{
+                                    display: 'inline-block',
+                                    padding: '6px 12px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.85rem',
+                                    fontWeight: '600',
+                                    background: employee.tinh_trang == 1 ? '#e0f2fe' : '#fef3c7',
+                                    color: employee.tinh_trang == 1 ? '#0369a1' : '#d97706'
+                                }">
+                                    {{ employee.tinh_trang == 1 ? 'Hoạt Động' : 'Tạm Tắt' }}
+                                </span>
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <button @click="viewEmployee(employee)" class="action-btn btn-view" title="Xem chi tiết">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                    <button @click="editEmployee(employee)" class="action-btn btn-edit" title="Chỉnh sửa">
+                                        <i class="fa-solid fa-pen-nib"></i>
+                                    </button>
+                                    <button @click="deleteEmployee(employee)" class="action-btn btn-delete" title="Xóa">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- View Modal -->
+        <div v-if="showViewModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Chi Tiết Nhân Viên</h2>
+                    <button @click="showViewModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
+                </div>
+                <div v-if="selectedEmployee" style="color: #333;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Tên Nhân Viên</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedEmployee.ho_va_ten }}</p>
+                        </div>
+                        <div>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Email</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedEmployee.email }}</p>
+                        </div>
+                        <div>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Số Điện Thoại</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedEmployee.so_dien_thoai }}</p>
+                        </div>
+                        <div>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Ngày Sinh</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ formatDate(selectedEmployee.ngay_sinh) }}</p>
+                        </div>
+                        <div>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Chức Vụ</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem; color: #667eea;">{{ getPositionName(selectedEmployee.id_chuc_vu) }}</p>
+                        </div>
+                        <div>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Trạng Thái</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem; color: #667eea;">{{ selectedEmployee.tinh_trang == 1 ? 'Hoạt Động' : 'Tạm Tắt' }}</p>
+                        </div>
                     </div>
-                    <div class="card-body table-responsive">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Tìm kiếm khách hàng...">
-                            <button class="btn btn-success input-group-text" style="width: 155px;">Tìm
-                                kiếm</button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover">
-                                <thead>
-                                    <tr class="bg-primary text-light text-nowrap">
-                                        <th class="text-center">#</th>
-                                        <th class="text-center">Họ Và Tên</th>
-                                        <th class="text-center">Email</th>
-                                        <th class="text-center">Số Điện Thoại</th>
-                                        <th class="text-center">Địa Chỉ</th>
-                                        <th class="text-center">Ngày Sinh</th>
-                                        <th class="text-center">Chức Vụ</th>
-                                        <th class="text-center">Tình Trạng</th>
-                                        <th class="text-center">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="text-nowrap" v-for="(item, index) in list_nhan_vien" :key="index">
-                                        <th class="align-middle text-center">{{ index + 1 }}</th>
-                                        <td class="align-middle">{{ item.ho_va_ten }}</td>
-                                        <td class="align-middle">{{ item.email }}</td>
-                                        <td class="align-middle text-center">{{ item.so_dien_thoai }}</td>
-                                        <td class="align-middle">{{ item.dia_chi }}</td>
-                                        <td class="align-middle text-center">{{ item.ngay_sinh }}</td>
-                                        <td class="align-middle">
-                                            <template v-for="(value, index_1) in list_chuc_vu" :key="index_1">
-                                                <span v-if="value.id == item.id_chuc_vu">{{ value.ten_chuc_vu }}</span>
-                                            </template>
-                                        </td>
-                                        <td class="align-middle text-center">
-                                            <button v-if="item.tinh_trang == 1" class="btn btn-info text-light w-100"
-                                                style="color: white;">
-                                                Hoạt Động
-                                            </button>
-                                            <button v-else class="btn btn-warning w-100" style="color: white;">
-                                                Tạm Tắt
-                                            </button>
-                                        </td>
-                                        <td class="align-middle text-center" style="width: 200px;">
-                                            <button class="btn btn-success me-2" data-bs-toggle="modal"
-                                                data-bs-target="#updateModal"
-                                                v-on:click="Object.assign(update_nhan_vien, item)">
-                                                Cập nhật
-                                            </button>
-                                            <button class="btn btn-danger" data-bs-toggle="modal"
-                                                data-bs-target="#deleteModal"
-                                                v-on:click="Object.assign(delete_nhan_vien, item)">
-                                                Xóa
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div style="margin-bottom: 20px;">
+                        <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Địa Chỉ</p>
+                        <p style="margin: 0; color: #555; line-height: 1.5;">{{ selectedEmployee.dia_chi || 'Chưa cập nhật' }}</p>
+                    </div>
+                    <button @click="showViewModal = false" style="width: 100%; padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div v-if="showEditModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Cập Nhật Thông Tin</h2>
+                    <button @click="showEditModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
+                </div>
+                <div v-if="editingEmployee" style="color: #333;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Tên Nhân Viên
+                        </label>
+                        <input v-model="editingEmployee.ho_va_ten" type="text"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Email
+                        </label>
+                        <input v-model="editingEmployee.email" type="email"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Số Điện Thoại
+                        </label>
+                        <input v-model="editingEmployee.so_dien_thoai" type="text"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Ngày Sinh
+                        </label>
+                        <input v-model="editingEmployee.ngay_sinh" type="date"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Địa Chỉ
+                        </label>
+                        <input v-model="editingEmployee.dia_chi" type="text"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Chức Vụ
+                        </label>
+                        <select v-model="editingEmployee.id_chuc_vu"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn chức vụ</option>
+                            <option v-for="pos in positions" :key="pos.id" :value="pos.id">{{ pos.ten_chuc_vu }}</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Trạng Thái
+                        </label>
+                        <select v-model="editingEmployee.tinh_trang"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="0">Tạm Tắt</option>
+                            <option value="1">Hoạt Động</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button @click="showEditModal = false"
+                            style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
+                        <button @click="saveEmployee"
+                            style="padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Lưu</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Thêm Mới -->
-        <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Thêm Nhân Viên Mới</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Add Modal -->
+        <div v-if="showAddModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Thêm Nhân Viên Mới</h2>
+                    <button @click="showAddModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
+                </div>
+                <div style="color: #333;">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Tên Nhân Viên
+                        </label>
+                        <input v-model="newEmployee.ho_va_ten" type="text"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Họ Và Tên</label>
-                                <input v-model="create_nhan_vien.ho_va_ten" type="text" class="form-control"
-                                    placeholder="Nhập họ và tên" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
-                                <input v-model="create_nhan_vien.email" type="email" class="form-control"
-                                    placeholder="Nhập email" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Mật Khẩu</label>
-                                <input v-model="create_nhan_vien.password" type="password" class="form-control"
-                                    placeholder="Nhập mật khẩu" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Xác Nhận Mật Khẩu</label>
-                                <input v-model="create_nhan_vien.re_password" type="password" class="form-control"
-                                    placeholder="Xác nhận mật khẩu" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Số Điện Thoại</label>
-                                <input v-model="create_nhan_vien.so_dien_thoai" type="text" class="form-control"
-                                    placeholder="Nhập số điện thoại" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Ngày Sinh</label>
-                                <input v-model="create_nhan_vien.ngay_sinh" type="date" class="form-control" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Địa Chỉ</label>
-                                <input v-model="create_nhan_vien.dia_chi" type="text" class="form-control"
-                                    placeholder="Nhập địa chỉ" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Tình Trạng</label>
-                                <select v-model="create_nhan_vien.tinh_trang" class="form-select">
-                                    <option value="1">Hoạt Động</option>
-                                    <option value="0">Tạm Tắt</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Chức Vụ</label>
-                                <select v-model="create_nhan_vien.id_chuc_vu" class="form-select">
-                                    <option v-for="(item, index) in list_chuc_vu" :key="index" :value="item.id">
-                                        {{ item.ten_chuc_vu }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Email
+                        </label>
+                        <input v-model="newEmployee.email" type="email"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Đóng
-                        </button>
-                        <button v-on:click="addNhanVien()" type="button" class="btn btn-primary"
-                            data-bs-dismiss="modal">
-                            Thêm mới
-                        </button>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Mật Khẩu
+                        </label>
+                        <input v-model="newEmployee.password" type="password"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Số Điện Thoại
+                        </label>
+                        <input v-model="newEmployee.so_dien_thoai" type="text"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Ngày Sinh
+                        </label>
+                        <input v-model="newEmployee.ngay_sinh" type="date"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Địa Chỉ
+                        </label>
+                        <input v-model="newEmployee.dia_chi" type="text"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Chức Vụ
+                        </label>
+                        <select v-model="newEmployee.id_chuc_vu"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn chức vụ</option>
+                            <option v-for="pos in positions" :key="pos.id" :value="pos.id">{{ pos.ten_chuc_vu }}</option>
+                        </select>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button @click="showAddModal = false"
+                            style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
+                        <button @click="addEmployee"
+                            style="padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Thêm</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Cập Nhật -->
-        <div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Cập Nhật Thông Tin Nhân Viên</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Delete Modal -->
+        <div v-if="showDeleteModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; color: #f56565; margin-bottom: 15px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Họ Và Tên</label>
-                                <input v-model="update_nhan_vien.ho_va_ten" type="text" class="form-control"
-                                    placeholder="Nhập họ và tên" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email</label>
-                                <input v-model="update_nhan_vien.email" type="email" class="form-control"
-                                    placeholder="Nhập email" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Số Điện Thoại</label>
-                                <input v-model="update_nhan_vien.so_dien_thoai" type="text" class="form-control"
-                                    placeholder="Nhập số điện thoại" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Ngày Sinh</label>
-                                <input v-model="update_nhan_vien.ngay_sinh" type="date" class="form-control" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Địa Chỉ</label>
-                                <input v-model="update_nhan_vien.dia_chi" type="text" class="form-control"
-                                    placeholder="Nhập địa chỉ" />
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Tình Trạng</label>
-                                <select v-model="update_nhan_vien.tinh_trang" class="form-select">
-                                    <option value="1">Hoạt Động</option>
-                                    <option value="0">Tạm Tắt</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label">Chức Vụ</label>
-                                <select v-model="update_nhan_vien.id_chuc_vu" class="form-select">
-                                    <option v-for="(item, index) in list_chuc_vu" :key="index" :value="item.id">
-                                        {{ item.ten_chuc_vu }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Đóng
-                        </button>
-                        <button @click="updateNhanVien()" type="button" class="btn btn-success" data-bs-dismiss="modal">
-                            Cập nhật
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Xóa -->
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Xóa Nhân Viên</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-danger" role="alert">
-                            Bạn có chắc chắn muốn xóa nhân viên
-                            <strong>{{ delete_nhan_vien.ho_va_ten }}</strong>?
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                            Đóng
-                        </button>
-                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="deleteNhanVien()">
-                            Xóa
-                        </button>
+                    <h2 style="margin: 0 0 10px 0; color: #333;">Xóa Nhân Viên?</h2>
+                    <p v-if="selectedEmployee" style="color: #666; margin: 0 0 20px 0;">
+                        Bạn chắc chắn muốn xóa nhân viên <strong>{{ selectedEmployee.ho_va_ten }}</strong>?<br><span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
+                    </p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <button @click="showDeleteModal = false"
+                            style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
+                        <button @click="confirmDelete"
+                            style="padding: 12px; background: #f56565; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Xóa</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</template> 
+</template>
+
 <script>
 import axios from 'axios';
-import apiUrl from '../../../utils/api'
-import { createToaster } from "@meforma/vue-toaster";
-const toaster = createToaster({ position: "top-right" });
+import apiUrl from '../../../utils/api';
+
 export default {
     data() {
         return {
-            list_nhan_vien: [],
-            list_chuc_vu: [],
-            create_nhan_vien: {
-                ho_va_ten: '',
-                email: '',
-                password: '',
-                re_password: '',
-                so_dien_thoai: '',
-                dia_chi: '',
-                ngay_sinh: '',
-                id_chuc_vu: '',
-                tinh_trang: 1,
-            },
-            update_nhan_vien: {
-                id: '',
-                ho_va_ten: '',
-                email: '',
-                password: '',
-                so_dien_thoai: '',
-                dia_chi: '',
-                ngay_sinh: '',
-                id_chuc_vu: '',
-                tinh_trang: '',
-            },
-            delete_nhan_vien: {
-                id: '',
-                ho_va_ten: '',          
-            },
-        }
-    },
-    methods: {
-        loadDataNhanVien() {
-            axios
-                .get(apiUrl('admin/nhan-vien/get-data'), {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
-                .then((res) => {
-                    if(res.data.status) {
-                        this.list_nhan_vien = res.data.data;
-                        this.$toast.success(res.data.message);
-                    } else {
-                        this.$toast.error(res.data.message);
-                    }
-                })
-                .catch((res) => {
-                    const list = Object.values(res.response.data.errors);
-                    list.forEach((v, i) => {
-                        this.$toast.error(v[0]);
-                    });
-                });
-        },
-        loadDataChucVu() {
-            axios
-                .get(apiUrl('admin/chuc-vu/get-data'), {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
-                .then((res) => {
-                    if(res.data.status) {
-                        this.list_chuc_vu = res.data.data;
-                        this.$toast.success(res.data.message);
-                    } else {
-                        this.$toast.error(res.data.message);
-                    }
-                })
-                .catch((res) => {
-                    const list = Object.values(res.response.data.errors);
-                    list.forEach((v, i) => {
-                        this.$toast.error(v[0]);
-                    });
-                });
-        },
-        addNhanVien() {
-            axios
-                .post(apiUrl('admin/nhan-vien/add-data'), this.create_nhan_vien, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.loadDataNhanVien();
-                        this.create_nhan_vien = {
-                        };
-                        this.$toast.success(res.data.message);
-                    } else {
-                        this.$toast.error(res.data.message);
-                    }
-                })
-                .catch((res) => {
-                    const list = Object.values(res.response.data.errors);
-                    list.forEach((v, i) => {
-                        this.$toast.error(v[0]);
-                    });
-                });
-        },
-        updateNhanVien() {
-            axios
-                .post(apiUrl('admin/nhan-vien/update'), this.update_nhan_vien, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.loadDataNhanVien();
-                        this.$toast.success(res.data.message);
-                    } else {
-                        this.$toast.error(res.data.message);
-                    }
-                })
-                .catch((res) => {
-                    const list = Object.values(res.response.data.errors);
-                    list.forEach((v, i) => {
-                        this.$toast.error(v[0]);
-                    });
-                });
-        },
-        deleteNhanVien() {
-            axios
-                .post(apiUrl('admin/nhan-vien/delete'), this.delete_nhan_vien, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.loadDataNhanVien();
-                        this.$toast.success(res.data.message);
-                    } else {
-                        this.$toast.error(res.data.message);
-                    }
-                })
-                .catch((res) => {
-                    const list = Object.values(res.response.data.errors);
-                    list.forEach((v, i) => {
-                        this.$toast.error(v[0]);
-                    });
-                });
+            employees: [],
+            positions: [],
+            filteredEmployees: [],
+            searchQuery: '',
+            positionFilter: '',
+            statusFilter: '',
+            showViewModal: false,
+            showEditModal: false,
+            showAddModal: false,
+            showDeleteModal: false,
+            selectedEmployee: null,
+            editingEmployee: null,
+            newEmployee: {},
+            isLoading: false,
         }
     },
     mounted() {
-        this.loadDataNhanVien();
-        this.loadDataChucVu();
+        this.loadPositions();
+        this.loadEmployees();
     },
+    methods: {
+        loadPositions() {
+            axios.get(apiUrl('admin/chuc-vu/get-data'), {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.positions = res.data.data;
+                }
+            })
+            .catch(err => {
+                console.error('Error loading positions:', err);
+            });
+        },
+        loadEmployees() {
+            this.isLoading = true;
+            axios.get(apiUrl('admin/nhan-vien/get-data'), {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.employees = res.data.data;
+                    this.filterData();
+                    this.$toast.success('Tải dữ liệu thành công!');
+                } else {
+                    this.$toast.error(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                this.$toast.error('Lỗi khi tải dữ liệu nhân viên');
+            })
+            .finally(() => {
+                this.isLoading = false;
+            });
+        },
+        filterData() {
+            this.filteredEmployees = this.employees.filter(employee => {
+                const matchSearch = !this.searchQuery || 
+                    (employee.ho_va_ten && employee.ho_va_ten.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+                    (employee.email && employee.email.toLowerCase().includes(this.searchQuery.toLowerCase()));
+                
+                const matchPosition = !this.positionFilter || employee.id_chuc_vu.toString() === this.positionFilter;
+                const matchStatus = !this.statusFilter || employee.tinh_trang.toString() === this.statusFilter;
+                
+                return matchSearch && matchPosition && matchStatus;
+            });
+        },
+        getPositionName(id) {
+            const pos = this.positions.find(p => p.id == id);
+            return pos ? pos.ten_chuc_vu : 'Chưa xác định';
+        },
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        },
+        viewEmployee(employee) {
+            this.selectedEmployee = employee;
+            this.showViewModal = true;
+        },
+        editEmployee(employee) {
+            this.selectedEmployee = employee;
+            this.editingEmployee = JSON.parse(JSON.stringify(employee));
+            this.showEditModal = true;
+        },
+        openAddModal() {
+            this.newEmployee = {};
+            this.showAddModal = true;
+        },
+        deleteEmployee(employee) {
+            this.selectedEmployee = employee;
+            this.showDeleteModal = true;
+        },
+        confirmDelete() {
+            if (!this.selectedEmployee) return;
+            
+            axios.post(apiUrl('admin/nhan-vien/destroy'), { id: this.selectedEmployee.id }, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.$toast.success(res.data.message);
+                    this.showDeleteModal = false;
+                    this.loadEmployees();
+                } else {
+                    this.$toast.error(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                this.$toast.error('Lỗi khi xóa nhân viên');
+            });
+        },
+        saveEmployee() {
+            if (!this.editingEmployee) return;
+            
+            axios.post(apiUrl('admin/nhan-vien/update'), this.editingEmployee, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.$toast.success(res.data.message);
+                    this.showEditModal = false;
+                    this.loadEmployees();
+                } else {
+                    this.$toast.error(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                this.$toast.error('Lỗi khi cập nhật nhân viên');
+            });
+        },
+        addEmployee() {
+            if (!this.newEmployee.ho_va_ten || !this.newEmployee.email) {
+                this.$toast.error('Vui lòng điền đầy đủ thông tin');
+                return;
+            }
+
+            axios.post(apiUrl('admin/nhan-vien/store'), this.newEmployee, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.$toast.success(res.data.message);
+                    this.showAddModal = false;
+                    this.loadEmployees();
+                } else {
+                    this.$toast.error(res.data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                this.$toast.error('Lỗi khi thêm nhân viên');
+            });
+        }
+    }
 }
 </script>
-<style></style>
+
+<style scoped>
+.btn-primary-gradient {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+.btn-primary-gradient:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.action-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-view {
+    background: #e3f2fd;
+    color: #667eea;
+}
+.btn-view:hover {
+    background: #667eea;
+    color: white;
+}
+
+.btn-edit {
+    background: #f0f4f8;
+    color: #764ba2;
+}
+.btn-edit:hover {
+    background: #764ba2;
+    color: white;
+}
+
+.btn-delete {
+    background: #fee;
+    color: #f56565;
+}
+.btn-delete:hover {
+    background: #f56565;
+    color: white;
+}
+</style>

@@ -119,7 +119,7 @@ export default {
                     if (res.data.status) {
                         localStorage.setItem('key_admin', res.data.token);
                         this.$toast.success(res.data.message);
-                        this.$router.push('/admin/quan-ly-tour');
+                        this.$router.push('/admin/dashboard');
                     } else {
                         this.$toast.error(res.data.message);
                     }

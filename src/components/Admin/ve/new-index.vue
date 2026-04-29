@@ -2,8 +2,8 @@
     <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
         <!-- Header -->
         <div style="margin-bottom: 30px;">
-            <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">👥 Quản Lý Tài Khoản Khách Hàng</h1>
-            <p style="color: #666; margin: 5px 0 0 0;">Quản lý thông tin và trạng thái tài khoản khách hàng.</p>
+            <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">🎫 Quản Lý Vé</h1>
+            <p style="color: #666; margin: 5px 0 0 0;">Quản lý danh sách vé và thông tin đặt chỗ khách hàng.</p>
         </div>
 
         <!-- Search & Filter Bar -->
@@ -13,33 +13,33 @@
                 <div style="position: relative;">
                     <input v-model="searchQuery" 
                         type="text" 
-                        placeholder="Tìm kiếm theo tên hoặc email..."
+                        placeholder="Tìm kiếm theo mã vé hoặc khách hàng..."
                         @input="filterData"
                         style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                 </div>
 
+                <!-- Tour Filter -->
+                <select v-model="tourFilter" 
+                    @change="filterData"
+                    style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
+                    <option value="">Tất cả Tour</option>
+                    <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }}</option>
+                </select>
+
                 <!-- Status Filter -->
                 <select v-model="statusFilter" 
                     @change="filterData"
                     style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
-                    <option value="">Tất cả Trạng thái</option>
-                    <option value="1">Đã Kích Hoạt</option>
-                    <option value="0">Chưa Kích Hoạt</option>
-                </select>
-
-                <!-- Active Filter -->
-                <select v-model="blockFilter" 
-                    @change="filterData"
-                    style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
-                    <option value="">Tất cả</option>
-                    <option value="0">Đang Hoạt Động</option>
-                    <option value="1">Bị Khóa</option>
+                    <option value="">Tất cả Trạng Thái</option>
+                    <option value="0">Đã Hủy</option>
+                    <option value="1">Chưa Thanh Toán</option>
+                    <option value="2">Đã Thanh Toán</option>
                 </select>
 
                 <!-- Add Button -->
                 <button @click="openAddModal" class="btn-primary-gradient">
-                    <i class="fa-solid fa-user-plus me-2"></i>Thêm Mới
+                    <i class="fa-solid fa-plus me-2"></i>Thêm Vé
                 </button>
             </div>
         </div>
@@ -50,27 +50,29 @@
                 <table style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
-                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tên Khách Hàng</th>
-                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Email</th>
-                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Số Điện Thoại</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Kích Hoạt</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Mã Vé</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Khách Hàng</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tour</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Số Chỗ</th>
+                            <th style="padding: 15px; text-align: right; font-weight: 600; color: #333; font-size: 0.9rem;">Giá Vé</th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="filteredCustomers.length === 0">
+                        <tr v-if="filteredTickets.length === 0">
                             <td colspan="6" style="padding: 30px; text-align: center; color: #999;">
                                 <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i>
-                                <p style="margin: 10px 0 0 0;">Không có khách hàng nào</p>
+                                <p style="margin: 10px 0 0 0;">Không có vé nào</p>
                             </td>
                         </tr>
-                        <tr v-for="customer in filteredCustomers" :key="customer.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
+                        <tr v-for="ticket in filteredTickets" :key="ticket.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
                             @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'"
                             @mouseleave="(e) => e.currentTarget.style.background = ''">
-                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ customer.ho_va_ten }}</td>
-                            <td style="padding: 15px; color: #666;">{{ customer.email }}</td>
-                            <td style="padding: 15px; color: #666;">{{ customer.so_dien_thoai }}</td>
+                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ ticket.ma_ve }}</td>
+                            <td style="padding: 15px; color: #666;">{{ ticket.ho_va_ten }}</td>
+                            <td style="padding: 15px; color: #666;">{{ getTourName(ticket.id_tour) }}</td>
+                            <td style="padding: 15px; text-align: right; color: #667eea; font-weight: 600;">{{ formatVND(ticket.gia_ve) }}</td>
                             <td style="padding: 15px; text-align: center;">
                                 <span :style="{
                                     display: 'inline-block',
@@ -78,34 +80,21 @@
                                     borderRadius: '6px',
                                     fontSize: '0.85rem',
                                     fontWeight: '600',
-                                    background: customer.is_active == 1 ? '#dcfce7' : '#fee2e2',
-                                    color: customer.is_active == 1 ? '#16a34a' : '#dc2626'
+                                    background: getStatusBg(ticket.tinh_trang),
+                                    color: getStatusColor(ticket.tinh_trang)
                                 }">
-                                    {{ customer.is_active == 1 ? 'Đã Kích Hoạt' : 'Chưa Kích Hoạt' }}
-                                </span>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <span :style="{
-                                    display: 'inline-block',
-                                    padding: '6px 12px',
-                                    borderRadius: '6px',
-                                    fontSize: '0.85rem',
-                                    fontWeight: '600',
-                                    background: customer.is_block == 0 ? '#e0f2fe' : '#fee2e2',
-                                    color: customer.is_block == 0 ? '#0369a1' : '#dc2626'
-                                }">
-                                    {{ customer.is_block == 0 ? 'Đang Hoạt Động' : 'Bị Khóa' }}
+                                    {{ getStatusText(ticket.tinh_trang) }}
                                 </span>
                             </td>
                             <td style="padding: 15px; text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center;">
-                                    <button @click="viewCustomer(customer)" class="action-btn btn-view" title="Xem chi tiết">
+                                    <button @click="viewTicket(ticket)" class="action-btn btn-view" title="Xem chi tiết">
                                         <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button @click="editCustomer(customer)" class="action-btn btn-edit" title="Chỉnh sửa">
+                                    <button @click="editTicket(ticket)" class="action-btn btn-edit" title="Chỉnh sửa">
                                         <i class="fa-solid fa-pen-nib"></i>
                                     </button>
-                                    <button @click="deleteCustomer(customer)" class="action-btn btn-delete" title="Xóa">
+                                    <button @click="deleteTicket(ticket)" class="action-btn btn-delete" title="Xóa">
                                         <i class="fa-solid fa-trash"></i>
                                     </button>
                                 </div>
@@ -120,39 +109,35 @@
         <div v-if="showViewModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Chi Tiết Khách Hàng</h2>
+                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Chi Tiết Vé</h2>
                     <button @click="showViewModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
                 </div>
-                <div v-if="selectedCustomer" style="color: #333;">
+                <div v-if="selectedTicket" style="color: #333;">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                         <div>
-                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Tên Khách Hàng</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedCustomer.ho_va_ten }}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Mã Vé</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedTicket.ma_ve }}</p>
                         </div>
                         <div>
-                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Email</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedCustomer.email }}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Khách Hàng</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedTicket.ho_va_ten }}</p>
                         </div>
                         <div>
-                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Số Điện Thoại</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedCustomer.so_dien_thoai }}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Tour</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ getTourName(selectedTicket.id_tour) }}</p>
                         </div>
                         <div>
-                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Ngày Sinh</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ formatDate(selectedCustomer.ngay_sinh) }}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Giá Vé</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem; color: #667eea;">{{ formatVND(selectedTicket.gia_ve) }}</p>
                         </div>
                         <div>
-                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Trạng Thái Kích Hoạt</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem; color: #667eea;">{{ selectedCustomer.is_active == 1 ? 'Đã Kích Hoạt' : 'Chưa Kích Hoạt' }}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Trạng Thái</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem; color: #667eea;">{{ getStatusText(selectedTicket.tinh_trang) }}</p>
                         </div>
                         <div>
-                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Trạng Thái Tài Khoản</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem; color: #667eea;">{{ selectedCustomer.is_block == 0 ? 'Đang Hoạt Động' : 'Bị Khóa' }}</p>
+                            <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Ngày Tạo</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ formatDate(selectedTicket.created_at) }}</p>
                         </div>
-                    </div>
-                    <div style="margin-bottom: 20px;">
-                        <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Địa Chỉ</p>
-                        <p style="margin: 0; color: #555; line-height: 1.5;">{{ selectedCustomer.dia_chi || 'Chưa cập nhật' }}</p>
                     </div>
                     <button @click="showViewModal = false" style="width: 100%; padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Đóng</button>
                 </div>
@@ -163,78 +148,53 @@
         <div v-if="showEditModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Cập Nhật Thông Tin</h2>
+                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Cập Nhật Vé</h2>
                     <button @click="showEditModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
                 </div>
-                <div v-if="editingCustomer" style="color: #333;">
+                <div v-if="editingTicket" style="color: #333;">
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Tên Khách Hàng
+                            Mã Vé
                         </label>
-                        <input v-model="editingCustomer.ho_va_ten" type="text"
+                        <input v-model="editingTicket.ma_ve" type="text"
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Email
+                            Tour
                         </label>
-                        <input v-model="editingCustomer.email" type="email"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <select v-model="editingTicket.id_tour"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn tour</option>
+                            <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }}</option>
+                        </select>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Số Điện Thoại
+                            Giá Vé
                         </label>
-                        <input v-model="editingCustomer.so_dien_thoai" type="text"
+                        <input v-model="editingTicket.gia_ve" type="number"
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
 
-                    <div style="margin-bottom: 15px;">
+                    <div style="margin-bottom: 20px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Ngày Sinh
+                            Trạng Thái
                         </label>
-                        <input v-model="editingCustomer.ngay_sinh" type="date"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
-                    </div>
-
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Địa Chỉ
-                        </label>
-                        <input v-model="editingCustomer.dia_chi" type="text"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                        <div>
-                            <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                                Kích Hoạt
-                            </label>
-                            <select v-model="editingCustomer.is_active"
-                                style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
-                                <option value="0">Chưa Kích Hoạt</option>
-                                <option value="1">Đã Kích Hoạt</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                                Trạng Thái
-                            </label>
-                            <select v-model="editingCustomer.is_block"
-                                style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
-                                <option value="0">Đang Hoạt Động</option>
-                                <option value="1">Bị Khóa</option>
-                            </select>
-                        </div>
+                        <select v-model="editingTicket.tinh_trang"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="0">Đã Hủy</option>
+                            <option value="1">Chưa Thanh Toán</option>
+                            <option value="2">Đã Thanh Toán</option>
+                        </select>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <button @click="showEditModal = false"
                             style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
-                        <button @click="saveCustomer"
+                        <button @click="saveTicket"
                             style="padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Lưu</button>
                     </div>
                 </div>
@@ -245,62 +205,64 @@
         <div v-if="showAddModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Thêm Khách Hàng Mới</h2>
+                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Thêm Vé Mới</h2>
                     <button @click="showAddModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
                 </div>
                 <div style="color: #333;">
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Tên Khách Hàng
+                            Mã Vé
                         </label>
-                        <input v-model="newCustomer.ho_va_ten" type="text"
+                        <input v-model="newTicket.ma_ve" type="text"
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Email
+                            Khách Hàng
                         </label>
-                        <input v-model="newCustomer.email" type="email"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <select v-model="newTicket.id_khach_hang"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn khách hàng</option>
+                            <option v-for="customer in customers" :key="customer.id" :value="customer.id">{{ customer.ho_va_ten }}</option>
+                        </select>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Mật Khẩu
+                            Tour
                         </label>
-                        <input v-model="newCustomer.password" type="password"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <select v-model="newTicket.id_tour"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn tour</option>
+                            <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }}</option>
+                        </select>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Số Điện Thoại
+                            Giá Vé
                         </label>
-                        <input v-model="newCustomer.so_dien_thoai" type="text"
+                        <input v-model="newTicket.gia_ve" type="number"
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
 
-                    <div style="margin-bottom: 15px;">
+                    <div style="margin-bottom: 20px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Ngày Sinh
+                            Trạng Thái
                         </label>
-                        <input v-model="newCustomer.ngay_sinh" type="date"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
-                    </div>
-
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Địa Chỉ
-                        </label>
-                        <input v-model="newCustomer.dia_chi" type="text"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <select v-model="newTicket.tinh_trang"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="0">Đã Hủy</option>
+                            <option value="1">Chưa Thanh Toán</option>
+                            <option value="2">Đã Thanh Toán</option>
+                        </select>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <button @click="showAddModal = false"
                             style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
-                        <button @click="addCustomer"
+                        <button @click="addTicket"
                             style="padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Thêm</button>
                     </div>
                 </div>
@@ -314,9 +276,9 @@
                     <div style="font-size: 3rem; color: #f56565; margin-bottom: 15px;">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                     </div>
-                    <h2 style="margin: 0 0 10px 0; color: #333;">Xóa Khách Hàng?</h2>
-                    <p v-if="selectedCustomer" style="color: #666; margin: 0 0 20px 0;">
-                        Bạn chắc chắn muốn xóa khách hàng <strong>{{ selectedCustomer.ho_va_ten }}</strong>?<br><span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
+                    <h2 style="margin: 0 0 10px 0; color: #333;">Xóa Vé?</h2>
+                    <p v-if="selectedTicket" style="color: #666; margin: 0 0 20px 0;">
+                        Bạn chắc chắn muốn xóa vé <strong>{{ selectedTicket.ma_ve }}</strong>?<br><span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
                     </p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <button @click="showDeleteModal = false"
@@ -337,27 +299,45 @@ import apiUrl from '../../../utils/api';
 export default {
     data() {
         return {
+            tickets: [],
+            tours: [],
             customers: [],
-            filteredCustomers: [],
+            filteredTickets: [],
             searchQuery: '',
+            tourFilter: '',
             statusFilter: '',
-            blockFilter: '',
             showViewModal: false,
             showEditModal: false,
             showAddModal: false,
             showDeleteModal: false,
-            selectedCustomer: null,
-            editingCustomer: null,
-            newCustomer: {},
+            selectedTicket: null,
+            editingTicket: null,
+            newTicket: { tinh_trang: 1 },
             isLoading: false,
         }
     },
     mounted() {
+        this.loadTours();
         this.loadCustomers();
+        this.loadTickets();
     },
     methods: {
+        loadTours() {
+            axios.get(apiUrl('admin/tour/get-data'), {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.tours = res.data.data;
+                }
+            })
+            .catch(err => {
+                console.error('Error loading tours:', err);
+            });
+        },
         loadCustomers() {
-            this.isLoading = true;
             axios.get(apiUrl('admin/khach-hang/get-data'), {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
@@ -366,6 +346,22 @@ export default {
             .then(res => {
                 if (res.data.status) {
                     this.customers = res.data.data;
+                }
+            })
+            .catch(err => {
+                console.error('Error loading customers:', err);
+            });
+        },
+        loadTickets() {
+            this.isLoading = true;
+            axios.get(apiUrl('admin/ve/get-data'), {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.tickets = res.data.data;
                     this.filterData();
                     this.$toast.success('Tải dữ liệu thành công!');
                 } else {
@@ -374,23 +370,27 @@ export default {
             })
             .catch(err => {
                 console.error('Error:', err);
-                this.$toast.error('Lỗi khi tải dữ liệu khách hàng');
+                this.$toast.error('Lỗi khi tải dữ liệu vé');
             })
             .finally(() => {
                 this.isLoading = false;
             });
         },
         filterData() {
-            this.filteredCustomers = this.customers.filter(customer => {
+            this.filteredTickets = this.tickets.filter(ticket => {
                 const matchSearch = !this.searchQuery || 
-                    (customer.ho_va_ten && customer.ho_va_ten.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
-                    (customer.email && customer.email.toLowerCase().includes(this.searchQuery.toLowerCase()));
+                    (ticket.ma_ve && ticket.ma_ve.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
+                    (ticket.ho_va_ten && ticket.ho_va_ten.toLowerCase().includes(this.searchQuery.toLowerCase()));
                 
-                const matchStatus = !this.statusFilter || customer.is_active.toString() === this.statusFilter;
-                const matchBlock = !this.blockFilter || customer.is_block.toString() === this.blockFilter;
+                const matchTour = !this.tourFilter || ticket.id_tour.toString() === this.tourFilter;
+                const matchStatus = !this.statusFilter || ticket.tinh_trang.toString() === this.statusFilter;
                 
-                return matchSearch && matchStatus && matchBlock;
+                return matchSearch && matchTour && matchStatus;
             });
+        },
+        getTourName(id) {
+            const tour = this.tours.find(t => t.id == id);
+            return tour ? tour.ten_tour : 'Chưa xác định';
         },
         formatDate(dateString) {
             if (!dateString) return '';
@@ -400,27 +400,57 @@ export default {
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         },
-        viewCustomer(customer) {
-            this.selectedCustomer = customer;
+        formatVND(number) {
+            return new Intl.NumberFormat("vi-VN", { 
+                style: "currency", 
+                currency: "VND" 
+            }).format(number || 0);
+        },
+        getStatusText(status) {
+            const statuses = {
+                '0': 'Đã Hủy',
+                '1': 'Chưa Thanh Toán',
+                '2': 'Đã Thanh Toán',
+            };
+            return statuses[status?.toString()] || 'Không xác định';
+        },
+        getStatusBg(status) {
+            const bgMap = {
+                '0': '#fee2e2',
+                '1': '#fef3c7',
+                '2': '#dcfce7',
+            };
+            return bgMap[status?.toString()] || '#f3f4f6';
+        },
+        getStatusColor(status) {
+            const colorMap = {
+                '0': '#dc2626',
+                '1': '#d97706',
+                '2': '#16a34a',
+            };
+            return colorMap[status?.toString()] || '#666';
+        },
+        viewTicket(ticket) {
+            this.selectedTicket = ticket;
             this.showViewModal = true;
         },
-        editCustomer(customer) {
-            this.selectedCustomer = customer;
-            this.editingCustomer = JSON.parse(JSON.stringify(customer));
+        editTicket(ticket) {
+            this.selectedTicket = ticket;
+            this.editingTicket = JSON.parse(JSON.stringify(ticket));
             this.showEditModal = true;
         },
         openAddModal() {
-            this.newCustomer = {};
+            this.newTicket = { tinh_trang: 1 };
             this.showAddModal = true;
         },
-        deleteCustomer(customer) {
-            this.selectedCustomer = customer;
+        deleteTicket(ticket) {
+            this.selectedTicket = ticket;
             this.showDeleteModal = true;
         },
         confirmDelete() {
-            if (!this.selectedCustomer) return;
+            if (!this.selectedTicket) return;
             
-            axios.post(apiUrl('admin/khach-hang/destroy'), { id: this.selectedCustomer.id }, {
+            axios.post(apiUrl('admin/ve/destroy'), { id: this.selectedTicket.id }, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
                 }
@@ -429,20 +459,20 @@ export default {
                 if (res.data.status) {
                     this.$toast.success(res.data.message);
                     this.showDeleteModal = false;
-                    this.loadCustomers();
+                    this.loadTickets();
                 } else {
                     this.$toast.error(res.data.message);
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                this.$toast.error('Lỗi khi xóa khách hàng');
+                this.$toast.error('Lỗi khi xóa vé');
             });
         },
-        saveCustomer() {
-            if (!this.editingCustomer) return;
+        saveTicket() {
+            if (!this.editingTicket) return;
             
-            axios.post(apiUrl('admin/khach-hang/update'), this.editingCustomer, {
+            axios.post(apiUrl('admin/ve/update'), this.editingTicket, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
                 }
@@ -451,23 +481,23 @@ export default {
                 if (res.data.status) {
                     this.$toast.success(res.data.message);
                     this.showEditModal = false;
-                    this.loadCustomers();
+                    this.loadTickets();
                 } else {
                     this.$toast.error(res.data.message);
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                this.$toast.error('Lỗi khi cập nhật khách hàng');
+                this.$toast.error('Lỗi khi cập nhật vé');
             });
         },
-        addCustomer() {
-            if (!this.newCustomer.ho_va_ten || !this.newCustomer.email) {
+        addTicket() {
+            if (!this.newTicket.ma_ve || !this.newTicket.id_tour) {
                 this.$toast.error('Vui lòng điền đầy đủ thông tin');
                 return;
             }
 
-            axios.post(apiUrl('admin/khach-hang/store'), this.newCustomer, {
+            axios.post(apiUrl('admin/ve/store'), this.newTicket, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
                 }
@@ -476,14 +506,14 @@ export default {
                 if (res.data.status) {
                     this.$toast.success(res.data.message);
                     this.showAddModal = false;
-                    this.loadCustomers();
+                    this.loadTickets();
                 } else {
                     this.$toast.error(res.data.message);
                 }
             })
             .catch(err => {
                 console.error('Error:', err);
-                this.$toast.error('Lỗi khi thêm khách hàng');
+                this.$toast.error('Lỗi khi thêm vé');
             });
         }
     }

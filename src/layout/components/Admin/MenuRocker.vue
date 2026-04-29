@@ -152,25 +152,51 @@
 				</router-link>
 				<!-- Thông kê -->
 				<li class="nav-item dropdown">
-					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret show"
-						data-bs-toggle="dropdown" aria-expanded="true">
+					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+						data-bs-toggle="dropdown" aria-expanded="false">
 						<div class="parent-icon"><i class="fa-solid fa-chart-line"></i>
 						</div>
 						<div class="menu-title">Thống kê</div>
 					</a>
-					<ul class="dropdown-menu show" data-bs-popper="static">
-						<router-link to="/admin/thong-ke">
+					<ul class="dropdown-menu">
+						<router-link to="/admin/thong-ke/doanh-thu">
 							<li>
-								<a class="dropdown-item" href="/admin/thong-ke"><i
-										class="bx bx-right-arrow-alt"></i>Tổng Quan Thống Kê</a>
+								<a class="dropdown-item" href="/admin/thong-ke/doanh-thu">
+									<i class="bx bx-right-arrow-alt"></i>Doanh Thu
+								</a>
 							</li>
 						</router-link>
-						 
-						 
-						
-						
+						<router-link to="/admin/thong-ke/khach-hang-moi">
+							<li>
+								<a class="dropdown-item" href="/admin/thong-ke/khach-hang-moi">
+									<i class="bx bx-right-arrow-alt"></i>Khách Hàng Mới
+								</a>
+							</li>
+						</router-link>
+						<router-link to="/admin/thong-ke/ve-ban-ra">
+							<li>
+								<a class="dropdown-item" href="/admin/thong-ke/ve-ban-ra">
+									<i class="bx bx-right-arrow-alt"></i>vé Bán Ra
+								</a>
+							</li>
+						</router-link>
+						<router-link to="/admin/thong-ke/chi-tieu-khach-hang">
+							<li>
+								<a class="dropdown-item" href="/admin/thong-ke/chi-tieu-khach-hang">
+									<i class="bx bx-right-arrow-alt"></i>Chi Tiêu Khách Hàng
+								</a>
+							</li>
+						</router-link>
+						<router-link to="/admin/thong-ke/tour">
+							<li>
+								<a class="dropdown-item" href="/admin/thong-ke/tour">
+									<i class="bx bx-right-arrow-alt"></i>Tour
+								</a>
+							</li>
+						</router-link>
 					</ul>
 				</li>
+
 				<!-- Thông tin cá nhân -->
 				
 			</ul>

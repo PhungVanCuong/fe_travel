@@ -113,6 +113,11 @@ const routes = [
         component: () => import("../components/Admin/QuanLyPhuongTien/index.vue"),
         beforeEnter: checkAdmin,
     },
+     {
+        path: "/admin/Dashboard",
+        component: () => import("../components/Admin/Dashboard/index.vue"),
+        beforeEnter: checkAdmin,
+    },
     {
         path: "/admin/quan-ly-tour",
         component: () => import("../components/Admin/QuanLyTour/index.vue"),
@@ -130,17 +135,17 @@ const routes = [
     },
     {
         path: "/admin/khach-hang",
-        component: () => import("../components/Admin/KhachHang/index.vue"),
+        component: () => import("../components/Admin/khachhang/index.vue"),
        beforeEnter: checkAdmin,
     },
      {
         path: "/admin/nhan-vien",
-        component: () => import("../components/Admin/NhanVien/index.vue"),
+        component: () => import("../components/Admin/nhanvien/index.vue"),
        beforeEnter: checkAdmin,
     },
      {
         path: "/admin/ve",
-        component: () => import("../components/Admin/Ve/index.vue"),
+        component: () => import("../components/Admin/Ve/new-index.vue"),
        beforeEnter: checkAdmin,
     },
     {
@@ -148,10 +153,36 @@ const routes = [
         component: () => import("../components/Admin/HoaDon/index.vue"),
        beforeEnter: checkAdmin,
     },
+    
     {
-        path: "/admin/thong-ke",
-        component: () => import("../components/Admin/ThongKe/index.vue"),
-       beforeEnter: checkAdmin,
+        path: "/admin/thong-ke/doanh-thu",
+        component: () => import("../components/Admin/ThongKe/ThongKeDanhThu/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "thong-ke-doanh-thu",
+    },
+    {
+        path: "/admin/thong-ke/khach-hang-moi",
+        component: () => import("../components/Admin/ThongKe/ThongKeKhachHangMoi/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "thong-ke-khach-hang-moi",
+    },
+    {
+        path: "/admin/thong-ke/ve-ban-ra",
+        component: () => import("../components/Admin/ThongKe/ThongKeVeBanRa/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "thong-ke-ve-ban-ra",
+    },
+    {
+        path: "/admin/thong-ke/chi-tieu-khach-hang",
+        component: () => import("../components/Admin/ThongKe/ThongKeChiTieuKhachHang/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "thong-ke-chi-tieu-khach-hang",
+    },
+    {
+        path: "/admin/thong-ke/tour",
+        component: () => import("../components/Admin/ThongKe/ThongKeTour/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "thong-ke-tour",
     },
     // {
     //     path: "/admin/phong-chieu",
