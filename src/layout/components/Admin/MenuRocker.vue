@@ -40,18 +40,45 @@
 					</ul>
 				</li>
 
-			 
-
-				<!-- Quản lý phòng chiếu -->
-				 
-
-				<!-- Quản lý dịch vụ & vé -->
 				<li class="nav-item dropdown">
 					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
 						data-bs-toggle="dropdown" aria-expanded="false">
 						<div class="parent-icon"><i class="fa-brands fa-servicestack"></i>
 						</div>
-						<div class="menu-title">Quản lý Dịch vụ & Vé</div>
+						<div class="menu-title">Quản lý tour & lịch trình</div>
+					</a>
+					<ul class="dropdown-menu">
+						<router-link to="/admin/quan-ly-tour">
+							<li>
+								<a class="dropdown-item" href="/admin/quan-ly-tour">
+									<i class="bx bx-right-arrow-alt"></i>Tour
+								</a>
+							</li>
+						</router-link>
+						<router-link to="/admin/lich-trinh">
+							<li>
+								<a class="dropdown-item" href="/admin/lich-trinh">
+									<i class="bx bx-right-arrow-alt"></i>Lịch Trình
+								</a>
+							</li>
+						</router-link>
+						<router-link to="/admin/quoc-gia">
+							<li>	
+								<a class="dropdown-item" href="/admin/quoc-gia">
+									<i class="bx bx-right-arrow-alt"></i>Quốc Gia
+								</a>
+							</li>
+						</router-link>
+					</ul>
+				</li>
+
+				<!-- Quản lý vé & Hoá đơn -->
+				<li class="nav-item dropdown">
+					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
+						data-bs-toggle="dropdown" aria-expanded="false">
+						<div class="parent-icon"><i class="fa-brands fa-servicestack"></i>
+						</div>
+						<div class="menu-title">Quản lý Vé & Hoá đơn</div>
 					</a>
 					<ul class="dropdown-menu">
 						<router-link to="/admin/ve">
@@ -61,10 +88,10 @@
 								</a>
 							</li>
 						</router-link>
-						<router-link to="/admin/dich-vu">
+						<router-link to="/admin/hoa-don">
 							<li>
-								<a class="dropdown-item" href="/admin/dich-vu">
-									<i class="bx bx-right-arrow-alt"></i>Dịch Vụ
+								<a class="dropdown-item" href="/admin/hoa-don">
+									<i class="bx bx-right-arrow-alt"></i>Hoá đơn
 								</a>
 							</li>
 						</router-link>
@@ -108,48 +135,15 @@
 								</a>
 							</li>
 						</router-link>
-						<router-link to="/admin/binh-luan">
+						<router-link to="/admin/danh-gia">
 							<li>
-								<a class="dropdown-item" href="/admin/binh-luan">
-									<i class="bx bx-right-arrow-alt"></i>Bình Luận
+								<a class="dropdown-item" href="/admin/danh-gia">
+									<i class="bx bx-right-arrow-alt"></i>Đánh Giá
 								</a>
 							</li>
 						</router-link>
 					</ul>
 				</li>
-				<!-- Voucher -->
-				<router-link to="/admin/voucher">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/voucher">
-							<div class="parent-icon">
-								<i class="fa-solid fa-ticket"></i>
-							</div>
-							<div class="menu-title">Voucher</div>
-						</a>
-					</li>
-				</router-link>
-				<!-- Hóa Đơn -->
-				<router-link to="/admin/hoa-don">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/hoa-don">
-							<div class="parent-icon">
-								<i class="fa-solid fa-receipt"></i>
-							</div>
-							<div class="menu-title">Hóa Đơn</div>
-						</a>
-					</li>
-				</router-link>
-				<!-- Đơn Hàng -->
-				<router-link to="/admin/don-hang">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/don-hang">
-							<div class="parent-icon">
-								<i class="fa-solid fa-cart-shopping"></i>
-							</div>
-							<div class="menu-title">Đơn Hàng</div>
-						</a>
-					</li>
-				</router-link>
 				<!-- Thông kê -->
 				<li class="nav-item dropdown">
 					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
