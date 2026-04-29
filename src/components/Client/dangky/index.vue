@@ -149,7 +149,11 @@ export default {
         .then((res) => {
           if (res.data.status) {
             this.$toast.success(res.data.message);
-            this.$router.push("/client/dang-nhap");
+            // ĐẨY SANG TRANG XÁC NHẬN KÈM THEO EMAIL
+            this.$router.push({
+                path: '/client/xac-nhan-dang-ky',
+                query: { email: this.user.email }
+            });
           } else {
             this.$toast.error(res.data.message);
           }
