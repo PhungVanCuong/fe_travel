@@ -136,7 +136,7 @@
                                         </div>
                                         
                                         <!-- Xác nhận mật khẩu mới -->
-                                        <div class="mb-5">
+                                        <div class="mb-4">
                                             <label class="form-label fw-bold text-secondary small text-uppercase letter-spacing-1">Xác nhận mật khẩu mới</label>
                                             <div class="input-group premium-input-group">
                                                 <span class="input-group-text"><i class="fa-solid fa-circle-check"></i></span>
@@ -145,6 +145,12 @@
                                                     <i :class="showPassword.confirm_password ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                                                 </button>
                                             </div>
+                                        </div>
+
+                                        <div class="text-end mb-4">
+                                            <router-link to="/huong-dan-vien/quen-mat-khau" class="text-decoration-none small text-primary fw-semibold">
+                                                Quên mật khẩu?
+                                            </router-link>
                                         </div>
                                         
                                         <div class="text-center">
