@@ -1,339 +1,254 @@
 <template>
-    <div class="card border-top border-0 border-4 border-info">
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-lg-3 col-md-6">
-                    <label for="">Từ ngày (Khởi hành)</label>
-                    <input type="date" class="form-control mt-2 mb-2 w-100" v-model="filter.tu_ngay">
+    <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">Quản lý Tour Du Lịch</h1>
+            <p style="color: #666; margin: 5px 0 0 0;">Quản lý, theo dõi danh sách và thông tin chi tiết các tour du lịch.</p>
+        </div>
+
+        <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div style="display: grid; grid-template-columns: 1fr 1fr 2fr 120px 150px; gap: 15px; align-items: flex-end;">
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Từ ngày</label>
+                    <input type="date" v-model="filter.tu_ngay" 
+                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
                 </div>
-                <div class="col-lg-3 col-md-6">
-                    <label for="">Đến ngày (Khởi hành)</label>
-                    <input type="date" class="form-control mt-2 mb-2" v-model="filter.den_ngay">
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Đến ngày</label>
+                    <input type="date" v-model="filter.den_ngay" 
+                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
                 </div>
-                <div class="col-lg-4 col-md-12">
-                    <label for="">Từ khóa tìm kiếm</label>
-                    <input type="text" class="form-control mt-2 mb-2" placeholder="Nhập tên tour..." v-model="filter.keyword">
+                <div style="position: relative;">
+                    <label style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Tìm kiếm theo tên</label>
+                    <input type="text" v-model="filter.keyword" placeholder="Nhập tên tour..."
+                        @input="applyFilters"
+                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
+                    <i class="fa-solid fa-search" style="position: absolute; right: 12px; bottom: 15px; color: #999;"></i>
                 </div>
-                <div class="col-lg-1 col-md-6">
-                    <label for="">&nbsp;</label>
-                    <button class="btn btn-primary w-100" @click="applyFilters">Lọc</button>
-                </div>
-                <div class="col-lg-1 col-md-6">
-                    <label for="">&nbsp;</label>
-                    <button class="btn btn-secondary w-100" @click="resetFilter">Đặt Lại</button>
-                </div>
+                <button @click="resetFilter" class="btn-reset">
+                    <i class="fa-solid fa-rotate-right me-1"></i> Đặt Lại
+                </button>
+                <button @click="openAddModal" class="btn-add">
+                    <i class="fa-solid fa-plus me-2"></i>Thêm Mới
+                </button>
             </div>
         </div>
-    </div>
 
-    <div class="card border-top border-0 border-4 border-info">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mt-2">DANH SÁCH TOUR</h5>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" @click="resetCreateForm()">
-                <i class="fas fa-plus me-1"></i> Thêm Tour Mới
-            </button>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="align-middle">
-                        <tr class="text-center table-info">
-                            <th class="align-middle">#</th>
-                            <th style="width: 80px;">Hình Ảnh</th>
-                            <th>Tên Tour</th>
-                            <th>Lộ Trình</th>
-                            <th>Giá Vé</th>
-                            <th>Thời Gian</th>
-                            <th>Tối Đa</th>
-                            <th>Trạng thái</th>
-                            <th>Action</th>
+        <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 60px;">ID</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 80px;">Ảnh</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 25%;">Tên Tour</th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Lộ Trình</th>
+                            <th style="padding: 15px; text-align: right; font-weight: 600; color: #333; font-size: 0.9rem;">Giá Vé</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Lịch Trình</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-if="filteredTours.length === 0">
-                            <td colspan="9" class="text-center py-4 text-muted">Không có dữ liệu tour nào</td>
+                            <td colspan="8" style="padding: 40px; text-align: center; color: #999;">
+                                <i class="fa-solid fa-box-open me-2" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                Không tìm thấy dữ liệu tour nào
+                            </td>
                         </tr>
-                        <template v-for="(value, index) in filteredTours" :key="index">
-                            <tr class="align-middle">
-                                <td class="align-middle text-center">{{ index + 1 }}</td>
-                                <td class="align-middle text-center">
-                                    <img v-if="value.hinh_anh" :src="value.hinh_anh" alt="img" style="width: 60px; height: 45px; object-fit: cover; border-radius: 4px;">
-                                    <i v-else class="fas fa-image text-muted fs-3"></i>
-                                </td>
-                                <td class="align-middle fw-bold">{{ value.ten_tour }}</td>
-                                <td class="align-middle">
-                                    <small><b>Đón:</b> {{ value.diem_don }}</small><br>
-                                    <small><b>Trả:</b> {{ value.diem_tra }}</small>
-                                </td>
-                                <td class="align-middle text-end text-danger fw-bold">{{ formatVND(value.gia) }}</td>
-                                <td class="align-middle text-center">
-                                    <small>{{ formatDate(value.ngay_bat_dau) }}<br>đến<br>{{ formatDate(value.ngay_ket_thuc) }}</small>
-                                </td>
-                                <td class="align-middle text-center">{{ value.so_nguoi_toi_da }} khách</td>
-                                <td class="align-middle text-center" style="width: 120px;">
-                                    <button v-if="value.tinh_trang == 0" @click="changeStatus(value.id, 1)"
-                                        class="btn btn-warning btn-sm w-100 text-dark fw-bold">Tạm Tắt</button>
-                                    <button v-else @click="changeStatus(value.id, 0)" 
-                                        class="btn btn-success btn-sm w-100 fw-bold">Hiển Thị</button>
-                                </td>
-                                <td class="align-middle text-center" style="min-width: 140px;">
-                                    <button v-on:click="Object.assign(view_tour, value)"
-                                        class="btn btn-info btn-sm me-1" data-bs-toggle='modal'
-                                        data-bs-target='#chiTietModal' style="color: white;" title="Xem chi tiết">
-                                        <i class="fas fa-eye"></i>
+                        <tr v-for="value in filteredTours" :key="value.id" class="data-row">
+                            <td style="padding: 15px; text-align: center; color: #333; font-weight: 600;">{{ value.id }}</td>
+                            <td style="padding: 15px;">
+                                <img v-if="value.hinh_anh" :src="value.hinh_anh" alt="Tour" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <div v-else style="width: 60px; height: 45px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
+                                    <i class="fa-solid fa-image"></i>
+                                </div>
+                            </td>
+                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ value.ten_tour }}</td>
+                            <td style="padding: 15px; color: #555; font-size: 0.85rem; line-height: 1.6;">
+                                <div style="color: #64748b;"><i class="fa-solid fa-location-dot me-1" style="color: #10b981;"></i> {{ value.diem_don }}</div>
+                                <div style="color: #64748b; margin-top: 4px;"><i class="fa-solid fa-flag-checkered me-1" style="color: #ef4444;"></i> {{ value.diem_tra }}</div>
+                            </td>
+                            <td style="padding: 15px; text-align: right; color: #667eea; font-weight: 700;">{{ formatVND(value.gia) }}</td>
+                            <td style="padding: 15px; text-align: center; font-size: 0.85rem; color: #666;">
+                                <div>{{ formatDate(value.ngay_bat_dau) }}</div>
+                                <i class="fa-solid fa-arrow-down" style="font-size: 0.7rem; color: #cbd5e1; margin: 2px 0;"></i>
+                                <div>{{ formatDate(value.ngay_ket_thuc) }}</div>
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <button @click="changeStatus(value.id, value.tinh_trang == 1 ? 0 : 1)" 
+                                    :style="{
+                                        border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s',
+                                        background: value.tinh_trang == 1 ? '#dcfce7' : '#fee2e2',
+                                        color: value.tinh_trang == 1 ? '#16a34a' : '#dc2626'
+                                    }">
+                                    {{ value.tinh_trang == 1 ? 'Hiển Thị' : 'Tạm Tắt' }}
+                                </button>
+                            </td>
+                            <td style="padding: 15px; text-align: center;">
+                                <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <button @click="openViewModal(value)" class="action-btn btn-view" title="Xem chi tiết">
+                                        <i class="fa-solid fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-success btn-sm me-1" data-bs-toggle='modal'
-                                        data-bs-target='#updateModal'
-                                        v-on:click="Object.assign(edit_tour, value)" title="Cập nhật">
+                                    <button @click="openEditModal(value)" class="action-btn btn-edit" title="Cập nhật">
                                         <i class="fa-solid fa-pen-nib"></i>
                                     </button>
-                                    <button v-on:click="Object.assign(del_tour, value)"
-                                        class="btn btn-danger btn-sm" data-bs-toggle='modal'
-                                        data-bs-target='#huyModal' title="Xóa tour">
-                                        <i class="fas fa-times"></i>
+                                    <button @click="openDeleteModal(value)" class="action-btn btn-delete" title="Xóa tour">
+                                        <i class="fa-solid fa-trash"></i>
                                     </button>
-                                </td>
-                            </tr>
-                        </template>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title text-white">Thêm Tour Mới</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div v-if="showFormModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div :style="{ background: isEdit ? '#10b981' : 'linear-gradient(135deg, #667eea, #764ba2)', padding: '20px', color: 'white', position: 'sticky', top: '0', zIndex: '10', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }">
+                    <h2 style="margin: 0; font-size: 1.3rem;">{{ isEdit ? 'Cập Nhật Tour' : 'Thêm Tour Mới' }}</h2>
+                    <button @click="showFormModal = false" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="fw-bold">Tên Tour <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" v-model="create_tour.ten_tour" placeholder="Nhập tên tour" />
+                
+                <div style="padding: 20px; color: #333;">
+                    <div style="margin-bottom: 15px;">
+                        <label class="form-label">Tên Tour <span style="color: red;">*</span></label>
+                        <input type="text" class="custom-input" v-model="form.ten_tour" placeholder="Nhập tên tour...">
                     </div>
-                    <div class="mb-3">
-                        <label class="fw-bold">Mô tả <span class="text-danger">*</span></label>
-                        <textarea class="form-control" rows="3" v-model="create_tour.mo_ta" placeholder="Mô tả ngắn gọn về tour..."></textarea>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <label class="form-label">Mô Tả</label>
+                        <textarea class="custom-input" rows="3" v-model="form.mo_ta" placeholder="Mô tả ngắn gọn về tour..."></textarea>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Điểm Đón</label>
-                            <input type="text" class="form-control" v-model="create_tour.diem_don" />
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Điểm Đón</label>
+                            <input type="text" class="custom-input" v-model="form.diem_don">
                         </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Điểm Trả</label>
-                            <input type="text" class="form-control" v-model="create_tour.diem_tra" />
+                        <div>
+                            <label class="form-label">Điểm Trả</label>
+                            <input type="text" class="custom-input" v-model="form.diem_tra">
                         </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">ID Quốc Gia</label>
-                            <input type="number" class="form-control" v-model.number="create_tour.id_quoc_gia" min="1" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Giá Vé (VNĐ) <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" v-model.number="create_tour.gia" min="0" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Ngày Khởi Hành</label>
-                            <input type="date" class="form-control" v-model="create_tour.ngay_bat_dau" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Ngày Kết Thúc</label>
-                            <input type="date" class="form-control" v-model="create_tour.ngay_ket_thuc" />
+                        <div>
+                            <label class="form-label">ID Quốc Gia</label>
+                            <input type="number" class="custom-input" v-model.number="form.id_quoc_gia" min="1">
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6 mb-3">
-                            <label class="fw-bold">Số Khách Tối Đa</label>
-                            <input type="number" class="form-control" v-model.number="create_tour.so_nguoi_toi_da" min="1" />
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Giá Vé (VNĐ) <span style="color: red;">*</span></label>
+                            <input type="number" class="custom-input" v-model.number="form.gia" min="0">
                         </div>
-                        <div class="col-lg-6 mb-3">
-                            <label class="fw-bold">Trạng Thái</label>
-                            <select class="form-select" v-model.number="create_tour.tinh_trang">
+                        <div>
+                            <label class="form-label">Ngày Khởi Hành</label>
+                            <input type="date" class="custom-input" v-model="form.ngay_bat_dau">
+                        </div>
+                        <div>
+                            <label class="form-label">Ngày Kết Thúc</label>
+                            <input type="date" class="custom-input" v-model="form.ngay_ket_thuc">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div>
+                            <label class="form-label">Số Khách Tối Đa</label>
+                            <input type="number" class="custom-input" v-model.number="form.so_nguoi_toi_da" min="1">
+                        </div>
+                        <div>
+                            <label class="form-label">Trạng Thái</label>
+                            <select class="custom-input" v-model.number="form.tinh_trang">
                                 <option value="1">Hiển thị</option>
                                 <option value="0">Tạm tắt</option>
                             </select>
                         </div>
                     </div>
-                    <div class="mb-3">
-                        <label class="fw-bold">Đường dẫn Hình Ảnh (URL)</label>
-                        <input type="text" class="form-control" v-model="create_tour.hinh_anh" placeholder="https://..." />
+
+                    <div style="margin-bottom: 25px;">
+                        <label class="form-label">Đường dẫn Hình Ảnh (URL)</label>
+                        <input type="text" class="custom-input" v-model="form.hinh_anh" placeholder="https://...">
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="themTour()">Thêm Mới</button>
+
+                    <div style="display: flex; gap: 15px; justify-content: flex-end; padding-top: 20px; border-top: 1px solid #eee;">
+                        <button @click="showFormModal = false" style="padding: 12px 20px; background: #f1f5f9; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Hủy Bỏ</button>
+                        <button @click="saveTour" :style="{ background: isEdit ? '#10b981' : 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', padding: '12px 20px', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer' }">
+                            {{ isEdit ? 'Lưu Cập Nhật' : 'Thêm Mới Dữ Liệu' }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="updateModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-success">
-                    <h5 class="modal-title text-white">Cập Nhật Tour</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div v-if="showViewModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="background: #0ea5e9; padding: 20px; color: white; display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="margin: 0; font-size: 1.3rem;">Chi Tiết Tour</h2>
+                    <button @click="showViewModal = false" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="fw-bold">Tên Tour</label>
-                        <input type="text" class="form-control border-success" v-model="edit_tour.ten_tour" />
-                    </div>
-                    <div class="mb-3">
-                        <label class="fw-bold">Mô tả</label>
-                        <textarea class="form-control border-success" rows="3" v-model="edit_tour.mo_ta"></textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Điểm Đón</label>
-                            <input type="text" class="form-control border-success" v-model="edit_tour.diem_don" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Điểm Trả</label>
-                            <input type="text" class="form-control border-success" v-model="edit_tour.diem_tra" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">ID Quốc Gia</label>
-                            <input type="number" class="form-control border-success" v-model.number="edit_tour.id_quoc_gia" min="1" />
+                
+                <div style="padding: 30px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
+                    <div>
+                        <img v-if="view_tour.hinh_anh" :src="view_tour.hinh_anh" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        <div v-else style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #cbd5e1;">
+                            <i class="fa-solid fa-image"></i>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Giá Vé (VNĐ)</label>
-                            <input type="number" class="form-control border-success" v-model.number="edit_tour.gia" min="0" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Ngày Khởi Hành</label>
-                            <input type="date" class="form-control border-success" v-model="edit_tour.ngay_bat_dau" />
-                        </div>
-                        <div class="col-lg-4 mb-3">
-                            <label class="fw-bold">Ngày Kết Thúc</label>
-                            <input type="date" class="form-control border-success" v-model="edit_tour.ngay_ket_thuc" />
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 mb-3">
-                            <label class="fw-bold">Số Khách Tối Đa</label>
-                            <input type="number" class="form-control border-success" v-model.number="edit_tour.so_nguoi_toi_da" min="1" />
-                        </div>
-                        <div class="col-lg-6 mb-3">
-                            <label class="fw-bold">Trạng Thái</label>
-                            <select class="form-select border-success" v-model.number="edit_tour.tinh_trang">
-                                <option value="1">Hiển thị</option>
-                                <option value="0">Tạm tắt</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label class="fw-bold">Hình Ảnh (URL)</label>
-                        <input type="text" class="form-control border-success" v-model="edit_tour.hinh_anh" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="button" class="btn btn-success" data-bs-dismiss="modal" @click="capNhatTour()">Lưu Thay Đổi</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="chiTietModal" tabindex="-1" aria-labelledby="chiTietModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title text-white" id="chiTietModalLabel">Chi Tiết Tour</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-4 text-center">
-                            <img v-if="view_tour.hinh_anh" :src="view_tour.hinh_anh" class="img-fluid rounded border shadow-sm" style="max-height: 300px; object-fit: cover;">
-                            <div v-else class="bg-light d-flex align-items-center justify-content-center rounded border" style="height: 300px;">
-                                <i class="fas fa-image text-muted" style="font-size: 64px;"></i>
+                    <div>
+                        <h3 style="color: #0ea5e9; margin: 0 0 20px 0;">{{ view_tour.ten_tour }}</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                            <div>
+                                <span style="color: #64748b; font-size: 0.85rem; display: block;">Điểm Đón</span>
+                                <strong style="color: #333;">{{ view_tour.diem_don }}</strong>
+                            </div>
+                            <div>
+                                <span style="color: #64748b; font-size: 0.85rem; display: block;">Điểm Trả</span>
+                                <strong style="color: #333;">{{ view_tour.diem_tra }}</strong>
+                            </div>
+                            <div>
+                                <span style="color: #64748b; font-size: 0.85rem; display: block;">Khởi Hành</span>
+                                <strong style="color: #333;">{{ formatDate(view_tour.ngay_bat_dau) }}</strong>
+                            </div>
+                            <div>
+                                <span style="color: #64748b; font-size: 0.85rem; display: block;">Kết Thúc</span>
+                                <strong style="color: #333;">{{ formatDate(view_tour.ngay_ket_thuc) }}</strong>
+                            </div>
+                            <div>
+                                <span style="color: #64748b; font-size: 0.85rem; display: block;">Giá Vé</span>
+                                <strong style="color: #ef4444; font-size: 1.1rem;">{{ formatVND(view_tour.gia) }}</strong>
+                            </div>
+                            <div>
+                                <span style="color: #64748b; font-size: 0.85rem; display: block;">Khách Tối Đa</span>
+                                <strong style="color: #333;">{{ view_tour.so_nguoi_toi_da }} Người</strong>
                             </div>
                         </div>
-                        <div class="col-lg-8">
-                            <h4 class="text-primary mb-3">{{ view_tour.ten_tour }}</h4>
-                            <table class="table table-bordered table-striped">
-                                <tbody>
-                                    <tr>
-                                        <th style="width: 30%;">Điểm Đón</th>
-                                        <td>{{ view_tour.diem_don }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Điểm Trả</th>
-                                        <td>{{ view_tour.diem_tra }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Giá Vé</th>
-                                        <td class="text-danger fw-bold">{{ formatVND(view_tour.gia) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Khởi Hành</th>
-                                        <td>{{ formatDate(view_tour.ngay_bat_dau) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Kết Thúc</th>
-                                        <td>{{ formatDate(view_tour.ngay_ket_thuc) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Khách Tối Đa</th>
-                                        <td>{{ view_tour.so_nguoi_toi_da }} Người</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Trạng Thái</th>
-                                        <td>
-                                            <span v-if="view_tour.tinh_trang == 1" class="badge bg-success">Hiển thị</span>
-                                            <span v-else class="badge bg-warning text-dark">Tạm tắt</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div v-if="view_tour.mo_ta" class="mt-3">
-                                <h6 class="fw-bold border-bottom pb-2">Mô Tả Chi Tiết:</h6>
-                                <p style="white-space: pre-line;">{{ view_tour.mo_ta }}</p>
-                            </div>
+                        
+                        <div v-if="view_tour.mo_ta" style="background: #f8fafc; padding: 15px; border-radius: 8px;">
+                            <h5 style="margin: 0 0 10px 0; color: #333; font-size: 0.95rem;">Mô Tả Chi Tiết:</h5>
+                            <p style="margin: 0; color: #555; white-space: pre-line; font-size: 0.9rem; line-height: 1.6;">{{ view_tour.mo_ta }}</p>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                </div>
             </div>
         </div>
-    </div>
 
-    <div class="modal fade" id="huyModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-danger">
-                    <h1 class="modal-title fs-5 text-white" id="exampleModalLabel">Xóa Tour</h1>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div v-if="showDeleteModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+            <div style="background: white; border-radius: 12px; width: 90%; max-width: 400px; padding: 30px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+                <div style="font-size: 3.5rem; color: #ef4444; margin-bottom: 15px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
-                <div class="modal-body">
-                    <div class="alert alert-warning border-0 bg-warning alert-dismissible fade show py-2">
-                        <div class="d-flex align-items-center">
-                            <div class="font-35 text-dark"><i class="fas fa-exclamation-triangle"></i></div>
-                            <div class="ms-3">
-                                <h6 class="mb-0 text-dark">Cảnh Báo</h6>
-                                <div class="text-dark mt-1">
-                                    <span>Bạn muốn xóa tour <b>{{ del_tour.ten_tour }}</b> này?</span> <br>
-                                    <span><b>Lưu ý:</b> Điều này không thể hoàn tác!</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-danger" v-on:click="xoaTour()" data-bs-dismiss="modal">Xác Nhận Xóa</button>
+                <h3 style="margin: 0 0 10px 0; color: #333;">Xác Nhận Xóa</h3>
+                <p style="color: #666; margin: 0 0 25px 0;">
+                    Bạn có chắc chắn muốn xóa tour <br><strong>{{ del_tour.ten_tour }}</strong>? <br>
+                    <span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
+                </p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <button @click="showDeleteModal = false" style="padding: 12px; background: #f1f5f9; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy Bỏ</button>
+                    <button @click="confirmDelete" style="padding: 12px; background: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Xóa Ngay</button>
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -351,10 +266,15 @@ export default {
                 den_ngay: '',
                 keyword: ''
             },
-            create_tour: {
-                ten_tour: '', mo_ta: '', gia: 0, ngay_bat_dau: '', ngay_ket_thuc: '', so_nguoi_toi_da: 1, diem_don: '', diem_tra: '', tinh_trang: 1, hinh_anh: '', id_quoc_gia: 1
+            
+            showFormModal: false,
+            showViewModal: false,
+            showDeleteModal: false,
+            isEdit: false,
+
+            form: {
+                id: null, ten_tour: '', mo_ta: '', gia: 0, ngay_bat_dau: '', ngay_ket_thuc: '', so_nguoi_toi_da: 1, diem_don: '', diem_tra: '', tinh_trang: 1, hinh_anh: '', id_quoc_gia: 1
             },
-            edit_tour: {},
             view_tour: {},
             del_tour: {},
         }
@@ -374,119 +294,107 @@ export default {
         formatVND(number) {
             return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(number || 0);
         },
+        
         getTour() {
             axios.get(apiUrl('admin/tour/get-data'), {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
+                headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
             })
             .then((res) => {
                 if (res.data.status) {
                     this.list_tour = res.data.data;
-                    this.filteredTours = this.list_tour;
+                    this.applyFilters();
                 } else {
                     this.$toast.error(res.data.message);
                 }
             })
             .catch((error) => {
-                console.error('Error fetching tours:', error);
-                if(error.response && error.response.data && error.response.data.errors) {
-                    const list = Object.values(error.response.data.errors);
-                    list.forEach((v) => { this.$toast.error(v[0]); });
-                } else if(error.response) {
-                    this.$toast.error(error.response.data?.message || 'Lỗi khi tải dữ liệu');
-                } else {
-                    this.$toast.error('Lỗi kết nối API. Vui lòng kiểm tra kết nối mạng.');
-                }
+                console.error('Lỗi lấy dữ liệu:', error);
+                this.$toast.error('Lỗi khi tải dữ liệu');
             });
         },
+
         applyFilters() {
-            this.filteredTours = this.list_tour.filter((tour) => {
+            let result = this.list_tour.filter((tour) => {
                 const matchKeyword = !this.filter.keyword || tour.ten_tour.toLowerCase().includes(this.filter.keyword.toLowerCase());
                 const matchTuNgay = !this.filter.tu_ngay || new Date(tour.ngay_bat_dau) >= new Date(this.filter.tu_ngay);
                 const matchDenNgay = !this.filter.den_ngay || new Date(tour.ngay_bat_dau) <= new Date(this.filter.den_ngay);
                 return matchKeyword && matchTuNgay && matchDenNgay;
             });
+
+            // Yêu cầu: Sắp xếp ID theo thứ tự tăng dần (1 -> 7)
+            this.filteredTours = result.sort((a, b) => a.id - b.id);
         },
+
         resetFilter() {
             this.filter = { tu_ngay: '', den_ngay: '', keyword: '' };
-            this.filteredTours = this.list_tour;
+            this.applyFilters();
         },
-        themTour() {
-            axios.post(apiUrl('admin/tour/add-data'), this.create_tour, {
+
+        openAddModal() {
+            this.isEdit = false;
+            this.form = { id: null, ten_tour: '', mo_ta: '', gia: 0, ngay_bat_dau: '', ngay_ket_thuc: '', so_nguoi_toi_da: 1, diem_don: '', diem_tra: '', tinh_trang: 1, hinh_anh: '', id_quoc_gia: 1 };
+            this.showFormModal = true;
+        },
+
+        openEditModal(item) {
+            this.isEdit = true;
+            this.form = { ...item };
+            this.showFormModal = true;
+        },
+
+        openViewModal(item) {
+            this.view_tour = { ...item };
+            this.showViewModal = true;
+        },
+
+        openDeleteModal(item) {
+            this.del_tour = { ...item };
+            this.showDeleteModal = true;
+        },
+
+        saveTour() {
+            const url = this.isEdit ? 'admin/tour/update' : 'admin/tour/add-data';
+            
+            axios.post(apiUrl(url), this.form, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
             })
             .then((res) => {
                 if (res.data.status) {
                     this.$toast.success(res.data.message);
-                    this.resetCreateForm();
+                    this.showFormModal = false;
                     this.getTour();
                 } else {
                     this.$toast.error(res.data.message);
                 }
             })
             .catch((error) => {
-                console.error('Error adding tour:', error);
                 if(error.response && error.response.data && error.response.data.errors) {
                     const list = Object.values(error.response.data.errors);
                     list.forEach((v) => { this.$toast.error(v[0]); });
-                } else if(error.response) {
-                    this.$toast.error(error.response.data?.message || 'Lỗi khi thêm tour');
                 } else {
-                    this.$toast.error('Lỗi kết nối API. Vui lòng kiểm tra kết nối mạng.');
+                    this.$toast.error('Lỗi hệ thống');
                 }
             });
         },
-        capNhatTour() {
-            axios.post(apiUrl('admin/tour/update'), this.edit_tour, {
-                headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
-            })
-            .then((res) => {
-                if (res.data.status) {
-                    this.$toast.success(res.data.message);
-                    this.getTour();
-                } else {
-                    this.$toast.error(res.data.message);
-                }
-            })
-            .catch((error) => {
-                console.error('Error updating tour:', error);
-                if(error.response && error.response.data && error.response.data.errors) {
-                    const list = Object.values(error.response.data.errors);
-                    list.forEach((v) => { this.$toast.error(v[0]); });
-                } else if(error.response) {
-                    this.$toast.error(error.response.data?.message || 'Lỗi khi cập nhật tour');
-                } else {
-                    this.$toast.error('Lỗi kết nối API. Vui lòng kiểm tra kết nối mạng.');
-                }
-            });
-        },
-        xoaTour() {
+
+        confirmDelete() {
             axios.post(apiUrl('admin/tour/destroy'), { id: this.del_tour.id }, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
             })
             .then((res) => {
                 if (res.data.status) {
                     this.$toast.success(res.data.message);
+                    this.showDeleteModal = false;
                     this.getTour();
                 } else {
                     this.$toast.error(res.data.message);
                 }
             })
-            .catch((error) => {
-                console.error('Error deleting tour:', error);
-                if(error.response && error.response.data && error.response.data.errors) {
-                    const list = Object.values(error.response.data.errors);
-                    list.forEach((v) => { this.$toast.error(v[0]); });
-                } else if(error.response) {
-                    this.$toast.error(error.response.data?.message || 'Lỗi khi xóa tour');
-                } else {
-                    this.$toast.error('Lỗi kết nối API. Vui lòng kiểm tra kết nối mạng.');
-                }
-            });
+            .catch(() => this.$toast.error('Lỗi khi xóa tour'));
         },
-        changeStatus(id, status) {
-            axios.post(apiUrl('admin/tour/change-status'), { id: id, tinh_trang: status }, {
+
+        changeStatus(id, newStatus) {
+            axios.post(apiUrl('admin/tour/change-status'), { id: id, tinh_trang: newStatus }, {
                 headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
             })
             .then((res) => {
@@ -497,25 +405,92 @@ export default {
                     this.$toast.error(res.data.message);
                 }
             })
-            .catch((error) => {
-                console.error('Error changing tour status:', error);
-                if(error.response && error.response.data && error.response.data.errors) {
-                    const list = Object.values(error.response.data.errors);
-                    list.forEach((v) => { this.$toast.error(v[0]); });
-                } else if(error.response) {
-                    this.$toast.error(error.response.data?.message || 'Lỗi khi thay đổi trạng thái');
-                } else {
-                    this.$toast.error('Lỗi kết nối API. Vui lòng kiểm tra kết nối mạng.');
-                }
-            });
-        },
-        resetCreateForm() {
-            this.create_tour = { ten_tour: '', mo_ta: '', gia: 0, ngay_bat_dau: '', ngay_ket_thuc: '', so_nguoi_toi_da: 1, diem_don: '', diem_tra: '', tinh_trang: 1, hinh_anh: '', id_quoc_gia: 1 };
+            .catch(() => this.$toast.error('Lỗi khi đổi trạng thái'));
         }
-    },
+    }
 }
 </script>
 
 <style scoped>
-/* Không cần custom style vì đã dùng chuẩn bootstrap của template */
+.btn-reset {
+    padding: 12px 15px;
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-reset:hover {
+    background: #e2e8f0;
+    color: #333;
+}
+
+.btn-add {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+.btn-add:hover {
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.data-row {
+    border-bottom: 1px solid #e2e8f0;
+    transition: background 0.2s;
+}
+.data-row:hover {
+    background: #f8fafc !important;
+}
+
+.action-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-view { background: #e0f2fe; color: #0ea5e9; }
+.btn-view:hover { background: #0ea5e9; color: white; }
+
+.btn-edit { background: #f0f4f8; color: #764ba2; }
+.btn-edit:hover { background: #764ba2; color: white; }
+
+.btn-delete { background: #fee2e2; color: #ef4444; }
+.btn-delete:hover { background: #ef4444; color: white; }
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+}
+
+.custom-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: #fff;
+}
+.custom-input:focus {
+    outline: none;
+    border-color: #667eea;
+}
 </style>
