@@ -46,6 +46,16 @@ const routes = [
         meta: { layout: "client" },
     },
     {
+    path: "/huong-dan-vien",
+    component: () => import("../components/Client/HuongDanVien/index.vue"),
+    meta: { layout: "client" },
+    },
+    {
+        path: "/chi-tiet-huong-dan-vien/:id_huong_dan_vien",
+        component: () => import("../components/Client/ChiTietHuongDanVien/index.vue"),
+        meta: { layout: "client" },
+    },
+    {
     path: "/chi-tiet-tour/:id_tour",
     component: () => import("../components/Client/ChiTietTour/index.vue"),
     meta: { layout: "client" },
@@ -54,6 +64,12 @@ const routes = [
     path: "/lien-he",
     component: () => import("../components/Client/LienHe/index.vue"),
     meta: { layout: "client" },
+    },
+    {
+        path: "/client/profile",
+        component: () => import("../components/Client/Profile/index.vue"),
+        meta: { layout: "client" },
+        beforeEnter: checkClient,
     },
 
     // code test dat tour
