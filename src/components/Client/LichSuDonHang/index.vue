@@ -18,7 +18,8 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h4 class="fw-bold mb-0 text-dark">{{ item.tour.ten_tour }}</h4>
                                 <span v-if="item.trang_thai == 2"
-                                    class="badge rounded-pill bg-success-subtle text-success px-3 ms-2">Đã thanh toán</span>
+                                    class="badge rounded-pill bg-success-subtle text-success px-3 ms-2">Đã thanh
+                                    toán</span>
                                 <span v-else-if="item.trang_thai == 1"
                                     class="badge rounded-pill bg-warning-subtle text-warning px-3 ms-2">Chưa thanh
                                     toán</span>
@@ -174,8 +175,10 @@
                     </button>
 
                     <button v-if="chi_tiet.trang_thai == 1" class="btn btn-payment px-4 fw-bold text-white shadow-sm"
-                        @click="thanhToanLai(chi_tiet.id)">
-                        <i class="fa-solid fa-credit-card me-2"></i>Thanh toán ngay
+                        @click="thanhToanLai(chi_tiet)" :disabled="isLoading">
+                        <i v-if="isLoading" class="fa-solid fa-spinner fa-spin me-2"></i>
+                        <i v-else class="fa-solid fa-credit-card me-2"></i>
+                        Thanh toán ngay
                     </button>
                 </div>
             </div>
@@ -264,11 +267,38 @@ export default {
                     this.$toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
                 });
         },
-        thanhToanLai(id) {
-            this.$router.push({
-                path: '/Dat-tour',
-                query: { id: id }
-            });
+        thanhToanLai(item) {
+            this.isLoading = true;
+
+            // Ưu tiên lấy ID hóa đơn, nếu không có thì lấy mã hóa đơn
+            const idGuiDi = item.id || item.id_hoa_don || item.ma_hoa_don;
+
+            this.$toast.info("Đang chuẩn bị kết nối cổng thanh toán...");
+
+            axios.post(apiUrl('/client/vnpay/tao-thanh-toan'), {
+                id_hoa_don: idGuiDi
+            }, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_client')
+                }
+            })
+                .then(response => {
+                    if (response.data.status) {
+                        // Thành công: Chuyển hướng người dùng sang trang của VNPay
+                        this.$toast.success("Đang kết nối cổng thanh toán VNPAY...");
+                        window.location.href = response.data.data;
+                    } else {
+                        // Thất bại từ phía Backend
+                        this.$toast.error(response.data.message || 'Không thể tạo liên kết thanh toán.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi khi gọi API VNPay:", error);
+                    this.$toast.error('Không thể kết nối cổng thanh toán. Vui lòng thử lại sau!');
+                })
+                .finally(() => {
+                    this.isLoading = false; F
+                });
         },
         xemChiTiet(item) {
             this.chi_tiet = item;
