@@ -71,18 +71,6 @@ const routes = [
         meta: { layout: "client" },
         beforeEnter: checkClient,
     },
-
-    // code test dat tour
-    {
-    path: "/Dat-tour",
-    component: () => import("../components/Client/DatTour/index.vue"),
-    meta: { layout: "blank" },
-    },
-    {
-    path: "/Ket-qua-thanh-toan",
-    component: () => import("../components/Client/DatTour/KetQuaThanhToan.vue"),
-    meta: { layout: "blank" },
-    },
     {
         path: "/client/thanh-toan/:ma_hoa_don",
         component: () => import("../components/Client/ThanhToan/index.vue"),
@@ -97,7 +85,11 @@ const routes = [
         beforeEnter: checkClient,
         props: true, 
     },
-
+    {
+    path: "/Ket-qua-thanh-toan",
+    component: () => import("../components/Client/KetQuaThanhToan/index.vue"),
+    meta: { layout: "blank" },
+    },
 
     // {
     //     path: "/client/chi-tiet-don-hang/:ma_don_hang",

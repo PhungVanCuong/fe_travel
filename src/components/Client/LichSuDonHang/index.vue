@@ -18,11 +18,11 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h4 class="fw-bold mb-0 text-dark">{{ item.tour.ten_tour }}</h4>
                                 <span v-if="item.trang_thai == 2"
-                                    class="badge rounded-pill bg-success-subtle text-success px-3">Đã thanh toán</span>
+                                    class="badge rounded-pill bg-success-subtle text-success px-3 ms-2">Đã thanh toán</span>
                                 <span v-else-if="item.trang_thai == 1"
-                                    class="badge rounded-pill bg-primary-subtle text-primary px-3">Chưa thanh
+                                    class="badge rounded-pill bg-warning-subtle text-warning px-3 ms-2">Chưa thanh
                                     toán</span>
-                                <span v-else class="badge rounded-pill bg-secondary-subtle text-secondary px-3">Đã
+                                <span v-else class="badge rounded-pill bg-secondary-subtle text-secondary px-3 ms-2">Đã
                                     hủy</span>
                             </div>
 

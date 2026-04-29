@@ -339,8 +339,9 @@
             <div class="review-display-card"
               style="background-color: #ffffff; border: 1px solid rgba(0,0,0,0.08); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); padding: 40px; position: relative; min-height: 320px; display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
 
-              <i class="fa-solid fa-quote-left quote-icon"
-                style="position: absolute; top: -10px; left: 20px; font-size: 8rem; color: rgba(0, 91, 170, 0.04); z-index: 0;"></i>
+              <!-- <i class="fa-solid fa-quote-left quote-icon"
+                style="position: absolute; top: -10px; left: 20px; font-size: 8rem; color: rgba(0, 91, 170, 0.04); z-index: 0;">
+              </i> -->
 
               <transition name="slide-fade" mode="out-in">
 
