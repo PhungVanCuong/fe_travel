@@ -42,10 +42,10 @@
             <li class="nav-item"><router-link to="/lien-he" class="nav-link px-3">Liên Hệ</router-link></li>
 
             <div class="d-flex align-items-center ms-lg-4 nhom-bieu-tuong">
-              <a href="/client/lich-su-dat-tour" class="bieu-tuong-item me-3 position-relative">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="cham-thong-bao" v-if="isLoggedIn"></span>
-              </a>
+              <router-link to="/client/lich-su-dat-tour" class="bieu-tuong-item me-3 position-relative">
+                  <i class="fa-solid fa-bag-shopping"></i>
+                  <span class="cham-thong-bao" v-if="isLoggedIn"></span>
+              </router-link>
 
               <div class="dropdown border-start border-secondary ps-3">
                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown">

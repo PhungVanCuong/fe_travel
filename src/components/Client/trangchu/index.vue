@@ -193,6 +193,14 @@
           </div>
         </template>
       </div>
+      <div class="text-center mb-5 mt-3">
+        <router-link to="/tour/tour-trong-nuoc">
+          <button class="btn rounded-pill"
+            style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
+            onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
+            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Trong Nước</button>
+        </router-link>
+      </div>
     </div>
   </div>
 
@@ -261,6 +269,14 @@
             </div>
           </div>
         </template>
+      </div>
+      <div class="text-center mb-5 mt-3 mb-5">
+        <router-link to="/tour/tour-ngoai-nuoc">
+          <button class="btn rounded-pill"
+            style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
+            onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
+            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Nước Ngoài</button>
+        </router-link>
       </div>
     </div>
   </div>
