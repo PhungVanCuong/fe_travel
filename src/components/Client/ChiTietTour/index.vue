@@ -213,6 +213,42 @@
             </div>
         </div>
         <div class="row mt-5">
+            <div class="col-lg-12 mt-4">
+                <h3 class="fw-bold mb-4">Đánh giá từ khách hàng</h3>
+
+                <div v-if="ds_danh_gia.length > 0" class="list-danh-gia">
+                    <div v-for="(v, k) in ds_danh_gia" :key="k" class="card border-0 shadow-sm mb-3 p-3"
+                        style="border-radius: 15px;">
+                        <div class="d-flex align-items-start">
+                            <img :src="v.avatar || 'https://via.placeholder.com/50'" class="rounded-circle me-3"
+                                style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #eee;">
+
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold mb-0 text-dark">{{ v.ho_va_ten }}</h6>
+                                    <small class="text-muted">{{ formatDate(v.created_at) }}</small>
+                                </div>
+
+                                <div class="star-rating mb-2">
+                                    <i v-for="star in 5" :key="star" class="fa-star me-1"
+                                        :class="star <= v.sao_danh_gia ? 'fa-solid text-warning' : 'fa-regular text-secondary'"
+                                        style="font-size: 0.85rem;">
+                                    </i>
+                                </div>
+
+                                <p class="text-secondary mb-0 small" style="line-height: 1.6;">
+                                    {{ v.noi_dung || 'Khách hàng không để lại bình luận.' }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="text-center p-5 border border-dashed rounded-4 bg-light">
+                    <i class="fa-solid fa-comments text-muted fs-1 mb-3"></i>
+                    <p class="text-muted">Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!</p>
+                </div>
+            </div>
             <div class="col-lg-12">
                 <h3 class="fw-bold mb-4">Các tour khác bạn có thể thích</h3>
                 <div class="row">
@@ -289,6 +325,7 @@ export default {
             // Khai báo các biến để lưu trữ dữ liệu từ API
             chi_tiet_tour: {},
             list_tour_khac: [],
+            ds_danh_gia: [],
             index_mo: null,
             is_open_all: false,
             is_policy_open: false,
@@ -308,8 +345,28 @@ export default {
     },
     mounted() {
         this.LoadTour();
+        this.layDanhSachDanhGia();
     },
     methods: {
+        layDanhSachDanhGia() {
+            const id_tour = this.$route.params.id_tour;
+            axios.get(apiUrl('/client/danh-gia/get-danh-gia/' + id_tour))
+                .then((res) => {
+                    if (res.data.data) {
+                        this.ds_danh_gia = res.data.data;
+                    }
+                })
+                .catch((err) => {
+                    console.error("Lỗi khi tải đánh giá:", err);
+                });
+        },
+
+        // Hàm định dạng ngày tháng cho đẹp
+        formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('vi-VN');
+        },
         LoadTour() {
             var payload = { id: this.id };
             axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
@@ -442,5 +499,22 @@ button:hover {
     filter: brightness(90%);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.list-danh-gia .card {
+    transition: all 0.3s ease;
+}
+
+.list-danh-gia .card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08) !important;
+}
+
+.border-dashed {
+    border: 2px dashed #dee2e6 !important;
+}
+
+.fa-solid.text-warning {
+    color: #ffc107 !important;
 }
 </style>

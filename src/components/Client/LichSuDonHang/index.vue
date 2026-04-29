@@ -85,18 +85,41 @@
 
                 <div class="row">
                     <div class="col-6">
-                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-users me-2"></i>Số lượng hành khách</h6>
-                        <div class="p-2 border rounded mb-2 bg-light d-flex justify-content-between">{{
-                            chi_tiet.so_luong_nguoi }}</div>
+                        <h6 class="fw-bold mb-3">
+                            <i class="fa-solid fa-users me-2"></i>Số lượng hành khách
+                        </h6>
+                        <div class="p-2 border rounded mb-4 bg-light d-flex justify-content-between">
+                            {{ chi_tiet.so_luong_nguoi }} người
+                        </div>
+
+                        <h6 class="fw-bold mb-3">
+                            <i class="fa-solid fa-ticket me-2"></i>Danh sách vé
+                        </h6>
+
+                        <div v-if="chi_tiet.ve && chi_tiet.ve.length > 0">
+                            <div v-for="(ve, k) in chi_tiet.ve" :key="k"
+                                class="p-2 border rounded mb-2 bg-white d-flex justify-content-between align-items-center shadow-sm">
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-primary me-2">{{ k + 1 }}</span>
+                                </div>
+                                <span class="small text-muted font-monospace">{{ ve.ma_ve }}</span>
+                            </div>
+                        </div>
+
+                        <div v-else class="text-center p-3 border border-dashed rounded text-muted small">
+                            Đang cập nhật thông tin vé...
+                        </div>
                     </div>
 
                     <div class="col-6">
                         <h6 class="fw-bold mb-3"><i class="fa-solid fa-credit-card me-2"></i>Thông tin thanh toán</h6>
-                        <div class="p-3 border rounded">
+                        <div class="p-3 border rounded mb-4">
                             <div class="d-flex justify-content-between mb-2 small">
                                 <span>Phương thức</span>
-                                <span class="fw-bold"><i class="fa-solid fa-wallet me-1"></i>{{
-                                    chi_tiet.phuong_thuc_thanh_toan || 'VNPay' }}</span>
+                                <span class="fw-bold">
+                                    <i class="fa-solid fa-wallet me-1"></i>
+                                    {{ chi_tiet.phuong_thuc_thanh_toan || 'VNPay' }}
+                                </span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="small">Trạng thái</span>
@@ -105,6 +128,17 @@
                                 <span v-else-if="chi_tiet.trang_thai == 1"
                                     class="badge bg-warning-subtle text-warning px-3">Chưa thanh toán</span>
                                 <span v-else class="badge bg-danger-subtle text-danger px-3">Đã hủy</span>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-note-sticky me-2"></i>Ghi chú đơn hàng</h6>
+                        <div class="p-3 border rounded bg-light">
+                            <div v-if="chi_tiet.ghi_chu" class="small text-dark text-break"
+                                style="white-space: pre-line;">
+                                {{ chi_tiet.ghi_chu }}
+                            </div>
+                            <div v-else class="small text-muted italic">
+                                Không có ghi chú nào cho đơn hàng này.
                             </div>
                         </div>
                     </div>
@@ -124,18 +158,57 @@
                     </div>
                 </div>
             </div>
-
-            <div class="modal-footer border-top-0 d-flex justify-content-end gap-2 p-4">
-                <button v-if="chi_tiet.trang_thai == 2" class="btn btn-outline-primary px-4">
-                    <i class="fa-solid fa-download me-2"></i>Tải hóa đơn
+            <div class="modal-footer border-top p-4 d-flex justify-content-between align-items-center">
+                <button class="btn btn-light px-4 fw-bold shadow-sm" @click="is_show_detail = false">
+                    <i class="fa-solid fa-xmark me-2"></i>Đóng
                 </button>
 
-                <button v-if="chi_tiet.trang_thai == 1" class="btn btn-danger px-4 fw-bold"
-                    @click="thanhToanLai(chi_tiet.id)">
-                    Thanh toán ngay
-                </button>
+                <div class="d-flex gap-2">
+                    <button v-if="chi_tiet.trang_thai == 2" class="btn btn-rating px-4 fw-bold text-white shadow-sm"
+                        @click="danhGiaTour(chi_tiet)">
+                        <i class="fa-solid fa-star me-2"></i>Đánh giá tour
+                    </button>
 
-                <button class="btn btn-dark px-4" @click="is_show_detail = false">Đóng</button>
+                    <button v-if="chi_tiet.trang_thai == 2" class="btn btn-outline-info px-4 fw-bold shadow-sm">
+                        <i class="fa-solid fa-file-invoice-dollar me-2"></i>Tải hóa đơn
+                    </button>
+
+                    <button v-if="chi_tiet.trang_thai == 1" class="btn btn-payment px-4 fw-bold text-white shadow-sm"
+                        @click="thanhToanLai(chi_tiet.id)">
+                        <i class="fa-solid fa-credit-card me-2"></i>Thanh toán ngay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="is_show_danh_gia" class="modal-overlay" @click.self="is_show_danh_gia = false">
+        <div class="modal-detail-content animate__animated animate__fadeInUp" style="width: 500px;">
+            <div class="modal-header border-bottom-0">
+                <h4 class="fw-bold mb-0">Đánh giá dịch vụ</h4>
+                <button type="button" class="btn-close" @click="is_show_danh_gia = false"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h5 class="mb-3">{{ chi_tiet.tour.ten_tour }}</h5>
+
+                <div class="star-rating mb-4">
+                    <i v-for="star in 5" :key="star" class="fa-star fs-2 cursor-pointer px-1"
+                        :class="star <= data_danh_gia.sao_danh_gia ? 'fa-solid text-warning' : 'fa-regular text-secondary'"
+                        @click="data_danh_gia.sao_danh_gia = star">
+                    </i>
+                </div>
+
+                <div class="text-start">
+                    <label class="fw-bold mb-2">Chia sẻ trải nghiệm của bạn:</label>
+                    <textarea class="form-control" rows="4" v-model="data_danh_gia.noi_dung"
+                        placeholder="Tour này có gì tuyệt vời? Hãy chia sẻ cho mọi người cùng biết nhé..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 p-4">
+                <button class="btn btn-secondary px-4" @click="is_show_danh_gia = false">Hủy bỏ</button>
+                <button class="btn btn-warning px-4 fw-bold text-white" @click="guiDanhGia()"
+                    :disabled="data_danh_gia.sao_danh_gia === 0">
+                    Gửi đánh giá ngay
+                </button>
             </div>
         </div>
     </div>
@@ -153,13 +226,44 @@ export default {
                 ve: []
             },
             ds_hoa_don: [],
-            isLoading: true
+            isLoading: true,
+            is_show_danh_gia: false,
+            data_danh_gia: {
+                id_tour: null,
+                sao_danh_gia: 0,
+                noi_dung: ''
+            },
         }
     },
     mounted() {
         this.getLichSu();
     },
     methods: {
+        danhGiaTour(item) {
+            this.is_show_detail = false; // Đóng modal chi tiết
+            this.is_show_danh_gia = true; // Mở modal đánh giá
+            this.data_danh_gia.id_tour = item.tour.id_tour; // Gán id_tour để gửi đánh giá sau này
+            this.data_danh_gia.sao_danh_gia = 0;
+            this.data_danh_gia.noi_dung = '';
+        },
+        guiDanhGia() {
+            axios.post(apiUrl('/client/danh-gia/gui-danh-gia'), this.data_danh_gia, {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_client')
+                }
+            })
+                .then((res) => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.is_show_danh_gia = false;
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch((err) => {
+                    this.$toast.error("Có lỗi xảy ra, vui lòng thử lại sau!");
+                });
+        },
         thanhToanLai(id) {
             this.$router.push({
                 path: '/Dat-tour',
@@ -195,6 +299,66 @@ export default {
 }
 </script>
 <style scoped>
+/* Tùy chỉnh nút Đóng */
+.btn-light {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+    color: #343a40;
+}
+
+/* Nút Đánh giá - Màu Vàng Cam rực rỡ */
+.btn-rating {
+    background: linear-gradient(45deg, #ff9800, #ffc107);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-rating:hover {
+    background: linear-gradient(45deg, #f57c00, #ff9800);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3) !important;
+}
+
+/* Nút Thanh toán - Màu Đỏ Ruby */
+.btn-payment {
+    background: linear-gradient(45deg, #d32f2f, #f44336);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-payment:hover {
+    background: linear-gradient(45deg, #b71c1c, #d32f2f);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3) !important;
+}
+
+/* Nút Tải hóa đơn - Xanh Info nhẹ nhàng */
+.btn-outline-info {
+    border: 2px solid #0dcaf0;
+    color: #0dcaf0;
+    background-color: transparent;
+}
+
+.btn-outline-info:hover {
+    background-color: #0dcaf0;
+    color: white;
+}
+
+/* Hiệu ứng chung cho các nút trong footer */
+.modal-footer button {
+    border-radius: 12px;
+    /* Bo góc mềm mại hơn */
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .tour-card {
     transition: transform 0.2s, box-shadow 0.2s;
     border-radius: 16px !important;
@@ -226,6 +390,23 @@ export default {
 .btn-primary:hover {
     background-color: #004a8d;
     transform: scale(1.02);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.star-rating i {
+    transition: transform 0.2s ease-in-out;
+}
+
+.star-rating i:hover {
+    transform: scale(1.2);
+}
+
+.modal-detail-content {
+    /* Đã có trong code của bạn */
+    animation-duration: 0.4s;
 }
 
 .border-dashed {
