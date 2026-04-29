@@ -95,7 +95,7 @@ const routes = [
         props: true,
     },
     {
-       path: "/client/lich-su-dat-tour",
+        path: "/client/lich-su-dat-tour",
         component: () => import("../components/Client/LichSuDonHang/index.vue"),
         meta: { layout: "client" },
         beforeEnter: checkClient,
@@ -137,37 +137,37 @@ const routes = [
     {
         path: "/admin/quan-ly-tour",
         component: () => import("../components/Admin/QuanLyTour/index.vue"),
-       beforeEnter: checkAdmin,
+        beforeEnter: checkAdmin,
     },
     {
         path: "/admin/dang-nhap",
         component: () => import("../components/Admin/DangNhap/index.vue"),
-       meta: { layout: "blank" },
+        meta: { layout: "blank" },
     },
     {
         path: "/admin/phan-quyen",
         component: () => import("../components/Admin/PhanQuyen/index.vue"),
-       beforeEnter: checkAdmin,
+        beforeEnter: checkAdmin,
     },
     {
         path: "/admin/khach-hang",
         component: () => import("../components/Admin/khachhang/index.vue"),
-       beforeEnter: checkAdmin,
+        beforeEnter: checkAdmin,
     },
      {
         path: "/admin/nhan-vien",
         component: () => import("../components/Admin/nhanvien/index.vue"),
-       beforeEnter: checkAdmin,
+        beforeEnter: checkAdmin,
     },
      {
         path: "/admin/ve",
         component: () => import("../components/Admin/Ve/new-index.vue"),
-       beforeEnter: checkAdmin,
+        beforeEnter: checkAdmin,
     },
     {
         path: "/admin/hoa-don",
         component: () => import("../components/Admin/HoaDon/index.vue"),
-       beforeEnter: checkAdmin,
+        beforeEnter: checkAdmin,
     },
     
     {
