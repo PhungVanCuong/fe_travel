@@ -53,7 +53,6 @@
                             <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Mã Vé</th>
                             <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Khách Hàng</th>
                             <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tour</th>
-                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Số Chỗ</th>
                             <th style="padding: 15px; text-align: right; font-weight: 600; color: #333; font-size: 0.9rem;">Giá Vé</th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
@@ -71,7 +70,7 @@
                             @mouseleave="(e) => e.currentTarget.style.background = ''">
                             <td style="padding: 15px; color: #333; font-weight: 600;">{{ ticket.ma_ve }}</td>
                             <td style="padding: 15px; color: #666;">{{ ticket.ho_va_ten }}</td>
-                            <td style="padding: 15px; color: #666;">{{ getTourName(ticket.id_tour) }}</td>
+                            <td style="padding: 15px; color: #666;">{{ ticket.ten_tour || 'Chưa xác định' }}</td>
                             <td style="padding: 15px; text-align: right; color: #667eea; font-weight: 600;">{{ formatVND(ticket.gia_ve) }}</td>
                             <td style="padding: 15px; text-align: center;">
                                 <span :style="{
@@ -162,21 +161,32 @@
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Tour
+                            Khách Hàng
                         </label>
-                        <select v-model="editingTicket.id_tour"
+                        <select v-model="editingTicket.id_khach_hang"
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
-                            <option value="">Chọn tour</option>
-                            <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }}</option>
+                            <option value="">Chọn khách hàng</option>
+                            <option v-for="customer in customers" :key="customer.id" :value="customer.id">{{ customer.ho_va_ten }}</option>
                         </select>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Giá Vé
+                            Tour
                         </label>
-                        <input v-model="editingTicket.gia_ve" type="number"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <select v-model="editingTicket.id_tour"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn tour</option>
+                            <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }} - {{ formatVND(tour.gia) }}</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            💰 Giá Vé (Tự động cập nhật theo tour)
+                        </label>
+                        <input v-model="editingTicket.gia_ve" type="number" disabled
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: #f5f5f5; color: #667eea; font-weight: 600;">
                     </div>
 
                     <div style="margin-bottom: 20px;">
@@ -230,21 +240,32 @@
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Tour
+                            Hóa Đơn
                         </label>
-                        <select v-model="newTicket.id_tour"
+                        <select v-model="newTicket.id_hoa_don"
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
-                            <option value="">Chọn tour</option>
-                            <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }}</option>
+                            <option value="">Chọn hóa đơn</option>
+                            <option v-for="invoice in invoices" :key="invoice.id" :value="invoice.id">{{ invoice.ma_hoa_don }}</option>
                         </select>
                     </div>
 
                     <div style="margin-bottom: 15px;">
                         <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Giá Vé
+                            Tour
                         </label>
-                        <input v-model="newTicket.gia_ve" type="number"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <select v-model="newTicket.id_tour"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
+                            <option value="">Chọn tour</option>
+                            <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }} - {{ formatVND(tour.gia) }}</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            💰 Giá Vé (Tự động cập nhật theo tour)
+                        </label>
+                        <input v-model="newTicket.gia_ve" type="number" disabled
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: #f5f5f5; color: #667eea; font-weight: 600;">
                     </div>
 
                     <div style="margin-bottom: 20px;">
@@ -302,6 +323,7 @@ export default {
             tickets: [],
             tours: [],
             customers: [],
+            invoices: [],
             filteredTickets: [],
             searchQuery: '',
             tourFilter: '',
@@ -319,6 +341,7 @@ export default {
     mounted() {
         this.loadTours();
         this.loadCustomers();
+        this.loadInvoices();
         this.loadTickets();
     },
     methods: {
@@ -352,6 +375,21 @@ export default {
                 console.error('Error loading customers:', err);
             });
         },
+        loadInvoices() {
+            axios.get(apiUrl('admin/hoa-don/get-data'), {
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                }
+            })
+            .then(res => {
+                if (res.data.status) {
+                    this.invoices = res.data.data;
+                }
+            })
+            .catch(err => {
+                console.error('Error loading invoices:', err);
+            });
+        },
         loadTickets() {
             this.isLoading = true;
             axios.get(apiUrl('admin/ve/get-data'), {
@@ -382,14 +420,15 @@ export default {
                     (ticket.ma_ve && ticket.ma_ve.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                     (ticket.ho_va_ten && ticket.ho_va_ten.toLowerCase().includes(this.searchQuery.toLowerCase()));
                 
-                const matchTour = !this.tourFilter || ticket.id_tour.toString() === this.tourFilter;
+                const matchTour = !this.tourFilter || (ticket.id_tour && parseInt(ticket.id_tour) === parseInt(this.tourFilter));
                 const matchStatus = !this.statusFilter || ticket.tinh_trang.toString() === this.statusFilter;
                 
                 return matchSearch && matchTour && matchStatus;
             });
         },
         getTourName(id) {
-            const tour = this.tours.find(t => t.id == id);
+            if (!id) return 'Chưa xác định';
+            const tour = this.tours.find(t => parseInt(t.id) === parseInt(id));
             return tour ? tour.ten_tour : 'Chưa xác định';
         },
         formatDate(dateString) {
@@ -472,7 +511,15 @@ export default {
         saveTicket() {
             if (!this.editingTicket) return;
             
-            axios.post(apiUrl('admin/ve/update'), this.editingTicket, {
+            const data = {
+                id: this.editingTicket.id,
+                ma_ve: this.editingTicket.ma_ve,
+                gia_ve: this.editingTicket.gia_ve,
+                id_khach_hang: this.editingTicket.id_khach_hang,
+                tinh_trang: this.editingTicket.tinh_trang
+            };
+            
+            axios.post(apiUrl('admin/ve/update'), data, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
                 }

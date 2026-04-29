@@ -10,7 +10,7 @@
                 <div style="position: relative;">
                     <input v-model="searchQuery" 
                         type="text" 
-                        placeholder="Tìm kiếm hóa đơn hoặc khách hàng..."
+                        placeholder="Tìm kiếm mã hóa đơn hoặc khách hàng..."
                         @input="filterData"
                         style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
@@ -53,7 +53,7 @@
                             </td>
                         </tr>
                         <tr v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice-row">
-                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ invoice.id }}</td>
+                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ invoice.ma_hoa_don }}</td>
                             <td style="padding: 15px; color: #333;">{{ invoice.ten_khach_hang }}</td>
                             <td style="padding: 15px; color: #666;">{{ formatDate(invoice.ngay_tao) }}</td>
                             <td style="padding: 15px; color: #667eea; font-weight: 600;">{{ formatVND(invoice.tong_tien) }}</td>
@@ -115,7 +115,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                         <div>
                             <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Mã Hóa Đơn</p>
-                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedInvoice.id }}</p>
+                            <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedInvoice.ma_hoa_don }}</p>
                         </div>
                         <div>
                             <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Khách Hàng</p>
@@ -154,7 +154,7 @@
                     <button @click="showEditModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
                 </div>
                 <div v-if="selectedInvoice" style="color: #333;">
-                    <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0; font-weight: 600;">Hóa Đơn: {{ selectedInvoice.id }}</p>
+                    <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0; font-weight: 600;">Hóa Đơn: {{ selectedInvoice.ma_hoa_don }}</p>
                     <p style="margin: 0 0 20px 0; font-size: 0.9rem;">{{ selectedInvoice.ten_khach_hang }}</p>
                     
                     <label style="display: block; font-weight: 600; color: #333; margin-bottom: 10px; font-size: 0.9rem;">
@@ -185,7 +185,7 @@
                     </div>
                     <h2 style="margin: 0 0 10px 0; color: #333;">Xóa Hóa Đơn?</h2>
                     <p v-if="selectedInvoice" style="color: #666; margin: 0 0 20px 0;">
-                        Bạn chắc chắn muốn xóa hóa đơn <strong>{{ selectedInvoice.id }}</strong> của <strong>{{ selectedInvoice.ten_khach_hang }}</strong>?<br><span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
+                        Bạn chắc chắn muốn xóa hóa đơn <strong>{{ selectedInvoice.ma_hoa_don }}</strong> của <strong>{{ selectedInvoice.ten_khach_hang }}</strong>?<br><span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
                     </p>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <button @click="showDeleteModal = false"
@@ -248,8 +248,9 @@ export default {
         },
         filterData() {
             this.filteredInvoices = this.invoices.filter(invoice => {
+                // Sửa thành tìm kiếm theo ma_hoa_don
                 const matchSearch = !this.searchQuery || 
-                    invoice.id.toString().toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                    (invoice.ma_hoa_don && invoice.ma_hoa_don.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                     (invoice.ten_khach_hang && invoice.ten_khach_hang.toLowerCase().includes(this.searchQuery.toLowerCase()));
                 
                 const matchStatus = !this.statusFilter || invoice.trang_thai.toString() === this.statusFilter;

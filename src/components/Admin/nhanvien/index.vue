@@ -399,7 +399,7 @@ export default {
                     (employee.ho_va_ten && employee.ho_va_ten.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                     (employee.email && employee.email.toLowerCase().includes(this.searchQuery.toLowerCase()));
                 
-                const matchPosition = !this.positionFilter || employee.id_chuc_vu.toString() === this.positionFilter;
+                const matchPosition = !this.positionFilter || (employee.id_chuc_vu && parseInt(employee.id_chuc_vu) === parseInt(this.positionFilter));
                 const matchStatus = !this.statusFilter || employee.tinh_trang.toString() === this.statusFilter;
                 
                 return matchSearch && matchPosition && matchStatus;
