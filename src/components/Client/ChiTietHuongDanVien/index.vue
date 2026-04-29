@@ -24,7 +24,7 @@
                         <img :src="`https://ui-avatars.com/api/?name=${hdv.ho_va_ten}&background=random&color=fff&size=200&font-size=0.3`" 
                              class="rounded-circle shadow-lg border border-4 border-white mb-4" 
                              style="width: 160px; height: 160px; object-fit: cover;">
-                        <h3 class="fw-bold mb-1">{{ hdv.ho_va_ten }}</h3>
+                        <h3 class="fw-bold mb-1 text-white">{{ hdv.ho_va_ten }}</h3>
                         <p class="text-warning fw-semibold mb-4">Tour Guide Professional</p>
                         
                         <div class="d-flex justify-content-center gap-3">
