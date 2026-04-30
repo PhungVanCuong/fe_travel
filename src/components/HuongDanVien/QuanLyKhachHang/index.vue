@@ -27,7 +27,7 @@
             <p class="text-muted mt-3 fw-medium">Đang tải dữ liệu khách hàng...</p>
         </div>
 
-        <!-- Trạng thái Trống (Chưa nhận tour nào) -->
+        <!-- Trạng thái Trống -->
         <div v-else-if="listData.length === 0" class="card premium-card border-0 shadow-sm text-center py-5">
             <div class="card-body">
                 <img src="https://cdn-icons-png.flaticon.com/512/7486/7486747.png" width="130" class="opacity-50 mb-4" alt="Empty">
@@ -39,16 +39,16 @@
             </div>
         </div>
 
-        <!-- Danh sách Khách Hàng (Nhóm theo từng Tour) -->
+        <!-- Danh sách Khách Hàng -->
         <div v-else class="row">
             <div class="col-12" v-for="(tour, index) in listData" :key="index">
                 <div class="card premium-card border-0 shadow-sm mb-4 slide-in">
                     
-                    <!-- Header Card: Thông tin Tour -->
+                    <!-- Header Card -->
                     <div class="card-header bg-white border-bottom p-4">
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <div>
-                                <span class="badge bg-success bg-opacity-10 text-white px-3 py-2 rounded-pill mb-2 fw-bold border border-success border-opacity-25">
+                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-2 fw-bold border border-success border-opacity-25">
                                     MÃ TOUR: #{{ tour.id }}
                                 </span>
                                 <h5 class="fw-bold text-dark mb-1">{{ tour.ten_tour }}</h5>
@@ -76,11 +76,11 @@
                                 <thead class="bg-light text-secondary">
                                     <tr>
                                         <th class="text-center" width="5%">STT</th>
-                                        <th width="25%">Người Đặt Tên</th>
-                                        <th width="15%">Số Lượng Vé</th>
-                                        <th width="20%">Số Điện Thoại</th>
-                                        <th width="20%">Email</th>
+                                        <th width="20%">Người Đặt Tên</th>
+                                        <th width="15%">Số Điện Thoại</th>
+                                        <th width="15%">Email</th>
                                         <th width="15%">CCCD / Hộ Chiếu</th>
+                                        <th width="40%">Ghi Chú</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -89,27 +89,23 @@
                                         
                                         <!-- Cột Người đặt -->
                                         <td>
-                                            <div class="d-flex align-items-center">
-                                                <div class="avatar-circle me-3 text-white fw-bold shadow-sm">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <!-- ƯU TIÊN SỬ DỤNG AVATAR CỦA KHÁCH HÀNG, NẾU KHÔNG CÓ THÌ DÙNG CHỮ CÁI -->
+                                                <img v-if="kh.avatar" :src="kh.avatar" class="rounded-circle shadow-sm me-3 bg-light" style="width: 45px; height: 45px; object-fit: cover;">
+                                                <div v-else class="avatar-circle me-3 text-white fw-bold shadow-sm">
                                                     {{ getInitials(kh.ho_va_ten) }}
                                                 </div>
+                                                
                                                 <div>
                                                     <h6 class="mb-0 fw-bold text-dark">{{ kh.ho_va_ten || 'Đang cập nhật' }}</h6>
                                                     <small class="text-muted">Mã HĐ: {{ kh.ma_hoa_don }}</small>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        
-                                        <!-- Cột Số Lượng -->
-                                        <td>
-                                            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm">
-                                                {{ kh.so_luong_nguoi }} người đi
-                                            </span>
+                                            </div>   
                                         </td>
 
                                         <!-- Cột SĐT -->
                                         <td>
-                                            <span class="badge bg-light text-dark border px-2 py-1">
+                                            <span class="badge bg-light text-dark border px-2 py-1" style="font-size: 12px">
                                                 <i class="fa-solid fa-phone text-primary-custom me-1"></i> 
                                                 {{ kh.so_dien_thoai || 'Chưa cung cấp' }}
                                             </span>
@@ -123,6 +119,20 @@
                                         <!-- Cột CCCD -->
                                         <td>
                                             <span class="fw-medium text-dark">{{ kh.cccd || 'Chưa cung cấp' }}</span>
+                                        </td>
+                                        <!-- Cột Ghi Chú -->
+                                        <td>
+                                            <!-- ĐÃ BỔ SUNG GHI CHÚ DANH SÁCH NGƯỜI ĐI CÙNG -->
+                                            <div class="mt-2 bg-light p-2 rounded border-start border-3 border-info small border-radius-custom">
+                                                <div class="fw-bold text-dark mb-1">
+                                                    <i class="fa-solid fa-users me-1 text-primary"></i> 
+                                                    Số lượng: <span class="badge bg-warning text-dark ms-1" style="font-size: 12px">{{ kh.so_luong_nguoi }} vé</span>
+                                                </div>
+                                                <div v-if="kh.ghi_chu_danh_sach_nguoi_di" style="white-space: pre-line; font-size: 13px;" class="text-secondary fst-italic mt-1">
+                                                    {{ kh.ghi_chu_danh_sach_nguoi_di }}
+                                                </div>
+                                                <div v-else class="text-muted fst-italic">Không có ghi chú người đi cùng.</div>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -144,7 +154,7 @@ import apiUrl from '../../../utils/api';
 export default {
     data() {
         return {
-            listData: [], // Mảng chứa các Tour (mỗi tour chứa danh_sach_khach_hang)
+            listData: [], 
             isLoading: true
         }
     },

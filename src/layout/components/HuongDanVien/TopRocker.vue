@@ -3,18 +3,14 @@
         <div class="topbar d-flex align-items-center">
             <nav class="navbar navbar-expand">
                 <div class="topbar-logo-header">
-                    <!-- <div class="">
-                        <img src="../../../assets/images/2-removebg-preview.png" class="logo-icon" alt="logo icon">
-                    </div> -->
                     <div class="">
-                        <router-link  class="logo-text" to="/huong-dan-vien/profile">Hướng Dẫn Viên</router-link>
+                        <router-link class="logo-text" to="/huong-dan-vien/profile">Hướng Dẫn Viên</router-link>
                     </div>
                 </div>
                 <div class="mobile-toggle-menu"><i class='bx bx-menu'></i></div>
                 
                 <div class="top-menu ms-auto">
                     <ul class="navbar-nav align-items-center">
-                        <!-- Nút thông báo (Bạn có thể giữ nguyên cấu trúc html cũ ở đây nếu cần) -->
                         <li class="nav-item dropdown dropdown-large">
                             <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> 
                                 <span class="alert-count">0</span>
@@ -27,7 +23,6 @@
                                     </div>
                                 </a>
                                 <div class="header-notifications-list">
-                                    <!-- List thông báo rỗng -->
                                 </div>
                             </div>
                         </li>
@@ -37,7 +32,8 @@
                 <div class="user-box dropdown">
                     <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
                         role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img :src="userProfile.hinh_anh || 'https://ui-avatars.com/api/?name=' + userProfile.ho_va_ten + '&background=random'" class="user-img" alt="user avatar">
+                        <!-- ĐÃ SỬA LẠI THÀNH USERPROFILE.AVATAR ĐỂ LẤY ĐÚNG ẢNH -->
+                        <img :src="userProfile.avatar || 'https://ui-avatars.com/api/?name=' + userProfile.ho_va_ten + '&background=random'" class="user-img" alt="user avatar">
                         <div class="user-info ps-3">
                             <p class="user-name mb-0">{{ userProfile.ho_va_ten || 'Đang tải...' }}</p>
                             <small class="text-muted">{{ userProfile.email || 'HDV IXTAL TOUR' }}</small>
@@ -80,12 +76,17 @@ export default {
             userProfile: {
                 ho_va_ten: '',
                 email: '',
-                hinh_anh: ''
+                avatar: '' // Đổi thành avatar
             }
         }
     },
     mounted() {
         this.loadUserProfile();
+        // Lắng nghe sự kiện khi Profile cập nhật thì tải lại avatar ngay lập tức
+        window.addEventListener('profile-updated', this.loadUserProfile);
+    },
+    beforeUnmount() {
+        window.removeEventListener('profile-updated', this.loadUserProfile);
     },
     methods: {
         getHeaders() {
@@ -103,7 +104,6 @@ export default {
                 })
                 .catch((err) => {
                     console.error("Lỗi lấy thông tin HDV:", err);
-                    // Nếu lỗi (có thể do token hết hạn), đẩy ra trang login
                     if(err.response && err.response.status === 401) {
                         localStorage.removeItem('key_hdv');
                         this.$router.push('/huong-dan-vien/dang-nhap');

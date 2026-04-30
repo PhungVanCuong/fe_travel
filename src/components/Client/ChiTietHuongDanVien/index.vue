@@ -11,7 +11,7 @@
         <div v-else-if="!hdv" class="alert alert-danger shadow-sm rounded-4 text-center py-5">
             <i class="fa-solid fa-user-slash fs-1 mb-3"></i>
             <h4>Không tìm thấy thông tin Hướng dẫn viên</h4>
-            <button @click="$router.push('/huong-dan-vien')" class="btn btn-outline-danger mt-3 rounded-pill">Quay lại danh sách</button>
+            <button @click="$router.push('/client/huong-dan-vien')" class="btn btn-outline-danger mt-3 rounded-pill">Quay lại danh sách</button>
         </div>
 
         <div v-else>
@@ -21,9 +21,12 @@
                         <div class="position-absolute top-0 end-0 mt-3 me-3">
                             <i class="fa-solid fa-check-circle text-success fs-4 bg-white rounded-circle" title="Xác thực"></i>
                         </div>
-                        <img :src="`https://ui-avatars.com/api/?name=${hdv.ho_va_ten}&background=random&color=fff&size=200&font-size=0.3`" 
-                             class="rounded-circle shadow-lg border border-4 border-white mb-4" 
+                        
+                        <!-- ĐÃ CẬP NHẬT LOGIC AVATAR -->
+                        <img :src="hdv.avatar ? hdv.avatar : `https://ui-avatars.com/api/?name=${hdv.ho_va_ten}&background=random&color=fff&size=200&font-size=0.3`" 
+                             class="rounded-circle shadow-lg border border-4 border-white mb-4 bg-light" 
                              style="width: 160px; height: 160px; object-fit: cover;">
+                             
                         <h3 class="fw-bold mb-1 text-white">{{ hdv.ho_va_ten }}</h3>
                         <p class="text-warning fw-semibold mb-4">Tour Guide Professional</p>
                         
@@ -175,7 +178,6 @@ export default {
     methods: {
         async fetchChiTietHDV() {
             try {
-                // ĐÃ SỬA API: Gọi thẳng public không cần token
                 const res = await axios.get(apiUrl(`client/huong-dan-vien/chi-tiet/${this.id_hdv}`));
                 if (res.data.status) {
                     this.hdv = res.data.data.thong_tin_hdv;

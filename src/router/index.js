@@ -137,7 +137,7 @@ const routes = [
     },
     {
         path: "/admin/quan-ly-tour",
-        component: () => import("../components/Admin/quanlytour/index.vue"),
+        component: () => import("../components/Admin/QuanLyTour/index.vue"),
         beforeEnter: checkAdmin,
     },
     {
@@ -152,12 +152,12 @@ const routes = [
     },
     {
         path: "/admin/khach-hang",
-        component: () => import("../components/Admin/khachhang/index.vue"),
+        component: () => import("../components/Admin/KhachHang/index.vue"),
         beforeEnter: checkAdmin,
     },
      {
         path: "/admin/nhan-vien",
-        component: () => import("../components/Admin/nhanvien/index.vue"),
+        component: () => import("../components/Admin/NhanVien/index.vue"),
         beforeEnter: checkAdmin,
     },
     {

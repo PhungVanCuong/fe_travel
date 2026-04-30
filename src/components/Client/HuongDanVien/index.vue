@@ -20,8 +20,9 @@
                 <div class="card h-100 border-0 rounded-4 shadow-sm hdv-card overflow-hidden">
                     <div class="card-body text-center p-4">
                         <div class="avatar-wrapper mx-auto mb-4 position-relative">
-                            <img :src="`https://ui-avatars.com/api/?name=${hdv.ho_va_ten}&background=random&color=fff&size=150&font-size=0.33`" 
-                                 class="rounded-circle shadow-sm border border-3 border-white" 
+                            <!-- ĐÃ CẬP NHẬT LOGIC AVATAR -->
+                            <img :src="hdv.avatar ? hdv.avatar : `https://ui-avatars.com/api/?name=${hdv.ho_va_ten}&background=random&color=fff&size=150&font-size=0.33`" 
+                                 class="rounded-circle shadow-sm border border-3 border-white bg-light" 
                                  width="120" height="120" style="object-fit: cover;">
                             <span class="position-absolute bottom-0 end-0 bg-success border border-2 border-white rounded-circle" style="width: 20px; height: 20px;" title="Đang hoạt động"></span>
                         </div>
@@ -71,7 +72,6 @@ export default {
     methods: {
         async fetchDanhSachHDV() {
             try {
-                // ĐÃ SỬA API: Gọi thẳng public không cần token
                 const res = await axios.get(apiUrl('client/huong-dan-vien/danh-sach'));
                 if (res.data.status) {
                     this.list_hdv = res.data.data;
