@@ -192,6 +192,11 @@ const routes = [
         beforeEnter: checkAdmin,
     },
     {
+        path: "/admin/lich-trinh",
+        component: () => import("../components/Admin/LichTrinh/index.vue"),
+        beforeEnter: checkAdmin,
+    },
+    {
         path: "/admin/hoa-don",
         component: () => import("../components/Admin/HoaDon/index.vue"),
         beforeEnter: checkAdmin,
