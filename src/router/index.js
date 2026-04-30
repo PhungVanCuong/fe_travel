@@ -44,7 +44,7 @@ const routes = [
     },
     {
         path: "/client/tour/tour-trong-nuoc",
-        component: () => import("../components/Client/Tour/TourTrongNuoc/index.vue"),
+        component: () => import("../components/Client/Tour/TourTrongnuoc/index.vue"),
         meta: { layout: "client" },
     },
     {
@@ -125,6 +125,11 @@ const routes = [
     // },
 
     // ============= Admin ==================
+    {
+        path: "/admin/",
+        component: () => import("../components/Admin/Dashboard/index.vue"),
+        beforeEnter: checkAdmin,
+    },
     {
         path: "/admin/quan-ly-phuong-tien",
         component: () => import("../components/Admin/QuanLyPhuongTien/index.vue"),
@@ -216,6 +221,11 @@ const routes = [
     // ... code cũ của bạn ...
 
     // ============= Hướng Dẫn Viên ==================
+    {
+         path: "/huong-dan-vien",
+        component: () => import("../components/HuongDanVien/LichTrinh/index.vue"),
+        meta: { layout: "huong-dan-vien" },
+    },
     {
         path: "/huong-dan-vien/dang-nhap",
         component: () => import("../components/HuongDanVien/DangNhap/index.vue"),
