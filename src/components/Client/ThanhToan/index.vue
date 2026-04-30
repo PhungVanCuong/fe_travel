@@ -53,7 +53,7 @@
                                 </span>
                                 <span v-else class="badge bg-secondary ms-2 px-3 py-2">Không xác định</span>
                             </p>
-                            <p><strong>Ghi chú:</strong> {{ hoa_don.ghi_chu || 'Không có ghi chú' }}</p>
+                            <p><strong>Ghi chú:</strong> <span style="white-space: pre-line;">{{ hoa_don.ghi_chu_danh_sach_nguoi_di || 'Không có ghi chú' }}</span></p>
                         </div>
                     </div>
 
@@ -152,6 +152,7 @@
         <h5 class="mt-3 text-secondary">Đang tải thông tin hóa đơn...</h5>
     </div>
 
+    <!-- BẢNG CHỌN PHƯƠNG THỨC THANH TOÁN -->
     <div v-if="is_show_modal" class="modal-payment-drawer" @click.self="is_show_modal = false">
         <div class="drawer-content animate__animated animate__slideInRight">
             <div class="drawer-header bg-white">
@@ -162,6 +163,7 @@
             <div class="drawer-body">
                 <p class="text-muted small mb-4">Vui lòng chọn phương thức thanh toán phù hợp cho đơn hàng của bạn.</p>
                 
+                <!-- Phương thức 1: Ví điện tử -->
                 <div class="payment-item" :class="{ 'active': method === 1 }" @click="method = 1">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -173,16 +175,18 @@
                     
                     <div v-if="method === 1" class="method-details mt-3 pt-3 border-top">
                         <div class="d-flex gap-4 ms-4">
+                            <!-- VNPAY -->
                             <div class="form-check d-flex align-items-center p-0 m-0">
                                 <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioVnpay" value="vnpay" v-model="selectedWallet" style="cursor: pointer;">
                                 <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm" for="radioVnpay" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'vnpay'}">
                                     <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418196384.png" height="30" alt="VNPAY">
                                 </label>
                             </div>
+                            <!-- MOMO -->
                             <div class="form-check d-flex align-items-center p-0 m-0 ms-3">
                                 <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioMomo" value="momo" v-model="selectedWallet" style="cursor: pointer;">
                                 <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm" for="radioMomo" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'momo'}">
-                                    <img src="https://imgs.search.brave.com/LXSuPTwgJ2iLkneZnI2auDSCujZedr-yGSmNfYefB4U/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9jZG4u/aGFpdHJpZXUuY29t/L3dwLWNvbnRlbnQv/dXBsb2Fkcy8yMDIy/LzEwL0xvZ28tTW9N/by1DaXJjbGUucG5n" height="30" alt="MoMo">
+                                    <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" height="30" alt="MoMo">
                                 </label>
                             </div>
                         </div>
@@ -192,6 +196,7 @@
                     </div>
                 </div>
 
+                <!-- Phương thức 2: Chuyển khoản QR -->
                 <div class="payment-item mt-3" :class="{ 'active': method === 2 }" @click="method = 2">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -201,9 +206,9 @@
                         <i v-if="method === 2" class="fa-solid fa-circle-check text-primary fs-5"></i>
                     </div>
                     <div v-if="method === 2" class="method-details mt-3 pt-3 border-top text-center">
-                        <p class="small text-muted mb-3">Mở ứng dụng ngân hàng và quét mã QR bên dưới.</p>
+                        <p class="small text-muted mb-3">Mở ứng dụng ngân hàng và quét mã QR bên dưới để thanh toán nhanh.</p>
                         <img v-if="thanh_toan && thanh_toan.link_qr_code" :src="thanh_toan.link_qr_code" alt="QR Code"
-                            style="width: 200px; height: 200px; object-fit: contain; border-radius: 10px;"
+                            style="width: 220px; height: 220px; object-fit: contain; border-radius: 10px;"
                             class="shadow-sm border p-2 bg-white">
                         <p v-else class="text-danger small mt-2">Mã QR đang được cập nhật...</p>
                     </div>
@@ -217,10 +222,10 @@
                 </div>
                 
                 <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center fs-6" 
-                        @click="thanhToanVNPay" 
+                        @click="thanhToanAction" 
                         :disabled="isLoading">
                     <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {{ isLoading ? 'ĐANG KẾT NỐI CỔNG THANH TOÁN...' : 'XÁC NHẬN THANH TOÁN' }}
+                    {{ isLoading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN THANH TOÁN' }}
                 </button>
             </div>
         </div>
@@ -233,7 +238,7 @@ import apiUrl from '../../../utils/api';
 
 export default {
     name: 'ThanhToan',
-    props: ['ma_hoa_don'], // Lấy mã hóa đơn (chuỗi HD...) từ router props truyền vào
+    props: ['ma_hoa_don'],
     data() {
         return {
             hoa_don: null,
@@ -243,9 +248,9 @@ export default {
             thanh_toan: {},
             
             is_show_modal: false,
-            method: 1, // Mặc định method = 1 (Ví điện tử)
-            selectedWallet: 'vnpay', // Mặc định radio button chọn sẵn VNPAY
-            isLoading: false // Cờ chặn người dùng nhấn nhiều lần khi gọi API
+            method: 1, 
+            selectedWallet: 'vnpay', 
+            isLoading: false 
         }
     },
     mounted() {
@@ -253,7 +258,6 @@ export default {
     },
     methods: {
         loadData() {
-            // Gọi API lấy dữ liệu toàn bộ hóa đơn từ mã hóa đơn (VD: HDZAOXER...)
             axios.get(apiUrl("client/hoa-don/chi-tiet-thanh-toan/" + this.ma_hoa_don), {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_client')
@@ -273,7 +277,6 @@ export default {
                 }
             })
             .catch((err) => {
-                console.error("Lỗi API:", err);
                 this.$toast.error("Không thể lấy thông tin hóa đơn.");
             });
         },
@@ -282,44 +285,51 @@ export default {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
         },
 
-        // GỌI THẲNG API TẠO THANH TOÁN VNPAY
-        thanhToanVNPay() {
+        thanhToanAction() {
             if (this.method === 1) {
+                // Ví điện tử
                 if(this.selectedWallet === 'momo') {
                     this.$toast.info("Tính năng thanh toán MoMo đang được bảo trì. Vui lòng chọn VNPay!");
                     return;
                 }
 
-                // Nếu đang chọn VNPay
                 this.isLoading = true;
-                
-                // GIẢI QUYẾT LỖI "KHÔNG TÌM THẤY HÓA ĐƠN":
-                // Gửi cùng lúc cả ID (số nguyên) và Mã hóa đơn (chuỗi) để đảm bảo Backend nhận được đúng dữ liệu
                 const idGuiDi = this.hoa_don.id || this.hoa_don.id_hoa_don || this.ma_hoa_don;
 
                 axios.post(apiUrl('client/vnpay/tao-thanh-toan'), {
                     id_hoa_don: idGuiDi
+                }, {
+                    headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
                 })
                 .then(response => {
                     if (response.data.status) {
-                        // Thành công: Chuyển hướng người dùng sang trang của VNPay
                         this.$toast.success("Đang kết nối cổng thanh toán VNPAY...");
                         window.location.href = response.data.data;
                     } else {
-                        // Thất bại
                         this.$toast.error(response.data.message || 'Có lỗi xảy ra khi tạo link thanh toán.');
                         this.isLoading = false;
                     }
                 })
                 .catch(error => {
-                    console.error("Lỗi khi gọi API VNPay:", error);
                     this.$toast.error('Không thể kết nối cổng thanh toán. Vui lòng thử lại sau.');
                     this.isLoading = false;
                 });
             } 
             else if (this.method === 2) {
-                // Chuyển khoản QR thủ công
-                this.$toast.info("Vui lòng quét mã QR để chuyển khoản. Chúng tôi sẽ xử lý ngay khi nhận được tiền.");
+                // Chuyển khoản QR: Đẩy qua màn kết quả trạng thái Pending
+                this.isLoading = true;
+                setTimeout(() => {
+                    this.isLoading = false;
+                    this.is_show_modal = false;
+                    this.$router.push({
+                        path: '/Ket-qua-thanh-toan',
+                        query: {
+                            method: 'bank_transfer',
+                            amount: this.hoa_don.tong_tien,
+                            txnRef: 'HDTOUR' + this.hoa_don.id 
+                        }
+                    });
+                }, 800);
             }
         }
     }
@@ -327,96 +337,27 @@ export default {
 </script>
 
 <style scoped>
-/* Lớp phủ mờ toàn màn hình */
 .modal-payment-drawer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    display: flex;
-    justify-content: flex-end; /* Đẩy nội dung sang bên phải */
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.5); z-index: 9999; display: flex; justify-content: flex-end; 
 }
-
-/* Nội dung Modal dài hết chiều cao */
 .drawer-content {
-    background: white;
-    width: 450px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+    background: white; width: 450px; height: 100%; display: flex; flex-direction: column;
     box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
 }
+.drawer-header { padding: 20px 25px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+.drawer-body { padding: 25px; flex: 1; overflow-y: auto; background-color: #fdfdfd; }
+.drawer-footer { padding: 20px 25px; border-top: 1px solid #f0f0f0; background: #ffffff; box-shadow: 0 -4px 15px rgba(0,0,0,0.03); }
 
-.drawer-header {
-    padding: 20px 25px;
-    border-bottom: 1px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.drawer-body {
-    padding: 25px;
-    flex: 1;
-    overflow-y: auto;
-    background-color: #fdfdfd;
-}
-
-.drawer-footer {
-    padding: 20px 25px;
-    border-top: 1px solid #f0f0f0;
-    background: #ffffff;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.03);
-}
-
-/* Định dạng từng mục phương thức */
-.payment-item {
-    border: 2px solid #eef0f2;
-    border-radius: 12px;
-    padding: 18px;
-    cursor: pointer;
-    background-color: #fff;
-    transition: all 0.2s ease;
-}
-
-.payment-item:hover {
-    border-color: #d1d5db;
-}
-
-.payment-item.active {
-    border-color: #005baa;
-    background-color: #f8fbff;
-    box-shadow: 0 4px 15px rgba(0, 91, 186, 0.1);
-}
+.payment-item { border: 2px solid #eef0f2; border-radius: 12px; padding: 18px; cursor: pointer; background-color: #fff; transition: all 0.2s ease; }
+.payment-item:hover { border-color: #d1d5db; }
+.payment-item.active { border-color: #005baa; background-color: #f8fbff; box-shadow: 0 4px 15px rgba(0, 91, 186, 0.1); }
 
 .icon-box {
-    width: 45px;
-    height: 45px;
-    background: #f0f2f5;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    color: #6c757d;
-    transition: all 0.2s ease;
+    width: 45px; height: 45px; background: #f0f2f5; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px; color: #6c757d; transition: all 0.2s ease;
 }
-
-.payment-item.active .icon-box {
-    background: #005baa;
-    color: white;
-}
-
-/* Radio button style */
-.form-check-input {
-    width: 1.3em;
-    height: 1.3em;
-}
-.form-check-input:checked {
-    background-color: #005baa;
-    border-color: #005baa;
-}
+.payment-item.active .icon-box { background: #005baa; color: white; }
+.form-check-input { width: 1.3em; height: 1.3em; }
+.form-check-input:checked { background-color: #005baa; border-color: #005baa; }
 </style>
