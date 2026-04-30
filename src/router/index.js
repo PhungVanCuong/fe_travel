@@ -4,8 +4,19 @@ import checkClient from "./checkClient";
 import checkHuongDanVien from "./checkHuongDanVien";
 
 const routes = [
-    // ============= Client ==================
-    
+    // ============================================
+    // ================== Client ==================
+    // ============================================
+    {
+        path: "/client",
+        component: () => import("../components/Client/DangNhap/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/client/",
+        component: () => import("../components/Client/TrangChu/index.vue"),
+        meta: { layout: "client" },
+    },
     {
         path: "/",
         component: () => import("../components/Client/TrangChu/index.vue"),
@@ -117,14 +128,19 @@ const routes = [
     // },
     // {
      
-
-    // ==================== VIEW ====================
-    // {
-    //     path: "/",
-    //     component: () => import("../components/Test/index.vue"),
-    // },
-
-    // ============= Admin ==================
+    // ===========================================
+    // ================== Admin ==================
+    // ===========================================
+    {
+        path: "/admin",
+        component: () => import("../components/Admin/DangNhap/index.vue"),
+        meta: { layout: "blank" },
+    },
+    {
+        path: "/admin/",
+        component: () => import("../components/Admin/Dashboard/index.vue"),
+        beforeEnter: checkAdmin,
+    },
     {
         path: "/admin/quan-ly-phuong-tien",
         component: () => import("../components/Admin/QuanLyPhuongTien/index.vue"),
@@ -211,16 +227,22 @@ const routes = [
         beforeEnter: checkAdmin,
         name: "thong-ke-tour",
     },
-    // {
-    //     path: "/admin/phong-chieu",
-    //     component: () => import("../components/Admin/PhongChieu/index.vue"),
-    //     beforeEnter: checkAdmin,
-    // },
 
 
-    // ... code cũ của bạn ...
-
+    // ===============================================
     // ============= Hướng Dẫn Viên ==================
+    // ===============================================
+    {
+        path: "/huong-dan-vien/",
+        component: () => import("../components/HuongDanVien/LichTrinh/index.vue"),
+        beforeEnter: checkHuongDanVien,
+        meta: { layout: "huong-dan-vien" }, 
+    },
+    {
+        path: "/huong-dan-vien",
+        component: () => import("../components/HuongDanVien/DangNhap/index.vue"),
+        meta: { layout: "blank" },
+    },
     {
         path: "/huong-dan-vien/dang-nhap",
         component: () => import("../components/HuongDanVien/DangNhap/index.vue"),

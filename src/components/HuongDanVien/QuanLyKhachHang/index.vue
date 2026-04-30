@@ -48,7 +48,7 @@
                     <div class="card-header bg-white border-bottom p-4">
                         <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <div>
-                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill mb-2 fw-bold border border-success border-opacity-25">
+                                <span class="badge bg-success bg-opacity-10 text-white px-3 py-2 rounded-pill mb-2 fw-bold border border-success border-opacity-25">
                                     MÃ TOUR: #{{ tour.id }}
                                 </span>
                                 <h5 class="fw-bold text-dark mb-1">{{ tour.ten_tour }}</h5>
