@@ -186,7 +186,7 @@
                             <div class="form-check d-flex align-items-center p-0 m-0 ms-3">
                                 <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioMomo" value="momo" v-model="selectedWallet" style="cursor: pointer;">
                                 <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm" for="radioMomo" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'momo'}">
-                                    <img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" height="30" alt="MoMo">
+                                    <img src="https://homepage.momocdn.net/img/logo-momo.png" height="30" alt="MoMo">
                                 </label>
                             </div>
                         </div>
