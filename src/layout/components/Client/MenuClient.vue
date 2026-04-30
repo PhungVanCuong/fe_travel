@@ -49,12 +49,14 @@
 
               <div class="dropdown border-start border-secondary ps-3">
                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown">
+                  <!-- ĐÃ SỬA: Hiển thị avatar thực tế, nếu không có tự động tạo chữ cái đầu -->
                   <img :src="avatar_kh" class="anh-nguoi-dung rounded-circle" alt="User Avatar" />
                 </a>
                 
                 <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width: 220px; border-radius: 12px;">
                   <template v-if="isLoggedIn">
                     <li class="px-3 py-3 border-bottom text-center bg-light" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                      <!-- ĐÃ SỬA TƯƠNG TỰ -->
                       <img :src="avatar_kh" class="rounded-circle mb-2 shadow-sm" width="50" height="50" style="object-fit: cover;">
                       <p class="mb-0 fw-bold text-dark">{{ ho_va_ten }}</p>
                       <small class="text-muted">{{ email_kh }}</small>
@@ -124,8 +126,12 @@ export default {
     window.addEventListener("profile-updated", () => {
       this.ho_va_ten = localStorage.getItem("ho_va_ten") || this.ho_va_ten;
       const storedAvatar = localStorage.getItem("avatar");
-      if (storedAvatar && storedAvatar !== "null") {
+      
+      // KIỂM TRA: Nếu có avatar thì lấy, nếu rỗng thì tạo avatar chữ cái mặc định
+      if (storedAvatar && storedAvatar !== "null" && storedAvatar !== "") {
         this.avatar_kh = storedAvatar;
+      } else {
+        this.avatar_kh = `https://ui-avatars.com/api/?name=${this.ho_va_ten || 'KH'}&background=random&color=fff`;
       }
     });
   },
@@ -140,20 +146,22 @@ export default {
           this.ho_va_ten = res.data.ho_ten;
           this.email_kh = res.data.email;
           
-          // Ưu tiên lấy avatar từ localStorage nếu có, nếu không thì lấy mặc định
-          const storedAvatar = localStorage.getItem("avatar");
-          if (storedAvatar && storedAvatar !== "null") {
-            this.avatar_kh = storedAvatar;
+          // SỬA: Ưu tiên lấy avatar TỪ DATABASE TRẢ VỀ (res.data.avatar) thay vì localStorage cũ kỹ
+          if (res.data.avatar) {
+            this.avatar_kh = res.data.avatar;
+            localStorage.setItem("avatar", res.data.avatar);
           } else {
-            this.avatar_kh = 'https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-avatar-cute-58.jpg';
+            // Tự động tạo ảnh bằng chữ cái đầu nếu khách không tải ảnh lên
+            this.avatar_kh = `https://ui-avatars.com/api/?name=${this.ho_va_ten}&background=random&color=fff`;
+            localStorage.removeItem("avatar");
           }
+          localStorage.setItem("ho_va_ten", this.ho_va_ten);
         }
       }).catch(() => {
         this.clearAuthData();
       });
     },
     
-    // HÀM ĐĂNG XUẤT BÌNH THƯỜNG
     dangXuat() {
       const token = localStorage.getItem("key_client");
       axios.post(apiUrl("client/dang-xuat"), {}, {
@@ -170,7 +178,6 @@ export default {
       });
     },
 
-    // HÀM ĐĂNG XUẤT TẤT CẢ THIẾT BỊ (ALL)
     dangXuatAll() {
       const token = localStorage.getItem("key_client");
       if(confirm("Bạn có chắc chắn muốn đăng xuất khỏi tất cả các thiết bị không?")) {
@@ -209,7 +216,7 @@ export default {
 }
 
 .thanh-header-xanh {
-  background-color: #00004d !important; /* Mau xanh dam kieu navy */
+  background-color: #00004d !important;
 }
 
 .vung-tim-kiem {

@@ -12,7 +12,9 @@
                     <div class="card border-0 shadow-sm rounded-4 mb-4" style="overflow: visible;">
                         <div class="card-body p-0 text-center pb-4">
                             <div class="mt-n5 mb-3 position-relative d-inline-block" style="margin-top: -65px;">
-                                <img :src="profile.avatar || 'https://cdn-icons-png.flaticon.com/512/9187/9187604.png'" 
+                                <!-- ĐÃ SỬA: Liên kết với update_profile.avatar để dán link xong preview ảnh liền -->
+                                <!-- Nếu không có ảnh thì tự tạo UI-Avatars -->
+                                <img :src="update_profile.avatar || `https://ui-avatars.com/api/?name=${update_profile.ho_va_ten || 'KH'}&background=random&color=fff&size=150&font-size=0.33`" 
                                      alt="Avatar" 
                                      class="rounded-circle shadow bg-white p-1" 
                                      width="130" height="130" 
@@ -145,16 +147,18 @@
                                         </router-link>
                                     </div>
                                     
-                                    <button @click="updatePasswordProfile()" type="button" class="btn btn-warning text-dark rounded-pill w-100 fw-bold shadow-sm custom-btn">
-                                        Xác Nhận Đổi Mật Khẩu
-                                    </button>
+                                    <div class="text-center">
+                                        <button @click="updatePasswordProfile()" type="button" class="btn btn-warning text-dark rounded-pill w-100 fw-bold shadow-sm custom-btn">
+                                            Xác Nhận Đổi Mật Khẩu
+                                        </button>
+                                    </div>
                                 </div>
                                 
                                 <div class="col-md-5 d-none d-md-block text-center ps-md-4">
-									<img src="https://media.gettyimages.com/id/1370097090/video/hacking-digital-data-protection-concept-stock-video.jpg?s=640x640&k=20&c=m_Y3agfXhk5Rg049mxf21dqJc6uOJpL93U7TGkt7Kh0=" alt="Security" 
-										class="img-fluid" style="height: 300px; width: 100%; object-fit: cover; border-radius: 1rem;" />
-									<p class="text-muted small mt-3 fst-italic">Bảo mật tài khoản của bạn là ưu tiên hàng đầu của chúng tôi.</p>
-								</div>
+                                    <img src="https://media.gettyimages.com/id/1370097090/video/hacking-digital-data-protection-concept-stock-video.jpg?s=640x640&k=20&c=m_Y3agfXhk5Rg049mxf21dqJc6uOJpL93U7TGkt7Kh0=" alt="Security" 
+                                        class="img-fluid" style="height: 300px; width: 100%; object-fit: cover; border-radius: 1rem;" />
+                                    <p class="text-muted small mt-3 fst-italic">Bảo mật tài khoản của bạn là ưu tiên hàng đầu của chúng tôi.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -236,9 +240,12 @@ export default {
                 if (res.data.status) {
                     this.loadData();
                     this.$toast.success(res.data.message);
-
-                    localStorage.setItem("avatar", this.update_profile.avatar);
-                    localStorage.setItem("ho_va_ten", this.update_profile.ho_va_ten);
+                    
+                    // SỬA: Đảm bảo lưu đúng avatar để Header lấy dữ liệu nếu không trả về từ DB
+                    localStorage.setItem("avatar", this.update_profile.avatar || "");
+                    localStorage.setItem("ho_va_ten", this.update_profile.ho_va_ten || "");
+                    
+                    // Kích hoạt sự kiện để Header (TopRocker) cập nhật ngay
                     window.dispatchEvent(new Event("profile-updated"));
                 } else {
                     this.$toast.error(res.data.message);
