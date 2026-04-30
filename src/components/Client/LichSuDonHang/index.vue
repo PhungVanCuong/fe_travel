@@ -18,10 +18,17 @@
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h4 class="fw-bold mb-0 text-dark">{{ item.tour.ten_tour }}</h4>
                                 <span v-if="item.trang_thai == 2"
-                                    class="badge rounded-pill bg-success-subtle text-success px-3 ms-2">Đã thanh toán</span>
+                                    class="badge rounded-pill bg-success-subtle text-success px-3 ms-2">
+                                    <i class="fa-solid fa-circle-check me-1"></i> Đã thanh toán
+                                </span>
                                 <span v-else-if="item.trang_thai == 1"
-                                    class="badge rounded-pill bg-warning-subtle text-warning px-3 ms-2">Chưa thanh toán</span>
-                                <span v-else class="badge rounded-pill bg-secondary-subtle text-secondary px-3 ms-2">Đã hủy</span>
+                                    class="badge rounded-pill bg-warning-subtle text-warning px-3 ms-2">
+                                    <i class="fa-solid fa-clock me-1"></i> Chưa thanh toán
+                                </span>
+                                <!-- Đã thêm dấu X cho trạng thái hủy -->
+                                <span v-else class="badge rounded-pill bg-danger-subtle text-danger px-3 ms-2">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i> Đã hủy
+                                </span>
                             </div>
 
                             <div class="tour-info mt-3">
@@ -63,6 +70,7 @@
         <div class="modal-detail-content animate__animated animate__zoomIn">
             <div class="modal-header d-flex justify-content-between align-items-center border-bottom-0">
                 <div>
+                    <!-- Đã tô màu đỏ mã hóa đơn -->
                     <h4 class="fw-bold mb-0">Chi tiết đơn hàng #<span class="text-danger">{{ chi_tiet.ma_hoa_don }}</span></h4>
                     <small class="text-muted">Đặt ngày: {{ chi_tiet.ngay_dat }}</small>
                 </div>
@@ -116,9 +124,10 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="small">Trạng thái</span>
-                                <span v-if="chi_tiet.trang_thai == 2" class="badge bg-success-subtle text-success px-3">Đã thanh toán</span>
-                                <span v-else-if="chi_tiet.trang_thai == 1" class="badge bg-warning-subtle text-warning px-3">Chưa thanh toán</span>
-                                <span v-else class="badge bg-danger-subtle text-danger px-3">Đã hủy</span>
+                                <span v-if="chi_tiet.trang_thai == 2" class="badge bg-success-subtle text-success px-3"><i class="fa-solid fa-circle-check me-1"></i>Đã thanh toán</span>
+                                <span v-else-if="chi_tiet.trang_thai == 1" class="badge bg-warning-subtle text-warning px-3"><i class="fa-solid fa-clock me-1"></i>Chờ thanh toán</span>
+                                <!-- Đã thêm dấu X cho trạng thái hủy -->
+                                <span v-else class="badge bg-danger-subtle text-danger px-3"><i class="fa-solid fa-circle-xmark me-1"></i>Đã hủy</span>
                             </div>
                         </div>
 
@@ -162,6 +171,12 @@
 
                     <button v-if="chi_tiet.trang_thai == 2" class="btn btn-outline-info px-4 fw-bold shadow-sm">
                         <i class="fa-solid fa-file-invoice-dollar me-2"></i>Tải hóa đơn
+                    </button>
+
+                    <!-- NÚT HỦY ĐƠN HÀNG KHI CHƯA THANH TOÁN -->
+                    <button v-if="chi_tiet.trang_thai == 1" class="btn btn-outline-danger px-4 fw-bold shadow-sm"
+                        @click="huyDonHang(chi_tiet)">
+                        <i class="fa-solid fa-trash-can me-2"></i> Hủy đơn
                     </button>
 
                     <button v-if="chi_tiet.trang_thai == 1" class="btn btn-payment px-4 fw-bold text-white shadow-sm"
@@ -214,7 +229,6 @@
             <div class="drawer-body">
                 <p class="text-muted small mb-4">Vui lòng chọn phương thức thanh toán phù hợp cho đơn hàng của bạn.</p>
                 
-                <!-- Phương thức 1: Ví điện tử -->
                 <div class="payment-item" :class="{ 'active': method === 1 }" @click="method = 1">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -245,7 +259,6 @@
                     </div>
                 </div>
 
-                <!-- Phương thức 2: Chuyển khoản QR -->
                 <div class="payment-item mt-3" :class="{ 'active': method === 2 }" @click="method = 2">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
@@ -388,12 +401,37 @@ export default {
                 }, 800); 
             }
         },
+
+        // CHỨC NĂNG HỦY ĐƠN HÀNG
+        huyDonHang(item) {
+            if(confirm('Bạn có chắc chắn muốn hủy đơn hàng này không? Hành động này không thể hoàn tác.')) {
+                axios.post(apiUrl('client/hoa-don/huy'), { 
+                    ma_hoa_don: item.ma_hoa_don 
+                }, {
+                    headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
+                })
+                .then(res => {
+                    if(res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.is_show_detail = false; // Đóng modal
+                        this.getLichSu(); // Tải lại danh sách cập nhật trạng thái
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch(err => {
+                    this.$toast.error('Có lỗi xảy ra, vui lòng thử lại sau.');
+                });
+            }
+        },
+
         xemChiTiet(item) {
             this.chi_tiet = item;
             this.is_show_detail = true;
         },
         getLichSu() {
-            axios.get(apiUrl('/client/hoa-don/danh-sach'), {
+            this.isLoading = true;
+            axios.get(apiUrl('client/hoa-don/danh-sach'), {
                 headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
             })
             .then((res) => {
@@ -421,6 +459,9 @@ export default {
 .btn-payment:hover { background: linear-gradient(45deg, #b71c1c, #d32f2f); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3) !important; }
 .btn-outline-info { border: 2px solid #0dcaf0; color: #0dcaf0; background-color: transparent; }
 .btn-outline-info:hover { background-color: #0dcaf0; color: white; }
+.btn-outline-danger { border: 2px solid #dc3545; color: #dc3545; background-color: transparent; transition: all 0.3s ease; }
+.btn-outline-danger:hover { background-color: #dc3545; color: white; }
+
 .modal-footer button { border-radius: 12px; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; }
 .tour-card { transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px !important; overflow: hidden; }
 .tour-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important; }
@@ -446,7 +487,7 @@ export default {
 .tour-summary-box { background-color: #f8fbff; border-color: #e1f0ff !important; }
 .bg-success-subtle { background-color: #d1e7dd !important; }
 .bg-warning-subtle { background-color: #fff3cd !important; }
-.bg-danger-subtle { background-color: #f8d7da !important; }
+.bg-danger-subtle { background-color: #f8d7da !important; color: #dc3545 !important; }
 
 /* DRAWER STYLE */
 .modal-payment-drawer {
