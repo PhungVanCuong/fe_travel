@@ -303,6 +303,15 @@ const routes = [
         meta: { layout: "huong-dan-vien" }, 
     },
 
+    // =========================================================
+    // ==== ROUTE XỬ LÝ 404 NOT FOUND (BẮT BUỘC ĐỂ CUỐI CÙNG) ====
+    // =========================================================
+    {
+        path: "/:pathMatch(.*)*",
+        name: "NotFound",
+        component: () => import("../components/NotFound/index.vue"),
+        meta: { layout: "blank" }, 
+    }
 ];
 
 
