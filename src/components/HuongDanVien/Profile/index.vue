@@ -2,15 +2,15 @@
     <div class="profile-page-wrapper">
         <div class="container py-5">
             <div class="row justify-content-center">
-                <!-- Sử dụng 1 cột duy nhất, căn giữa, rộng rãi -->
                 <div class="col-12 col-lg-10 col-xl-8">
                     
                     <div class="card premium-card border-0 shadow-sm overflow-hidden">
                         
-                        <!-- PHẦN HEADER: Không dùng ảnh, chỉ dùng màu nền nhẹ nhàng -->
+                        <!-- PHẦN HEADER -->
                         <div class="profile-header-solid text-center pt-5 pb-4">
                             <div class="avatar-wrapper mb-3">
-                                <img :src="profile.avatar || 'https://ui-avatars.com/api/?name=' + (profile.ho_va_ten || 'HDV') + '&background=1b7d6b&color=fff'" 
+                                <!-- ĐÃ SỬA THÀNH UPDATE_PROFILE ĐỂ PREVIEW ẢNH NGAY KHI PASTE LINK -->
+                                <img :src="update_profile.avatar || 'https://ui-avatars.com/api/?name=' + (update_profile.ho_va_ten || 'HDV') + '&background=1b7d6b&color=fff'" 
                                      alt="Avatar" 
                                      class="profile-avatar shadow-sm" />
                             </div>
@@ -111,7 +111,6 @@
                                 
                                 <div class="row justify-content-center">
                                     <div class="col-12 col-md-10 col-lg-8">
-                                        <!-- Mật khẩu cũ -->
                                         <div class="mb-4">
                                             <label class="form-label fw-bold text-secondary small text-uppercase letter-spacing-1">Mật khẩu hiện tại</label>
                                             <div class="input-group premium-input-group">
@@ -123,7 +122,6 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Mật khẩu mới -->
                                         <div class="mb-4">
                                             <label class="form-label fw-bold text-secondary small text-uppercase letter-spacing-1">Mật khẩu mới</label>
                                             <div class="input-group premium-input-group">
@@ -135,7 +133,6 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- Xác nhận mật khẩu mới -->
                                         <div class="mb-4">
                                             <label class="form-label fw-bold text-secondary small text-uppercase letter-spacing-1">Xác nhận mật khẩu mới</label>
                                             <div class="input-group premium-input-group">
@@ -234,6 +231,7 @@ export default {
                 if (res.data.status) {
                     this.loadData();
                     this.$toast.success(res.data.message);
+                    // Kích hoạt sự kiện để Header (TopRocker) tải lại ảnh ngay
                     window.dispatchEvent(new Event("profile-updated")); 
                 } else {
                     this.$toast.error(res.data.message);
