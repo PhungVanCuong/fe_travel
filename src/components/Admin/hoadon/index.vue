@@ -336,7 +336,7 @@ export default {
         confirmDelete() {
             if (!this.selectedInvoice) return;
             
-            axios.post(apiUrl('admin/hoa-don/destroy'), { id: this.selectedInvoice.id }, {
+            axios.post(apiUrl('admin/hoa-don/delete'), { id: this.selectedInvoice.id }, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
                 }
