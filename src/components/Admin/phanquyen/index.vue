@@ -1,76 +1,71 @@
 <template>
-    <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
+    <div class="admin-container">
         <!-- Header -->
-        <div style="margin-bottom: 30px;">
-            <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">🔐 Quản Lý Phân Quyền</h1>
-            <p style="color: #666; margin: 5px 0 0 0;">Quản lý chức vụ, quyền hạn và các chức năng hệ thống.</p>
+        <div class="admin-header">
+            <h1 class="admin-title">🔐 Quản Lý Phân Quyền</h1>
+            <p class="admin-subtitle">Quản lý chức vụ, quyền hạn và các chức năng hệ thống.</p>
         </div>
 
-        <!-- Main Grid -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
-            <!-- Left: Positions Management -->
-            <div>
-                <!-- Search & Filter Bar -->
-                <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                    <div style="display: grid; grid-template-columns: 1fr 150px; gap: 15px; align-items: flex-end;">
-                        <div style="position: relative;">
-                            <input v-model="searchQuery" 
-                                type="text" 
-                                placeholder="Tìm kiếm chức vụ..."
-                                @input="filterPositions"
-                                style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
-                            <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
+        <!-- Main Content Grid -->
+        <div class="content-grid">
+            <!-- Left: Positions List -->
+            <div class="left-section">
+                <div class="card-container">
+                    <div class="card-header">
+                        <div class="header-content">
+                            <h3>📋 Danh Sách Chức Vụ</h3>
+                            <button @click="openAddModal" class="btn-primary-gradient btn-sm">
+                                <i class="fa-solid fa-plus me-1"></i>Thêm Chức Vụ
+                            </button>
                         </div>
-                        <button @click="openAddPositionModal" class="btn-primary-gradient">
-                            <i class="fa-solid fa-plus me-2"></i>Thêm Chức Vụ
-                        </button>
                     </div>
-                </div>
 
-                <!-- Positions Table -->
-                <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
-                    <div style="overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse;">
+                    <!-- Search Bar -->
+                    <div class="search-bar">
+                        <div class="search-wrapper">
+                            <input v-model="tim_kiem.noi_dung" type="text" class="form-control" placeholder="Tìm kiếm chức vụ..." @keyup="timKiem()">
+                            <i class="fa-solid fa-search"></i>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-wrapper">
+                        <table class="admin-table">
                             <thead>
-                                <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
-                                    <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tên Chức Vụ</th>
-                                    <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
-                                    <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên Chức Vụ</th>
+                                    <th>Trạng Thái</th>
+                                    <th style="text-align: center;">Thao Tác</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-if="filteredPositions.length === 0">
-                                    <td colspan="3" style="padding: 30px; text-align: center; color: #999;">
-                                        <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i>
-                                        <p style="margin: 10px 0 0 0;">Không có chức vụ nào</p>
+                                <tr v-if="list_chuc_vu.length === 0" class="empty-row">
+                                    <td colspan="4">
+                                        <i class="fa-solid fa-inbox"></i>
+                                        <p>Không có chức vụ nào</p>
                                     </td>
                                 </tr>
-                                <tr v-for="pos in filteredPositions" :key="pos.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
-                                    @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'"
-                                    @mouseleave="(e) => e.currentTarget.style.background = ''">
-                                    <td style="padding: 15px; color: #333; font-weight: 600;">{{ pos.ten_chuc_vu }}</td>
-                                    <td style="padding: 15px; text-align: center;">
-                                        <span :style="{
-                                            display: 'inline-block',
-                                            padding: '6px 12px',
-                                            borderRadius: '6px',
-                                            fontSize: '0.85rem',
-                                            fontWeight: '600',
-                                            background: pos.tinh_trang == 1 ? '#e0f2fe' : '#fef3c7',
-                                            color: pos.tinh_trang == 1 ? '#0369a1' : '#d97706'
-                                        }">
-                                            {{ pos.tinh_trang == 1 ? 'Hoạt Động' : 'Tạm Dừng' }}
+                                <tr v-for="(value, index) in list_chuc_vu" :key="index" class="table-row">
+                                    <td class="col-number">{{ index + 1 }}</td>
+                                    <td class="col-name">{{ value.ten_chuc_vu }}</td>
+                                    <td class="col-status">
+                                        <span :class="['status-badge', value.tinh_trang == 1 ? 'status-active' : 'status-inactive']">
+                                            {{ value.tinh_trang == 1 ? 'Hoạt Động' : 'Tạm Dừng' }}
                                         </span>
                                     </td>
-                                    <td style="padding: 15px; text-align: center;">
-                                        <div style="display: flex; gap: 8px; justify-content: center;">
-                                            <button @click="grantPermissions(pos)" class="action-btn btn-success" title="Cấp Quyền">
-                                                <i class="fa-solid fa-lock-open"></i>
+                                    <td class="col-actions">
+                                        <div class="action-group">
+                                            <button @click="phanQuyen(value)" class="action-btn btn-info" title="Phân Quyền">
+                                                <i class="fa-solid fa-key"></i>
                                             </button>
-                                            <button @click="editPosition(pos)" class="action-btn btn-edit" title="Chỉnh sửa">
+                                            <button @click="doiTrangThai(value)" class="action-btn btn-toggle" title="Đổi Trạng Thái">
+                                                <i class="fa-solid fa-toggle-on"></i>
+                                            </button>
+                                            <button @click="openEditModal(value)" class="action-btn btn-edit" title="Chỉnh Sửa">
                                                 <i class="fa-solid fa-pen-nib"></i>
                                             </button>
-                                            <button @click="deletePosition(pos)" class="action-btn btn-delete" title="Xóa">
+                                            <button @click="openDeleteModal(value)" class="action-btn btn-delete" title="Xóa">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
@@ -82,133 +77,129 @@
                 </div>
             </div>
 
-            <!-- Right: Functions & Permissions -->
-            <div>
-                <!-- Functions List -->
-                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 25px;">
-                    <h3 style="margin: 0 0 15px 0; color: #333; font-weight: 700;">📋 Danh Sách Chức Năng</h3>
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        <div v-if="functions.length === 0" style="padding: 20px; text-align: center; color: #999;">
-                            Chưa có chức năng nào
+            <!-- Middle: Functions List -->
+            <div class="middle-section">
+                <div class="card-container">
+                    <div class="card-header">
+                        <h3>✨ Danh Sách Chức Năng</h3>
+                    </div>
+                    <div class="functions-list">
+                        <div v-if="list_chuc_nang.length === 0" class="empty-message">
+                            <i class="fa-solid fa-inbox"></i>
+                            <p>Không có chức năng nào</p>
                         </div>
-                        <div v-for="func in functions" :key="func.id" style="padding: 12px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
-                            <input type="checkbox" :id="'func-' + func.id" :value="func.id" v-model="selectedFunctions" style="cursor: pointer;">
-                            <label :for="'func-' + func.id" style="margin: 0; cursor: pointer; flex: 1; color: #333;">
-                                {{ func.ten_chuc_nang }}
-                            </label>
+                        <div v-for="(value, index) in list_chuc_nang" :key="index" class="function-item">
+                            <span class="func-name">{{ value.ten_chuc_nang }}</span>
+                            <button @click="capQuyen(value.id)" class="btn-grant">Cấp Quyền</button>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Current Position Info -->
-                <div v-if="selectedPosition" style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                    <h3 style="margin: 0 0 15px 0; color: #333; font-weight: 700;">✨ Quyền Hiện Tại</h3>
-                    <div style="margin-bottom: 15px; padding: 12px; background: #f0f4f8; border-radius: 8px;">
-                        <p style="margin: 0 0 5px 0; color: #999; font-size: 0.85rem;">Chức Vụ</p>
-                        <p style="margin: 0; color: #333; font-weight: 600;">{{ selectedPosition.ten_chuc_vu }}</p>
+            <!-- Right: Current Permissions -->
+            <div class="right-section">
+                <div class="card-container">
+                    <div class="card-header">
+                        <h3>🔒 Quyền Của: <span class="position-name">{{ chon_chuc_vu.ten_chuc_vu || '...' }}</span></h3>
                     </div>
-                    <button @click="savePermissions" class="btn-primary-gradient" style="width: 100%;">
-                        <i class="fa-solid fa-check me-2"></i>Lưu Quyền
-                    </button>
-                </div>
-                <div v-else style="background: white; border-radius: 12px; padding: 30px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; color: #999;">
-                    <i class="fa-solid fa-info-circle" style="font-size: 2rem; margin-bottom: 10px;"></i>
-                    <p style="margin: 0;">Chọn một chức vụ để cấp quyền</p>
+                    <div class="permissions-list">
+                        <div v-if="!chon_chuc_vu.id" class="empty-message">
+                            <i class="fa-solid fa-info-circle"></i>
+                            <p>Chọn chức vụ để xem quyền</p>
+                        </div>
+                        <div v-else-if="list_phan_quyen.length === 0" class="empty-message">
+                            <i class="fa-solid fa-inbox"></i>
+                            <p>Không có quyền nào</p>
+                        </div>
+                        <div v-for="(value, index) in list_phan_quyen" :key="index" class="permission-item">
+                            <span class="perm-name">{{ value.ten_chuc_nang }}</span>
+                            <button @click="xoaQuyen(value)" class="btn-remove">
+                                <i class="fa-solid fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Add Position Modal -->
-        <div v-if="showAddPositionModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Thêm Chức Vụ Mới</h2>
-                    <button @click="showAddPositionModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
+        <!-- Modal: Thêm Chức Vụ -->
+        <div v-if="showAddModal" class="modal-overlay" @click.self="showAddModal = false">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Thêm Chức Vụ Mới</h2>
+                    <button @click="showAddModal = false" class="modal-close">×</button>
                 </div>
-                <div style="color: #333;">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Tên Chức Vụ
-                        </label>
-                        <input v-model="newPosition.ten_chuc_vu" type="text"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tên Chức Vụ</label>
+                        <input v-model="create_chuc_vu.ten_chuc_vu" type="text" class="form-input" placeholder="Nhập tên chức vụ...">
                     </div>
-
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Trạng Thái
-                        </label>
-                        <select v-model="newPosition.tinh_trang"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
-                            <option value="0">Tạm Dừng</option>
+                    <div class="form-group">
+                        <label>Slug Chức Vụ</label>
+                        <input v-model="create_chuc_vu.slug_chuc_vu" type="text" class="form-input" placeholder="Nhập slug chức vụ...">
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng Thái</label>
+                        <select v-model="create_chuc_vu.tinh_trang" class="form-select">
                             <option value="1">Hoạt Động</option>
+                            <option value="0">Tạm Dừng</option>
                         </select>
                     </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <button @click="showAddPositionModal = false"
-                            style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
-                        <button @click="addPosition"
-                            style="padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Thêm</button>
+                    <div class="modal-footer">
+                        <button @click="showAddModal = false" class="btn-secondary">Hủy</button>
+                        <button @click="taoChucVu" class="btn-primary-gradient">Thêm</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Edit Position Modal -->
-        <div v-if="showEditPositionModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h2 style="margin: 0; color: #333; font-size: 1.5rem;">Cập Nhật Chức Vụ</h2>
-                    <button @click="showEditPositionModal = false" style="background: none; border: none; font-size: 1.5rem; color: #999; cursor: pointer;">×</button>
+        <!-- Modal: Cập Nhật Chức Vụ -->
+        <div v-if="showEditModal" class="modal-overlay" @click.self="showEditModal = false">
+            <div class="modal-dialog">
+                <div class="modal-header">
+                    <h2>Cập Nhật Chức Vụ</h2>
+                    <button @click="showEditModal = false" class="modal-close">×</button>
                 </div>
-                <div v-if="editingPosition" style="color: #333;">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Tên Chức Vụ
-                        </label>
-                        <input v-model="editingPosition.ten_chuc_vu" type="text"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Tên Chức Vụ</label>
+                        <input v-model="update_chuc_vu.ten_chuc_vu" type="text" class="form-input" placeholder="Nhập tên chức vụ...">
                     </div>
-
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
-                            Trạng Thái
-                        </label>
-                        <select v-model="editingPosition.tinh_trang"
-                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white;">
-                            <option value="0">Tạm Dừng</option>
+                    <div class="form-group">
+                        <label>Slug Chức Vụ</label>
+                        <input v-model="update_chuc_vu.slug_chuc_vu" type="text" class="form-input" placeholder="Nhập slug chức vụ...">
+                    </div>
+                    <div class="form-group">
+                        <label>Trạng Thái</label>
+                        <select v-model="update_chuc_vu.tinh_trang" class="form-select">
                             <option value="1">Hoạt Động</option>
+                            <option value="0">Tạm Dừng</option>
                         </select>
                     </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <button @click="showEditPositionModal = false"
-                            style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
-                        <button @click="savePosition"
-                            style="padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Lưu</button>
+                    <div class="modal-footer">
+                        <button @click="showEditModal = false" class="btn-secondary">Hủy</button>
+                        <button @click="capNhatChucVu" class="btn-primary-gradient">Cập Nhật</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Delete Position Modal -->
-        <div v-if="showDeletePositionModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-            <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-                <div style="text-align: center;">
-                    <div style="font-size: 3rem; color: #f56565; margin-bottom: 15px;">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                    </div>
-                    <h2 style="margin: 0 0 10px 0; color: #333;">Xóa Chức Vụ?</h2>
-                    <p v-if="selectedPosition" style="color: #666; margin: 0 0 20px 0;">
-                        Bạn chắc chắn muốn xóa chức vụ <strong>{{ selectedPosition.ten_chuc_vu }}</strong>?<br><span style="font-size: 0.85rem; color: #999;">Hành động này không thể hoàn tác!</span>
+        <!-- Modal: Xóa Chức Vụ -->
+        <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-header modal-danger">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <h2>Xóa Chức Vụ?</h2>
+                </div>
+                <div class="modal-body">
+                    <p class="modal-text">
+                        Bạn chắc chắn muốn xóa chức vụ <strong>{{ delete_chuc_vu.ten_chuc_vu }}</strong>?<br>
+                        <span class="modal-warning">Hành động này không thể hoàn tác!</span>
                     </p>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                        <button @click="showDeletePositionModal = false"
-                            style="padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Hủy</button>
-                        <button @click="confirmDelete"
-                            style="padding: 12px; background: #f56565; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Xóa</button>
-                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button @click="showDeleteModal = false" class="btn-secondary">Hủy</button>
+                    <button @click="xoaChucVu" class="btn-danger">Xóa</button>
                 </div>
             </div>
         </div>
@@ -222,260 +213,854 @@ import apiUrl from '../../../utils/api';
 export default {
     data() {
         return {
-            positions: [],
-            filteredPositions: [],
-            functions: [],
-            searchQuery: '',
-            selectedPosition: null,
-            selectedFunctions: [],
-            newPosition: {},
-            editingPosition: null,
-            showAddPositionModal: false,
-            showEditPositionModal: false,
-            showDeletePositionModal: false,
+            list_chuc_nang: [],
+            list_chuc_vu: [],
+            create_chuc_vu: { tinh_trang: 1 },
+            update_chuc_vu: {},
+            delete_chuc_vu: {},
+            list_phan_quyen: [],
+            tim_kiem: { noi_dung: '' },
+            chon_chuc_vu: {},
+            showAddModal: false,
+            showEditModal: false,
+            showDeleteModal: false,
         }
     },
-    mounted() {
-        this.loadPositions();
-        this.loadFunctions();
-    },
-    methods: {
-        loadPositions() {
-            axios.get(apiUrl('admin/chuc-vu/get-data'), {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.positions = res.data.data;
-                    this.filterPositions();
-                    this.$toast.success('Tải dữ liệu thành công!');
-                } else {
-                    this.$toast.error(res.data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi tải dữ liệu chức vụ');
-            });
-        },
-        loadFunctions() {
-            axios.get(apiUrl('admin/chuc-nang/get-data'), {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.functions = res.data.data;
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi tải chức năng');
-            });
-        },
-        filterPositions() {
-            this.filteredPositions = this.positions.filter(pos => {
-                return !this.searchQuery || 
-                    pos.ten_chuc_vu.toLowerCase().includes(this.searchQuery.toLowerCase());
-            });
-        },
-        grantPermissions(position) {
-            this.selectedPosition = position;
-            this.selectedFunctions = [];
-            // Nạp quyền hiện tại nếu có
-            this.loadCurrentPermissions(position);
-        },
-        loadCurrentPermissions(position) {
-            axios.get(apiUrl('admin/chuc-vu/get-permissions/' + position.id), {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status && res.data.data) {
-                    this.selectedFunctions = res.data.data.map(p => p.id_chuc_nang);
-                }
-            })
-            .catch(err => {
-                console.error('Error loading permissions:', err);
-            });
-        },
-        savePermissions() {
-            if (!this.selectedPosition) return;
-            
-            axios.post(apiUrl('admin/chuc-vu/grant-permissions'), {
-                id_chuc_vu: this.selectedPosition.id,
-                chuc_nang_ids: this.selectedFunctions
-            }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.$toast.success('Cập nhật quyền thành công!');
-                    this.selectedPosition = null;
-                    this.selectedFunctions = [];
-                } else {
-                    this.$toast.error(res.data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi cập nhật quyền');
-            });
-        },
-        openAddPositionModal() {
-            this.newPosition = { tinh_trang: 1 };
-            this.showAddPositionModal = true;
-        },
-        addPosition() {
-            if (!this.newPosition.ten_chuc_vu) {
-                this.$toast.error('Vui lòng nhập tên chức vụ');
-                return;
-            }
 
-            axios.post(apiUrl('admin/chuc-vu/store'), this.newPosition, {
+    mounted() {
+        this.layDataChucVu();
+        this.layDataChucNang();
+    },
+
+    methods: {
+        // ================= MODAL =================
+        openAddModal() {
+            this.create_chuc_vu = { tinh_trang: 1 };
+            this.showAddModal = true;
+        },
+
+        openEditModal(value) {
+            this.update_chuc_vu = { ...value }; // 🔥 giữ id
+            console.log("EDIT DATA:", this.update_chuc_vu);
+            this.showEditModal = true;
+        },
+
+        openDeleteModal(value) {
+            this.delete_chuc_vu = { ...value }; // 🔥 giữ id
+            console.log("DELETE DATA:", this.delete_chuc_vu);
+            this.showDeleteModal = true;
+        },
+
+        // ================= GET DATA =================
+        layDataChucVu() {
+            axios.get(apiUrl('admin/chuc-vu/get-data'), this.authHeader())
+                .then(res => {
+                    console.log("GET CHUC VU:", res.data);
+
+                    if (res.data.status) {
+                        this.list_chuc_vu = res.data.data;
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        layDataChucNang() {
+            axios.get(apiUrl('admin/chuc-nang/get-data'), this.authHeader())
+                .then(res => {
+                    if (res.data.status) {
+                        this.list_chuc_nang = res.data.data;
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= ADD =================
+        taoChucVu() {
+            console.log("ADD:", this.create_chuc_vu);
+
+            axios.post(apiUrl('admin/chuc-vu/add-data'), this.create_chuc_vu, this.authHeader())
+                .then(res => {
+                    console.log("ADD RES:", res.data);
+
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.showAddModal = false;
+                        this.layDataChucVu();
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= UPDATE =================
+        capNhatChucVu() {
+            console.log("UPDATE DATA:", this.update_chuc_vu);
+
+            axios.post(apiUrl('admin/chuc-vu/update'), this.update_chuc_vu, this.authHeader())
+                .then(res => {
+                    console.log("UPDATE RES:", res.data);
+
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.showEditModal = false;
+                        this.layDataChucVu();
+                    } else {
+                        this.$toast.error(res.data.message); // 🔥 HIỂN THỊ LỖI
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= DELETE =================
+        xoaChucVu() {
+            console.log("DELETE ID:", this.delete_chuc_vu.id);
+
+            axios.post(apiUrl('admin/chuc-vu/destroy'), {
+                id: this.delete_chuc_vu.id
+            }, this.authHeader())
+                .then(res => {
+                    console.log("DELETE RES:", res.data);
+
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.showDeleteModal = false;
+                        this.layDataChucVu();
+                    } else {
+                        this.$toast.error(res.data.message); // 🔥 QUAN TRỌNG
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= STATUS =================
+        doiTrangThai(payload) {
+            axios.post(apiUrl('admin/chuc-vu/change-status'), payload, this.authHeader())
+                .then(res => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.layDataChucVu();
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= SEARCH =================
+        timKiem() {
+            axios.post(apiUrl('admin/chuc-vu/tim-kiem'), this.tim_kiem, this.authHeader())
+                .then(res => {
+                    this.list_chuc_vu = res.data.data;
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= PHÂN QUYỀN =================
+        phanQuyen(value) {
+            this.chon_chuc_vu = value;
+
+            axios.post(apiUrl('admin/phan-quyen/chi-tiet-phan-quyen/data'), value, this.authHeader())
+                .then(res => {
+                    this.list_phan_quyen = res.data.data;
+                })
+                .catch(this.handleError);
+        },
+
+        capQuyen(id_chuc_nang) {
+            axios.post(apiUrl('admin/phan-quyen/chi-tiet-phan-quyen/add-data'), {
+                id_chuc_vu: this.chon_chuc_vu.id,
+                id_chuc_nang
+            }, this.authHeader())
+                .then(res => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.phanQuyen(this.chon_chuc_vu);
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        xoaQuyen(value) {
+            axios.post(apiUrl('admin/phan-quyen/chi-tiet-phan-quyen/delete'), value, this.authHeader())
+                .then(res => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.phanQuyen(this.chon_chuc_vu);
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch(this.handleError);
+        },
+
+        // ================= HELPER =================
+        authHeader() {
+            return {
                 headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+                    Authorization: 'Bearer ' + localStorage.getItem("key_admin")
                 }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.$toast.success(res.data.message);
-                    this.showAddPositionModal = false;
-                    this.loadPositions();
-                } else {
-                    this.$toast.error(res.data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi thêm chức vụ');
-            });
+            };
         },
-        editPosition(pos) {
-            this.selectedPosition = pos;
-            this.editingPosition = JSON.parse(JSON.stringify(pos));
-            this.showEditPositionModal = true;
-        },
-        savePosition() {
-            if (!this.editingPosition) return;
-            
-            axios.post(apiUrl('admin/chuc-vu/update'), this.editingPosition, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.$toast.success(res.data.message);
-                    this.showEditPositionModal = false;
-                    this.loadPositions();
-                } else {
-                    this.$toast.error(res.data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi cập nhật chức vụ');
-            });
-        },
-        deletePosition(pos) {
-            this.selectedPosition = pos;
-            this.showDeletePositionModal = true;
-        },
-        confirmDelete() {
-            if (!this.selectedPosition) return;
-            
-            axios.post(apiUrl('admin/chuc-vu/destroy'), { id: this.selectedPosition.id }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.$toast.success(res.data.message);
-                    this.showDeletePositionModal = false;
-                    this.selectedPosition = null;
-                    this.loadPositions();
-                } else {
-                    this.$toast.error(res.data.message);
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi xóa chức vụ');
-            });
+
+        handleError(err) {
+            console.log("FULL ERROR:", err.response);
+
+            if (err.response?.data?.message) {
+                this.$toast.error(err.response.data.message);
+            } else {
+                this.$toast.error("Có lỗi xảy ra!");
+            }
         }
     }
 }
 </script>
 
 <style scoped>
-.btn-primary-gradient {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+/* ============ Admin Container ============ */
+.admin-container {
+    padding: 2rem;
+    background: #f8f9fa;
+    min-height: 100vh;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
 }
-.btn-primary-gradient:hover {
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+
+/* ============ Header ============ */
+.admin-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.admin-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.5px;
+}
+
+.admin-subtitle {
+    font-size: 0.95rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* ============ Content Grid ============ */
+.content-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr;
+    gap: 1.5rem;
+}
+
+/* ============ Card Container ============ */
+.card-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #e9ecef;
+}
+
+.card-container:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    padding: 1.25rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+}
+
+.header-content h3 {
+    margin: 0;
+    flex: 1;
+}
+
+/* ============ Search Bar ============ */
+.search-bar {
+    padding: 1rem 1.25rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-wrapper input {
+    width: 100%;
+    padding: 0.6rem 1rem 0.6rem 2.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-wrapper input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-wrapper i {
+    position: absolute;
+    left: 0.8rem;
+    color: #adb5bd;
+    font-size: 0.85rem;
+}
+
+/* ============ Table ============ */
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.admin-table thead {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.admin-table th {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 600;
+    color: #495057;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-table tbody tr {
+    border-bottom: 1px solid #e9ecef;
+    transition: all 0.2s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: #f8f9fa;
+}
+
+.admin-table td {
+    padding: 1rem 1.25rem;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+.admin-table .col-number {
+    font-weight: 600;
+    color: #667eea;
+    width: 4rem;
+}
+
+.admin-table .col-name {
+    font-weight: 500;
+    max-width: 150px;
+    word-break: break-word;
+}
+
+.admin-table .col-status {
+    text-align: center;
+}
+
+.admin-table .col-actions {
+    text-align: center;
+}
+
+.empty-row {
+    background: #f8f9fa;
+}
+
+.empty-row td {
+    padding: 2rem 1.25rem;
+    text-align: center;
+}
+
+.empty-row i {
+    font-size: 2rem;
+    color: #dee2e6;
+    margin-bottom: 0.5rem;
+}
+
+.empty-row p {
+    color: #adb5bd;
+    margin: 0.5rem 0 0 0;
+}
+
+/* ============ Status Badge ============ */
+.status-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background: #fff3cd;
+    color: #856404;
+}
+
+/* ============ Action Group ============ */
+.action-group {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
 }
 
 .action-btn {
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
+    border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
-    border: none;
+    transition: all 0.2s ease;
+    color: white;
 }
 
-.btn-view {
-    background: #e3f2fd;
-    color: #667eea;
+.action-btn i {
+    font-size: 0.8rem;
 }
-.btn-view:hover {
-    background: #667eea;
-    color: white;
+
+.btn-info {
+    background: #17a2b8;
+}
+
+.btn-info:hover {
+    background: #138496;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+}
+
+.btn-toggle {
+    background: #6c757d;
+}
+
+.btn-toggle:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
 }
 
 .btn-edit {
-    background: #f0f4f8;
-    color: #764ba2;
+    background: #ffc107;
+    color: #333;
 }
+
 .btn-edit:hover {
-    background: #764ba2;
-    color: white;
+    background: #e0a800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
 }
 
 .btn-delete {
-    background: #fee;
-    color: #f56565;
+    background: #dc3545;
 }
+
 .btn-delete:hover {
-    background: #f56565;
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+}
+
+/* ============ Button Styles ============ */
+.btn-primary-gradient {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.btn-sm {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+.btn-secondary {
+    background: #e9ecef;
+    color: #495057;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #dee2e6;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn-grant, .btn-remove {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-grant {
+    background: #28a745;
     color: white;
 }
 
-.btn-success {
-    background: #dcfce7;
-    color: #16a34a;
+.btn-grant:hover {
+    background: #218838;
+    transform: translateY(-2px);
 }
-.btn-success:hover {
-    background: #16a34a;
+
+.btn-remove {
+    background: #dc3545;
     color: white;
+}
+
+.btn-remove:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+/* ============ Functions & Permissions Lists ============ */
+.functions-list, .permissions-list {
+    padding: 1.25rem;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.functions-list::-webkit-scrollbar,
+.permissions-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.functions-list::-webkit-scrollbar-track,
+.permissions-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.functions-list::-webkit-scrollbar-thumb,
+.permissions-list::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 3px;
+}
+
+.functions-list::-webkit-scrollbar-thumb:hover,
+.permissions-list::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+.function-item, .permission-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin-bottom: 0.75rem;
+    border-left: 3px solid #667eea;
+    transition: all 0.2s ease;
+}
+
+.function-item:hover, .permission-item:hover {
+    background: #e7e8ff;
+    transform: translateX(4px);
+}
+
+.func-name, .perm-name {
+    flex: 1;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #2c3e50;
+    word-break: break-word;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #adb5bd;
+}
+
+.empty-message i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.empty-message p {
+    margin: 0.5rem 0 0 0;
+}
+
+.position-name {
+    color: #ffd700;
+    font-weight: 700;
+}
+
+/* ============ Form Input ============ */
+.form-input, .form-select {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus, .form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.9rem;
+}
+
+/* ============ Modal ============ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-dialog {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 90%;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-sm {
+    max-width: 400px;
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    flex: 1;
+}
+
+.modal-header.modal-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+}
+
+.modal-header i {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    transform: rotate(90deg);
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-text {
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+}
+
+.modal-warning {
+    display: block;
+    color: #dc3545;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
+}
+
+/* ============ Responsive Design ============ */
+@media (max-width: 1400px) {
+    .content-grid {
+        grid-template-columns: 1.5fr 1fr 1fr;
+    }
+}
+
+@media (max-width: 1200px) {
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .right-section {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-container {
+        padding: 1rem;
+    }
+
+    .admin-title {
+        font-size: 1.5rem;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+
+    .header-content {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .header-content h3 {
+        width: 100%;
+    }
+
+    .action-group {
+        flex-wrap: wrap;
+    }
+
+    .modal-dialog {
+        width: 95%;
+    }
 }
 </style>
