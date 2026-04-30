@@ -160,6 +160,11 @@ const routes = [
         component: () => import("../components/Admin/nhanvien/index.vue"),
         beforeEnter: checkAdmin,
     },
+    {
+        path: "/admin/huong-dan-vien",
+        component: () => import("../components/Admin/HuongDanVien/index.vue"),
+        beforeEnter: checkAdmin,
+    },
      {
         path: "/admin/ve",
         component: () => import("../components/Admin/Ve/new-index.vue"),

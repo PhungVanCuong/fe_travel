@@ -37,6 +37,13 @@
 								</a>
 							</li>
 						</router-link>
+						<router-link to="/admin/huong-dan-vien">
+							<li>
+								<a class="dropdown-item" href="/admin/huong-dan-vien">
+									<i class="bx bx-right-arrow-alt"></i>Hướng Dẫn Viên
+								</a>
+							</li>
+						</router-link>
 					</ul>
 				</li>
 
@@ -104,6 +111,30 @@
 						</router-link>
 					</ul>
 				</li>
+
+				<!-- Quản lý Phương Tiện -->
+				<router-link to="/admin/quan-ly-phuong-tien">
+					<li class="nav-item">
+						<a class="nav-link" href="/admin/quan-ly-phuong-tien">
+							<div class="parent-icon">
+								<i class="fa-solid fa-bus"></i>
+							</div>
+							<div class="menu-title">Quản lý Phương Tiện</div>
+						</a>
+					</li>
+				</router-link>
+
+				<!-- Quản lý HDV & Phân Công -->
+				<router-link to="/admin/quan-ly-hdv-va-phan-cong">
+					<li class="nav-item">
+						<a class="nav-link" href="/admin/quan-ly-hdv-va-phan-cong">
+							<div class="parent-icon">
+								<i class="fa-solid fa-people-group"></i>
+							</div>
+							<div class="menu-title">Quản lý HDV & Phân Công</div>
+						</a>
+					</li>
+				</router-link>
 
 				<!-- Phân quyền -->
 				<router-link to="/admin/phan-quyen">
