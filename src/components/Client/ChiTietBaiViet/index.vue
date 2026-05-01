@@ -54,7 +54,7 @@
                     <h4 class="mb-4 fw-bold" style="color: #005baa;">Có Thể Bạn Quan Tâm</h4>
                     <div class="row">
                         <div v-for="(bai_viet, index) in bai_viet_lien_quan" :key="index" class="col-lg-4 col-md-6 d-flex mb-3">
-                            <router-link :to="`/chi-tiet-bai-viet/${bai_viet.id}`" class="text-decoration-none text-dark d-flex w-100">
+                            <router-link :to="`/client/chi-tiet-bai-viet/${bai_viet.id}`" class="text-decoration-none text-dark d-flex w-100">
                                 <div class="card w-100 d-flex flex-column border-0 shadow-sm related-card rounded-4 overflow-hidden">
                                     <div class="card-img-top" style="height: 200px; overflow: hidden">
                                         <img :src="bai_viet.hinh_anh" class="w-100 h-100" style="object-fit: cover; transition: transform 0.3s;" />
