@@ -623,7 +623,35 @@ export default {
 .bounce-icon {
   animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.tour-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Hiệu ứng mượt mà */
+    overflow: hidden; /* Bắt buộc để ảnh không tràn ra ngoài khi scale */
+    outline: 2px solid transparent;
+    outline-offset: -2px;
+}
+.tour-card:hover {
+    transform: translateY(-10px); /* Card bay lên 10px */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15) !important; /* Đổ bóng đậm hơn */
+    outline: 2px solid #8fdfb5 !important;
+    outline-offset: -4px;
+}
+.tour-card .card-img-top {
+    transition: transform 0.6s ease; /* Thời gian phóng to chậm hơn card để tạo chiều sâu */
+}
 
+.tour-card:hover .card-img-top {
+    transform: scale(1.1); /* Ảnh phóng to 10% */
+}
+
+/* --- Hiệu ứng bổ sung cho Badge "Còn lại" --- */
+.tour-card .position-absolute.z-2 {
+    transition: all 0.3s ease;
+}
+
+.tour-card:hover .position-absolute.z-2 {
+    background-color: rgba(143, 223, 181, 0.9) !important; /* Đổi sang màu xanh thương hiệu khi hover */
+    color: #125633 !important;
+}
 @keyframes bounceIn {
   0% {
     transform: scale(0);
