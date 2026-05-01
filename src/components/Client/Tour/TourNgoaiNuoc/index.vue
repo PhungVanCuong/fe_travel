@@ -86,8 +86,8 @@
                 </router-link>
               </div>
 
-              <router-link to="/client/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài viết <i
-                  class="fa-solid fa-arrow-right ms-1"></i></router-link>
+              <router-link to="/client/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài
+                viết <i class="fa-solid fa-arrow-right ms-1"></i></router-link>
             </div>
 
           </div>
@@ -238,8 +238,10 @@ export default {
   },
   computed: {
     uniqueDestinations() {
-      const destinations = this.allTours.map(t => t.diem_tra).filter(Boolean);
-      return [...new Set(destinations)];
+      const nations = this.allTours
+        .map(t => t.quoc_gia ? t.quoc_gia.ten_quoc_gia : null)
+        .filter(Boolean);
+      return [...new Set(nations)];
     },
 
     totalPages() {
@@ -302,7 +304,9 @@ export default {
     applyFilters() {
       let results = this.allTours.slice();
       if (this.filterSearch) results = results.filter(t => t.ten_tour.toLowerCase().includes(this.filterSearch.toLowerCase()));
-      if (this.filterDestinations.length > 0) results = results.filter(t => this.filterDestinations.includes(t.diem_tra));
+      if (this.filterDestinations.length > 0) {
+        results = results.filter(t =>t.quoc_gia && this.filterDestinations.includes(t.quoc_gia.ten_quoc_gia));
+      }
       if (this.filterDuration) {
         results = results.filter(t => {
           const days = this.calculateDays(t.ngay_bat_dau, t.ngay_ket_thuc);
