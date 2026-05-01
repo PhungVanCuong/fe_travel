@@ -71,58 +71,59 @@
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0).slice(0, 6)"
           :key="index">
           <div class="col-lg-4 col-md-6 mb-4 mt-2">
-            <div class="card h-100 shadow-sm border-0 position-relative tour-card "
-              style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
-
-              <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
-                style="height: 220px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-
-              <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
-                style="top: 180px; right: 10px; font-size: 0.85rem;">
-                <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
-              </div>
-
-              <div class="card-body d-flex flex-column pt-4">
-
-                <h5 class="card-title fw-bold text-dark mb-3"
-                  style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  {{ value.ten_tour }}
-                </h5>
-                <div style="color: #FEE715; font-size: 13px;">
-                  <i class="fa-solid fa-star me-1"></i><span class=" fw-bold">{{
-                    Number(value.avg_sao || 0).toFixed(1) }}</span> <span class="text-muted">({{ value.so_luot_danh_gia
-                      || 0 }} đánh giá)</span>
+            .<router-link :to="'/client/chi-tiet-tour/' + value.id">
+              <div class="card h-100 shadow-sm border-0 position-relative tour-card "
+                style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
+                <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
+                  style="height: 220px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
+                  style="top: 180px; right: 10px; font-size: 0.85rem;">
+                  <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
                 </div>
-                <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.95rem;">
-                  <div class="d-flex align-items-start gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-geo-alt text-primary mt-1" viewBox="0 0 16 16">
-                      <path
-                        d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                      <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                    </svg>
-                    <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
+                <div class="card-body d-flex flex-column pt-4">
+
+                  <h5 class="card-title fw-bold text-dark mb-3"
+                    style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ value.ten_tour }}
+                  </h5>
+                  <div style="color: #FEE715; font-size: 13px;">
+                    <i class="fa-solid fa-star me-1"></i><span class=" fw-bold">{{
+                      Number(value.avg_sao || 0).toFixed(1) }}</span> <span class="text-muted">({{
+                        value.so_luot_danh_gia
+                        || 0 }} đánh giá)</span>
+                  </div>
+                  <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.95rem;">
+                    <div class="d-flex align-items-start gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-geo-alt text-primary mt-1" viewBox="0 0 16 16">
+                        <path
+                          d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                      </svg>
+                      <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-4"
+                    style="font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ value.mo_ta }}
+                  </p>
+
+                  <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{
+                        formatDate(value.ngay_bat_dau) }}</span>
+                      <h5 class="fw-bold mb-0 " style="color: #8fdfb5;">
+                        {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                      </h5>
+                    </div>
+                    <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-detail rounded-pill px-4">
+                      <i class="fa-solid fa-circle-info me-1"></i> Chi tiết
+                    </router-link>
                   </div>
                 </div>
-                <p class="text-muted mb-4"
-                  style="font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  {{ value.mo_ta }}
-                </p>
-
-                <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{ value.ngay_bat_dau
-                    }}</span>
-                    <h5 class="fw-bold mb-0 " style="color: #8fdfb5;">
-                      {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
-                    </h5>
-                  </div>
-                  <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
-                    <i class="bx bx-star"></i> Chi tiết
-                  </router-link>
-                </div>
               </div>
-            </div>
+            </router-link>
+
           </div>
         </template>
       </div>
@@ -139,57 +140,60 @@
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0 && x.id_quoc_gia == '1').slice(0, 4)"
           :key="index">
           <div class="col-lg-3 col-md-6 mb-4 mt-2">
-            <div class="card h-100 shadow-sm border-0 position-relative tour-card "
-              style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
+            .<router-link :to="'/client/chi-tiet-tour/' + value.id">
+              <div class="card h-100 shadow-sm border-0 position-relative tour-card "
+                style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
 
-              <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
-                style="height: 220px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
+                  style="height: 220px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
 
-              <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
-                style="top: 180px; right: 10px; font-size: 0.85rem;">
-                <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
-              </div>
-
-              <div class="card-body d-flex flex-column pt-4">
-
-                <h5 class="card-title fw-bold text-dark mb-3"
-                  style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  {{ value.ten_tour }}
-                </h5>
-                <div style="color: #FEE715; font-size: 13px;">
-                  <i class="fa-solid fa-star me-1"></i><span class=" fw-bold">{{
-                    Number(value.avg_sao || 0).toFixed(1) }}</span> <span class="text-muted">({{ value.so_luot_danh_gia
-                      || 0 }} đánh giá)</span>
+                <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
+                  style="top: 180px; right: 10px; font-size: 0.85rem;">
+                  <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
                 </div>
-                <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.95rem;">
-                  <div class="d-flex align-items-start gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-geo-alt text-primary mt-1" viewBox="0 0 16 16">
-                      <path
-                        d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                      <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                    </svg>
-                    <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
+
+                <div class="card-body d-flex flex-column pt-4">
+
+                  <h5 class="card-title fw-bold text-dark mb-3"
+                    style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ value.ten_tour }}
+                  </h5>
+                  <div style="color: #FEE715; font-size: 13px;">
+                    <i class="fa-solid fa-star me-1"></i><span class=" fw-bold">{{
+                      Number(value.avg_sao || 0).toFixed(1) }}</span> <span class="text-muted">({{
+                        value.so_luot_danh_gia
+                        || 0 }} đánh giá)</span>
+                  </div>
+                  <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.95rem;">
+                    <div class="d-flex align-items-start gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-geo-alt text-primary mt-1" viewBox="0 0 16 16">
+                        <path
+                          d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                      </svg>
+                      <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
+                    </div>
+                  </div>
+                  <p class="text-muted mb-4"
+                    style="font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ value.mo_ta }}
+                  </p>
+                  <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{
+                        formatDate(value.ngay_bat_dau) }}</span>
+                      <h5 class="fw-bold mb-0 " style="color: #8fdfb5;">
+                        {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                      </h5>
+                    </div>
+                    <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-detail rounded-pill px-4">
+                      <i class="fa-solid fa-circle-info me-1"></i> Chi tiết
+                    </router-link>
                   </div>
                 </div>
-                <p class="text-muted mb-4"
-                  style="font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  {{ value.mo_ta }}
-                </p>
-                <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{ value.ngay_bat_dau
-                    }}</span>
-                    <h5 class="fw-bold mb-0 " style="color: #8fdfb5;">
-                      {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
-                    </h5>
-                  </div>
-                  <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
-                    <i class="bx bx-star"></i> Chi tiết
-                  </router-link>
-                </div>
               </div>
-            </div>
+            </router-link>
           </div>
         </template>
       </div>
@@ -198,7 +202,8 @@
           <button class="btn rounded-pill"
             style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
             onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
-            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Trong Nước</button>
+            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Trong
+            Nước</button>
         </router-link>
       </div>
     </div>
@@ -214,59 +219,61 @@
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0 && x.id_quoc_gia != '1').slice(0, 4)"
           :key="index">
           <div class="col-lg-3 col-md-6 mb-4 mt-2">
-            <div class="card h-100 shadow-sm border-0 position-relative tour-card "
-              style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
+            <router-link :to="'/client/chi-tiet-tour/' + value.id">
+              <div class="card h-100 shadow-sm border-0 position-relative tour-card "
+                style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
 
-              <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
-                style="height: 220px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
+                  style="height: 220px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
 
-              <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
-                style="top: 180px; right: 10px; font-size: 0.85rem;">
-                <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
-              </div>
+                <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
+                  style="top: 180px; right: 10px; font-size: 0.85rem;">
+                  <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
+                </div>
 
-              <div class="card-body d-flex flex-column pt-4">
+                <div class="card-body d-flex flex-column pt-4">
 
-                <h5 class="card-title fw-bold text-dark mb-3"
-                  style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  {{ value.ten_tour }}
-                </h5>
-                <div style="color: #FEE715; font-size: 13px;">
-                  <i class="fa-solid fa-star me-1"></i><span class=" fw-bold">{{
-                    Number(value.avg_sao || 0).toFixed(1) }}</span> <span class="text-muted">({{ value.so_luot_danh_gia
-                      ||
+                  <h5 class="card-title fw-bold text-dark mb-3"
+                    style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ value.ten_tour }}
+                  </h5>
+                  <div style="color: #FEE715; font-size: 13px;">
+                    <i class="fa-solid fa-star me-1"></i><span class=" fw-bold">{{
+                      Number(value.avg_sao || 0).toFixed(1) }}</span> <span class="text-muted">({{
+                        value.so_luot_danh_gia
+                        ||
                       0 }} đánh giá)</span>
-                </div>
-                <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.95rem;">
-                  <div class="d-flex align-items-start gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                      class="bi bi-geo-alt text-primary mt-1" viewBox="0 0 16 16">
-                      <path
-                        d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                      <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                    </svg>
-                    <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
                   </div>
-                </div>
-                <p class="text-muted mb-4"
-                  style="font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  {{ value.mo_ta }}
-                </p>
-
-                <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                  <div>
-                    <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{ value.ngay_bat_dau
-                    }}</span>
-                    <h5 class="fw-bold mb-0 " style="color: #8fdfb5;">
-                      {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
-                    </h5>
+                  <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.95rem;">
+                    <div class="d-flex align-items-start gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-geo-alt text-primary mt-1" viewBox="0 0 16 16">
+                        <path
+                          d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                      </svg>
+                      <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
+                    </div>
                   </div>
-                  <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-primary btn-sm rounded-pill px-3">
-                    <i class="bx bx-star"></i> Chi tiết
-                  </router-link>
+                  <p class="text-muted mb-4"
+                    style="font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                    {{ value.mo_ta }}
+                  </p>
+                  <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                    <div>
+                      <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{
+                        formatDate(value.ngay_bat_dau) }}</span>
+                      <h5 class="fw-bold mb-0 " style="color: #8fdfb5;">
+                        {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                      </h5>
+                    </div>
+                    <router-link :to="'/client/chi-tiet-tour/' + value.id" class="btn btn-detail rounded-pill px-4">
+                      <i class="fa-solid fa-circle-info me-1"></i> Chi tiết
+                    </router-link>
+                  </div>
                 </div>
               </div>
-            </div>
+            </router-link>
           </div>
         </template>
       </div>
@@ -275,7 +282,8 @@
           <button class="btn rounded-pill"
             style="background-color: transparent; border: 1px solid #E4445E; color: #E4445E; transition: all 0.3s ease;"
             onmouseover="this.style.backgroundColor='#E4445E'; this.style.color='white'"
-            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Nước Ngoài</button>
+            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#E4445E'">Xem thêm Tour Nước
+            Ngoài</button>
         </router-link>
       </div>
     </div>
@@ -485,6 +493,16 @@ export default {
     this.stopAutoSlide(); // Hủy slide khi rời trang
   },
   methods: {
+    formatDate(dateString) {
+      if (!dateString) return '';
+      const date = new Date(dateString);
+      // Định dạng theo kiểu Việt Nam: DD/MM/YYYY
+      return date.toLocaleDateString('vi-VN', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    },
     loadData() {
       axios.get(apiUrl('client/trang-chu/get-data'))
         .then((res) => {
@@ -526,6 +544,46 @@ export default {
 </script>
 
 <style scoped>
+/* CSS Nút Chi Tiết Tùy Chỉnh */
+.btn-detail {
+  background-color: transparent;
+  border: 1.5px solid #8fdfb5;
+  /* Màu xanh thương hiệu */
+  color: #125633;
+  /* Màu chữ xanh đậm */
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px !important;
+  transition: all 0.3s ease;
+}
+
+/* Hiệu ứng khi di chuột qua (Hover) */
+.btn-detail:hover {
+  background-color: #8fdfb5;
+  /* Đổ màu nền khi hover */
+  color: #125633;
+  transform: translateY(-3px);
+  /* Nút bay lên nhẹ */
+  box-shadow: 0 8px 15px rgba(143, 223, 181, 0.4);
+  /* Bóng đổ mờ */
+}
+
+/* Hiệu ứng khi click */
+.btn-detail:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(143, 223, 181, 0.2);
+}
+
 .section-background {
   background-color: #f3ffff;
   background-image: url('../../../assets/images/section-background.png');
