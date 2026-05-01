@@ -53,7 +53,7 @@
                                 </span>
                                 <span v-else class="badge bg-secondary ms-2 px-3 py-2">Không xác định</span>
                             </p>
-                            <p><strong>Ghi chú:</strong> <span style="white-space: pre-line;">{{ hoa_don.ghi_chu_danh_sach_nguoi_di || 'Không có ghi chú' }}</span></p>
+                            <p><strong>Ghi chú:</strong> <span style="white-space: pre-line;">{{ hoa_don.ghi_chu || 'Không có ghi chú' }}</span></p>
                         </div>
                     </div>
 
