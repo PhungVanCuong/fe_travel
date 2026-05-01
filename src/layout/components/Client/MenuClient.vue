@@ -1,25 +1,26 @@
 <template>
-  <header class="header-vung">
-    <nav class="navbar navbar-expand-lg navbar-dark py-2 thanh-header-xanh">
+  <header class="header-vung shadow-sm">
+    <nav class="navbar navbar-expand-lg  py-2 thanh-header-xanh">
       <div class="container-fluid px-4">
         <router-link to="/" class="navbar-brand fw-bold fs-4 d-flex align-items-center">
-          <span class="text-white">IXTAL</span>
-          <span class="text-warning ms-1">TOUR</span>
+          <img src="../../../assets/images/Logo1.png" alt="Logo"  class="me-2 logo-chinh">
         </router-link>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuChinh">
-          <span class="navbar-toggler-icon"></span>   
+          <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="menuChinh">
+          <!-- Vùng tìm kiếm với chữ đen -->
           <div class="ms-4 vung-tim-kiem d-none d-lg-block">
             <div class="input-group">
               <span class="input-group-text vung-nhap-lieu border-end-0">
-                <i class="fa-solid fa-magnifying-glass text-light-50"></i>
+                <i class="fa-solid fa-magnifying-glass text-dark"></i>
               </span>
-              <input type="text" class="form-control vung-nhap-lieu border-start-0 ps-0 text-white" placeholder="Tìm kiếm tour, điểm đến...">
+              <input type="text" class="form-control vung-nhap-lieu border-start-0 ps-0 text-dark"
+                placeholder="Tìm kiếm tour, điểm đến...">
               <span class="input-group-text vung-nhap-lieu border-start-0 cursor-pointer">
-                <i class="fa-solid fa-xmark text-light-50 small"></i>
+                <i class="fa-solid fa-xmark text-dark small"></i>
               </span>
             </div>
           </div>
@@ -32,54 +33,60 @@
               <a class="nav-link dropdown-toggle px-3" href="#" role="button" data-bs-toggle="dropdown">
                 Tour
               </a>
-              <ul class="dropdown-menu dropdown-menu-dark shadow">
+              <ul class="dropdown-menu shadow border-0">
                 <li><router-link class="dropdown-item" to="/client/tour/tour-trong-nuoc">Trong Nước</router-link></li>
                 <li><router-link class="dropdown-item" to="/client/tour/tour-ngoai-nuoc">Nước Ngoài</router-link></li>
               </ul>
             </li>
-            <li class="nav-item"><router-link to="/client/huong-dan-vien" class="nav-link px-3">Hướng Dẫn Viên</router-link></li>
+            <li class="nav-item">
+              <router-link to="/client/huong-dan-vien" class="nav-link px-3">Hướng Dẫn Viên</router-link>
+            </li>
             <li class="nav-item"><router-link to="/client/bai-viet" class="nav-link px-3">Blog</router-link></li>
             <li class="nav-item"><router-link to="/client/lien-he" class="nav-link px-3">Liên Hệ</router-link></li>
 
             <div class="d-flex align-items-center ms-lg-4 nhom-bieu-tuong">
               <router-link to="/client/lich-su-dat-tour" class="bieu-tuong-item me-3 position-relative">
-                  <i class="fa-solid fa-bag-shopping"></i>
-                  <span class="cham-thong-bao" v-if="isLoggedIn"></span>
+                <i class="fa-solid fa-bag-shopping text-dark"></i>
+                <span class="cham-thong-bao" v-if="isLoggedIn"></span>
               </router-link>
 
-              <div class="dropdown border-start border-secondary ps-3">
-                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret d-flex align-items-center p-0" href="#" role="button" data-bs-toggle="dropdown">
-                  <!-- ĐÃ SỬA: Hiển thị avatar thực tế, nếu không có tự động tạo chữ cái đầu -->
+              <div class="dropdown border-start border-secondary-subtle ps-3">
+                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret d-flex align-items-center p-0" href="#"
+                  role="button" data-bs-toggle="dropdown">
                   <img :src="avatar_kh" class="anh-nguoi-dung rounded-circle" alt="User Avatar" />
                 </a>
-                
-                <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width: 220px; border-radius: 12px;">
+
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0"
+                  style="min-width: 220px; border-radius: 12px;">
                   <template v-if="isLoggedIn">
-                    <li class="px-3 py-3 border-bottom text-center bg-light" style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
-                      <!-- ĐÃ SỬA TƯƠNG TỰ -->
-                      <img :src="avatar_kh" class="rounded-circle mb-2 shadow-sm" width="50" height="50" style="object-fit: cover;">
+                    <li class="px-3 py-3 border-bottom text-center bg-light"
+                      style="border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                      <img :src="avatar_kh" class="rounded-circle mb-2 shadow-sm" width="50" height="50"
+                        style="object-fit: cover;">
                       <p class="mb-0 fw-bold text-dark">{{ ho_va_ten }}</p>
                       <small class="text-muted">{{ email_kh }}</small>
                     </li>
-                    
                     <li>
                       <router-link class="dropdown-item py-2 mt-2 fw-medium" to="/client/profile">
                         <i class="fa-solid fa-address-card text-primary me-2 w-20px text-center"></i> Thông tin cá nhân
                       </router-link>
                     </li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
                     <li>
                       <a class="dropdown-item py-2 fw-medium text-danger" @click="dangXuat()" href="javascript:void(0)">
                         <i class="fa-solid fa-right-from-bracket me-2 w-20px text-center"></i> Đăng xuất
                       </a>
                     </li>
                     <li>
-                      <a class="dropdown-item py-2 fw-medium text-danger" @click="dangXuatAll()" href="javascript:void(0)">
+                      <a class="dropdown-item py-2 fw-medium text-danger" @click="dangXuatAll()"
+                        href="javascript:void(0)">
                         <i class="fa-solid fa-power-off me-2 w-20px text-center"></i> Đăng xuất all
                       </a>
                     </li>
                   </template>
-                  
+
                   <template v-else>
                     <li>
                       <router-link class="dropdown-item py-2 fw-medium" to="/client/dang-nhap">
@@ -121,12 +128,12 @@ export default {
   },
   mounted() {
     this.checkLogin();
-    
+
     // Lắng nghe sự kiện cập nhật profile để đổi Avatar và Tên ngay lập tức
     window.addEventListener("profile-updated", () => {
       this.ho_va_ten = localStorage.getItem("ho_va_ten") || this.ho_va_ten;
       const storedAvatar = localStorage.getItem("avatar");
-      
+
       // KIỂM TRA: Nếu có avatar thì lấy, nếu rỗng thì tạo avatar chữ cái mặc định
       if (storedAvatar && storedAvatar !== "null" && storedAvatar !== "") {
         this.avatar_kh = storedAvatar;
@@ -145,7 +152,7 @@ export default {
         if (res.data.status) {
           this.ho_va_ten = res.data.ho_ten;
           this.email_kh = res.data.email;
-          
+
           // SỬA: Ưu tiên lấy avatar TỪ DATABASE TRẢ VỀ (res.data.avatar) thay vì localStorage cũ kỹ
           if (res.data.avatar) {
             this.avatar_kh = res.data.avatar;
@@ -161,7 +168,7 @@ export default {
         this.clearAuthData();
       });
     },
-    
+
     dangXuat() {
       const token = localStorage.getItem("key_client");
       axios.post(apiUrl("client/dang-xuat"), {}, {
@@ -180,7 +187,7 @@ export default {
 
     dangXuatAll() {
       const token = localStorage.getItem("key_client");
-      if(confirm("Bạn có chắc chắn muốn đăng xuất khỏi tất cả các thiết bị không?")) {
+      if (confirm("Bạn có chắc chắn muốn đăng xuất khỏi tất cả các thiết bị không?")) {
         axios.post(apiUrl("client/dang-xuat-all"), {}, {
           headers: { Authorization: "Bearer " + token }
         }).then((res) => {
@@ -209,53 +216,79 @@ export default {
 </script>
 
 <style scoped>
+.logo-chinh {
+  width: 130px !important; 
+  height: auto !important;
+  /* Xóa bỏ giới hạn max-height nếu nó đang ngăn cản logo thu nhỏ */
+  max-height: none !important; 
+  /* Đảm bảo không có min-height nào đang giữ kích thước lớn */
+  min-height: 0 !important;
+  transition: all 0.3s ease;
+}
+
 .header-vung {
   position: sticky;
   top: 0;
   z-index: 1000;
+  margin-top: -5px;
+  background-color: #f3ffff;
 }
 
 .thanh-header-xanh {
-  background-color: #00004d !important;
+  background-color: #f3fffd !important;
+}
+
+.navbar {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+/* Ép màu chữ đen cho toàn bộ menu */
+.nav-link {
+  font-weight: 600 !important;
+  font-size: 0.95rem;
+  color: #212529 !important;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.nav-link:hover {
+  color: #005baa !important;
+  /* Đổi sang màu xanh đậm khi hover */
 }
 
 .vung-tim-kiem {
-  max-width: 350px;     
+  max-width: 350px;
   width: 100%;
 }
 
 .vung-nhap-lieu {
-  background-color: rgba(255, 255, 255, 0.15) !important;
-  border: none !important;
-  color: white !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #212529 !important;
   border-radius: 30px;
 }
 
 .vung-nhap-lieu::placeholder {
-  color: rgba(255, 255, 255, 0.6) !important;
+  color: #6c757d !important;
 }
 
 .form-control:focus {
   box-shadow: none;
-  background-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
 }
 
 .bieu-tuong-item {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9) !important;
   text-decoration: none;
   transition: all 0.3s;
-}
-
-.bieu-tuong-item:hover {
-  color: #ffc107 !important;  
 }
 
 .anh-nguoi-dung {
   width: 38px;
   height: 38px;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  border: 2px solid #005baa;
   background-color: #fff;
 }
 
@@ -265,19 +298,9 @@ export default {
   right: -2px;
   width: 9px;
   height: 9px;
-  background-color: #ff4d4d; 
+  background-color: #ff4d4d;
   border-radius: 50%;
-  border: 2px solid #00004d;
-}
-
-.nav-link {
-  font-weight: 500;
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.85) !important;
-}
-
-.nav-link:hover {
-  color: #ffc107 !important;
+  border: 2px solid #f3ffff;
 }
 
 .dropdown-toggle-nocaret::after {
@@ -286,10 +309,6 @@ export default {
 
 .cursor-pointer {
   cursor: pointer;
-}
-
-.text-light-50 {
-  color: rgba(255, 255, 255, 0.5);
 }
 
 .w-20px {
@@ -301,10 +320,15 @@ export default {
     max-width: 100%;
     margin: 15px 0;
   }
+
   .nhom-bieu-tuong {
     margin-top: 15px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding-top: 15px;
+  }
+
+  .logo-chinh {
+    max-height: 70px;
   }
 }
 </style>
