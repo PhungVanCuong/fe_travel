@@ -370,8 +370,6 @@ export default {
   position: sticky;
   top: 20px;
   z-index: 10;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
 }
 
 /* Làm đẹp thanh cuộn của sidebar */

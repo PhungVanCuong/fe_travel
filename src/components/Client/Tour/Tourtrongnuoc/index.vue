@@ -10,21 +10,32 @@
     <div class="container mt-5">
       <div class="row">
 
+        <!-- CỘT BỘ LỌC BÊN TRÁI -->
         <div class="col-lg-3 col-md-4 mb-4">
           <div class="sidebar-sticky">
 
             <div class="filters-wrapper p-4 rounded-4 bg-white shadow-sm border-0 mb-4">
               <h5 class="fw-bold mb-4" style="color: #125633;">Bộ lọc tìm kiếm</h5>
 
+              <!-- ĐÃ SỬA: LỌC THEO MIỀN BẮC, TRUNG, NAM -->
               <div class="filter-group mb-4">
                 <h6 class="fw-bold mb-3 d-flex align-items-center"><i class="bi bi-geo-alt-fill text-success me-2"></i>
-                  Điểm đến</h6>
-                <div class="form-check mb-2" v-for="dest in uniqueDestinations" :key="dest">
-                  <input class="form-check-input" type="checkbox" :id="dest" :value="dest" v-model="filterDestinations">
-                  <label class="form-check-label text-secondary" :for="dest">{{ dest }}</label>
+                  Khu vực (Vùng miền)</h6>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="regionBac" value="Miền Bắc" v-model="filterRegions">
+                  <label class="form-check-label text-secondary" for="regionBac">Miền Bắc</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="regionTrung" value="Miền Trung" v-model="filterRegions">
+                  <label class="form-check-label text-secondary" for="regionTrung">Miền Trung</label>
+                </div>
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="regionNam" value="Miền Nam" v-model="filterRegions">
+                  <label class="form-check-label text-secondary" for="regionNam">Miền Nam</label>
                 </div>
               </div>
 
+              <!-- LỌC THỜI GIAN (GIỮ NGUYÊN) -->
               <div class="filter-group mb-4">
                 <h6 class="fw-bold mb-3 d-flex align-items-center"><i
                     class="bi bi-calendar-event-fill text-success me-2"></i> Thời gian</h6>
@@ -45,6 +56,7 @@
                 </div>
               </div>
 
+              <!-- LỌC MỨC GIÁ (GIỮ NGUYÊN) -->
               <div class="filter-group mb-4">
                 <h6 class="fw-bold mb-3 d-flex align-items-center"><i class="bi bi-cash-coin text-success me-2"></i> Mức
                   giá</h6>
@@ -69,6 +81,7 @@
               </button>
             </div>
 
+            <!-- CẨM NANG DU LỊCH (GIỮ NGUYÊN) -->
             <div class="articles-wrapper p-3 rounded-4 shadow-sm bg-white border-0">
               <h6 class="fw-bold text-uppercase mb-3" style="color: #005baa;">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Cẩm nang du lịch
@@ -93,6 +106,7 @@
           </div>
         </div>
 
+        <!-- CỘT DANH SÁCH TOUR BÊN PHẢI -->
         <div class="col-lg-9 col-md-8">
 
           <div
@@ -164,15 +178,13 @@
                       </div>
                       <div class="d-flex align-items-start gap-2">
                         <i class="bi bi-clock text-primary mt-1"></i>
-                        <span>Thời gian: <strong>{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }}
-                            ngày</strong></span>
+                        <span>Thời gian: <strong>{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }} ngày</strong></span>
                       </div>
                     </div>
 
                     <div class="mt-auto pt-3 border-top">
                       <div class="mb-3">
-                        <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{
-                          formatDate(value.ngay_bat_dau) }}</span>
+                        <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{ formatDate(value.ngay_bat_dau) }}</span>
                         <h5 class="fw-bold mb-0 text-danger">
                           {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
                         </h5>
@@ -215,6 +227,19 @@
 import axios from 'axios'
 import apiUrl from '../../../../utils/api'
 
+// HẰNG SỐ: Khai báo sẵn 63 tỉnh thành chia làm 3 miền
+const VIETNAM_REGIONS = {
+  'Miền Bắc': [
+    'Hà Nội', 'Hà Giang', 'Cao Bằng', 'Bắc Kạn', 'Tuyên Quang', 'Lào Cai', 'Điện Biên', 'Lai Châu', 'Sơn La', 'Yên Bái', 'Hòa Bình', 'Thái Nguyên', 'Lạng Sơn', 'Quảng Ninh', 'Bắc Giang', 'Phú Thọ', 'Vĩnh Phúc', 'Bắc Ninh', 'Hải Dương', 'Hải Phòng', 'Hưng Yên', 'Thái Bình', 'Hà Nam', 'Nam Định', 'Ninh Bình'
+  ],
+  'Miền Trung': [
+    'Thanh Hóa', 'Nghệ An', 'Hà Tĩnh', 'Quảng Bình', 'Quảng Trị', 'Thừa Thiên Huế', 'Đà Nẵng', 'Quảng Nam', 'Quảng Ngãi', 'Bình Định', 'Phú Yên', 'Khánh Hòa', 'Ninh Thuận', 'Bình Thuận', 'Kon Tum', 'Gia Lai', 'Đắk Lắk', 'Đắk Nông', 'Lâm Đồng', 'Đà Lạt' // Bổ sung "Đà Lạt" vì đôi khi data ghi là Đà Lạt thay vì Lâm Đồng
+  ],
+  'Miền Nam': [
+    'Bình Phước', 'Tây Ninh', 'Bình Dương', 'Đồng Nai', 'Bà Rịa - Vũng Tàu', 'Bà Rịa Vũng Tàu', 'Hồ Chí Minh', 'TP. Hồ Chí Minh', 'Long An', 'Tiền Giang', 'Bến Tre', 'Trà Vinh', 'Vĩnh Long', 'Đồng Tháp', 'An Giang', 'Kiên Giang', 'Phú Quốc', 'Cần Thơ', 'Hậu Giang', 'Sóc Trăng', 'Bạc Liêu', 'Cà Mau' // Bổ sung "Phú Quốc" 
+  ]
+};
+
 export default {
   data() {
     return {
@@ -222,12 +247,11 @@ export default {
       allTours: [],
       filteredTours: [],
 
-      baiVietNoiBat: [], // Mảng rỗng chờ API đổ vào
-      // BẠN CÓ THỂ ĐỔI ID BÀI VIẾT Ở ĐÂY ĐỂ HIỂN THỊ (VD: Tour Trong Nước hiển thị bài 1, 4, 5)
+      baiVietNoiBat: [], 
       danhSachIdBaiViet: [1, 4, 5],
 
       filterSearch: '',
-      filterDestinations: [],
+      filterRegions: [], // Đã đổi từ filterDestinations sang array chứa tên Miền (Miền Bắc, Miền Trung...)
       filterDuration: '',
       priceRanges: [],
       sortBy: 'newest',
@@ -237,11 +261,6 @@ export default {
     }
   },
   computed: {
-    uniqueDestinations() {
-      const destinations = this.allTours.map(t => t.diem_tra).filter(Boolean);
-      return [...new Set(destinations)];
-    },
-
     totalPages() {
       return Math.ceil(this.filteredTours.length / this.pageSize);
     },
@@ -260,11 +279,11 @@ export default {
   },
   mounted() {
     this.fetchDomesticTours();
-    this.fetchArticles(); // Gọi API lấy bài viết
+    this.fetchArticles(); 
   },
   watch: {
     filterSearch() { this.applyFilters(); },
-    filterDestinations: { handler() { this.applyFilters(); }, deep: true },
+    filterRegions: { handler() { this.applyFilters(); }, deep: true }, // Theo dõi thay đổi của check box Miền
     filterDuration() { this.applyFilters(); },
     priceRanges: { handler() { this.applyFilters(); }, deep: true },
     sortBy() { this.currentPage = 1; }
@@ -275,6 +294,7 @@ export default {
       try {
         const response = await axios.get(apiUrl('client/tour/get-data'));
         if (response.data.status) {
+          // Lọc ra các tour trong nước (id_quoc_gia = 1)
           this.allTours = response.data.data.filter(tour => tour.id_quoc_gia === 1 && tour.so_nguoi_toi_da > 0);
           this.applyFilters();
         }
@@ -285,13 +305,11 @@ export default {
       }
     },
 
-    // Hàm gọi API bài viết và lọc theo ID
     async fetchArticles() {
       try {
         const response = await axios.get(apiUrl('client/trang-chu/get-data'));
         if (response.data.status) {
           const tatCaBaiViet = response.data.data.baiViets || [];
-          // Chỉ giữ lại những bài viết có ID nằm trong mảng danhSachIdBaiViet
           this.baiVietNoiBat = tatCaBaiViet.filter(bai => this.danhSachIdBaiViet.includes(bai.id));
         }
       } catch (error) {
@@ -301,8 +319,37 @@ export default {
 
     applyFilters() {
       let results = this.allTours.slice();
-      if (this.filterSearch) results = results.filter(t => t.ten_tour.toLowerCase().includes(this.filterSearch.toLowerCase()));
-      if (this.filterDestinations.length > 0) results = results.filter(t => this.filterDestinations.includes(t.diem_tra));
+
+      // 1. Lọc theo Tên Tour
+      if (this.filterSearch) {
+        results = results.filter(t => t.ten_tour.toLowerCase().includes(this.filterSearch.toLowerCase()));
+      }
+
+      // 2. LỌC THEO MIỀN BẮC, TRUNG, NAM
+      if (this.filterRegions.length > 0) {
+        // Gộp tất cả các tỉnh thành thuộc các miền mà người dùng đã tick
+        let allowedCities = [];
+        this.filterRegions.forEach(region => {
+            allowedCities = allowedCities.concat(VIETNAM_REGIONS[region]);
+        });
+
+        // Tìm kiếm xem Tour đó có điểm đến nào nằm trong allowedCities không
+        results = results.filter(t => {
+            if (t.lich_trinhs && t.lich_trinhs.length > 0) {
+                // Kiểm tra tất cả các lịch trình của tour này
+                return t.lich_trinhs.some(lt => {
+                    if (lt.diem_den && lt.diem_den.thanh_pho) {
+                        // So sánh linh hoạt (VD: "Đà Nẵng" sẽ khớp nếu trong data là "TP. Đà Nẵng")
+                        return allowedCities.some(city => lt.diem_den.thanh_pho.includes(city) || city.includes(lt.diem_den.thanh_pho));
+                    }
+                    return false;
+                });
+            }
+            return false;
+        });
+      }
+
+      // 3. Lọc theo Thời gian
       if (this.filterDuration) {
         results = results.filter(t => {
           const days = this.calculateDays(t.ngay_bat_dau, t.ngay_ket_thuc);
@@ -311,6 +358,8 @@ export default {
           if (this.filterDuration === '4+') return days >= 4;
         });
       }
+
+      // 4. Lọc theo Giá
       if (this.priceRanges.length > 0) {
         results = results.filter(t => {
           const price = parseFloat(t.gia);
@@ -321,13 +370,14 @@ export default {
           });
         });
       }
+
       this.filteredTours = results;
       this.currentPage = 1;
     },
 
     resetFilters() {
       this.filterSearch = '';
-      this.filterDestinations = [];
+      this.filterRegions = []; // Reset bộ lọc Miền
       this.filterDuration = '';
       this.priceRanges = [];
       this.sortBy = 'newest';
@@ -361,16 +411,12 @@ export default {
   border-color: #125633;
 }
 
-/* QUAN TRỌNG: CSS GIÚP THANH BỘ LỌC CỐ ĐỊNH VÀ CÓ THỂ CUỘN NẾU MÀN HÌNH NHỎ */
 .sidebar-sticky {
   position: sticky;
   top: 20px;
   z-index: 10;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
 }
 
-/* Làm đẹp thanh cuộn của sidebar */
 .sidebar-sticky::-webkit-scrollbar {
   width: 4px;
 }
