@@ -75,7 +75,7 @@
               </h6>
 
               <div class="article-item mb-3 pb-2 border-bottom" v-for="(bai, index) in baiVietNoiBat" :key="index">
-                <router-link :to="`/chi-tiet-bai-viet/${bai.id}`"
+                <router-link :to="`/client/chi-tiet-bai-viet/${bai.id}`"
                   class="text-decoration-none text-dark d-flex gap-2 align-items-start">
                   <img :src="bai.hinh_anh" class="rounded" style="width: 60px; height: 60px; object-fit: cover;" alt="">
                   <div>
@@ -86,7 +86,7 @@
                 </router-link>
               </div>
 
-              <router-link to="/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài viết <i
+              <router-link to="/client/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài viết <i
                   class="fa-solid fa-arrow-right ms-1"></i></router-link>
             </div>
 

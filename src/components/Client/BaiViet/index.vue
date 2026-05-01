@@ -22,7 +22,7 @@
                 
                 <div class="col-lg-6">
                     <div class="card mb-4 border-0 shadow-sm rounded-4 overflow-hidden bai-viet-card">
-                        <router-link :to="`/chi-tiet-bai-viet/${list_bv[0].id}`" class="text-decoration-none text-dark">
+                        <router-link :to="`/client/chi-tiet-bai-viet/${list_bv[0].id}`" class="text-decoration-none text-dark">
                             <img :src="list_bv[0].hinh_anh" class="card-img-top w-100" style="height: 380px; object-fit: cover;" :alt="list_bv[0].tieu_de">
                             <div class="card-body p-4">
                                 <span class="badge mb-2" style="background-color: #e74c3c;">Tiêu điểm</span>
@@ -41,7 +41,7 @@
                     <div class="row" v-if="list_bv.length > 1">
                         <template v-for="(v, k) in list_bv.slice(1, 3)" :key="k">
                             <div class="col-lg-6 mb-4">
-                                <router-link :to="`/chi-tiet-bai-viet/${v.id}`" class="text-decoration-none text-dark h-100 d-block">
+                                <router-link :to="`/client/chi-tiet-bai-viet/${v.id}`" class="text-decoration-none text-dark h-100 d-block">
                                     <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden bai-viet-card">
                                         <img :src="v.hinh_anh" class="card-img-top w-100" style="height: 180px; object-fit: cover;" :alt="v.tieu_de">
                                         <div class="card-body p-3">
@@ -68,7 +68,7 @@
 
                         <template v-for="(v, k) in list_bv.slice(3)" :key="k">
                             <div class="card mb-3 border-0 bg-transparent article-list-item">
-                                <router-link :to="`/chi-tiet-bai-viet/${v.id}`" class="text-decoration-none text-dark">
+                                <router-link :to="`/client/chi-tiet-bai-viet/${v.id}`" class="text-decoration-none text-dark">
                                     <div class="row g-3 align-items-center">
                                         <div class="col-4">
                                             <div class="overflow-hidden rounded-3">
