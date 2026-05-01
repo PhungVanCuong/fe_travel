@@ -63,6 +63,8 @@
             <h4 class="text-secondary">Bạn chưa có chuyến đi nào.</h4>
             <router-link to="/" class="btn btn-primary mt-3 px-4">Khám phá tour ngay</router-link>
         </div>
+
+        <div style="height: 70px;"></div>
     </div>
     
     <!-- MODAL CHI TIẾT HÓA ĐƠN -->
