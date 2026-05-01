@@ -8,6 +8,7 @@ import Blank from './layout/wrapper/master_blank.vue'
 import { Toaster } from "@meforma/vue-toaster";
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
+import ChatWidget from './components/Client/ChatBot/index.vue'
 
 const app = createApp(App)
 
@@ -19,5 +20,6 @@ app.component("default-layout", Default);
 app.component("client-layout", Client);
 app.component("huong-dan-vien-layout", HuongDanVien);
 app.component("blank-layout", Blank);
+app.component('chat-widget', ChatWidget);
 
 app.mount("#app")
