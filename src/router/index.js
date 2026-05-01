@@ -206,6 +206,16 @@ const routes = [
         component: () => import("../components/Admin/QuanLyHDVvaPhanCong/index.vue"),
         beforeEnter: checkAdmin,
     },
+    {
+        path: "/admin/bai-viet",
+        component: () => import("../components/Admin/quanlybai/index.vue"),
+        beforeEnter: checkAdmin,
+    },
+    {
+        path: "/admin/danh-gia",
+        component: () => import("../components/Admin/quanlydanhgia/index.vue"),
+        beforeEnter: checkAdmin,
+    },
     
     {
         path: "/admin/thong-ke/doanh-thu",
