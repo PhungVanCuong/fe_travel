@@ -381,7 +381,7 @@ export default {
             });
         },
         printInvoice(invoice) {
-            this.$toast.info('Chức năng in sẽ được cập nhật sớm!');
+            this.$router.push(`/admin/in-ve/${invoice.ma_hoa_don}`);
         },
         exportReport() {
             this.$toast.info('Chức năng xuất báo cáo sẽ được cập nhật sớm!');

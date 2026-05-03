@@ -57,6 +57,9 @@
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 120px;">
                                 <i class="fa-solid fa-star me-1" style="color: #fbbf24;"></i>Đánh Giá
                             </th>
+                            <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 200px;">
+                                <i class="fa-solid fa-comment me-2" style="color: #667eea;"></i>Nội Dung
+                            </th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 140px;">
                                 <i class="fa-solid fa-toggle-on me-1" style="color: #667eea;"></i>Trạng Thái
                             </th>
@@ -67,7 +70,7 @@
                     </thead>
                     <tbody>
                         <tr v-if="filteredRatings.length === 0" style="border-bottom: 1px solid #e2e8f0;">
-                            <td colspan="6" style="padding: 50px 20px; text-align: center; color: #999;">
+                            <td colspan="8" style="padding: 50px 20px; text-align: center; color: #999;">
                                 <div style="font-size: 3rem; margin-bottom: 15px;">⭐</div>
                                 <p style="margin: 0; font-size: 1rem;">Không tìm thấy đánh giá nào</p>
                                 <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #bbb;">Khách hàng chưa đánh giá tour nào</p>
@@ -82,14 +85,17 @@
                             </td>
                             <td style="padding: 15px; color: #333; font-size: 0.9rem;">
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <img v-if="rating.avatar" :src="rating.avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" :alt="rating.khach_hang_name">
-                                    <span>{{ rating.khach_hang_name || 'Khách vãng lai' }}</span>
+                                    <img v-if="rating.avatar" :src="rating.avatar" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;" :alt="rating.ho_va_ten">
+                                    <span>{{ rating.ho_va_ten || 'Khách vãng lai' }}</span>
                                 </div>
                             </td>
                             <td style="padding: 15px; text-align: center;">
                                 <div style="display: inline-block; background: #fef3c7; color: #b45309; padding: 8px 12px; border-radius: 6px; font-weight: 700; font-size: 0.95rem;">
                                     {{ renderStars(rating.sao_danh_gia) }}
                                 </div>
+                            </td>
+                            <td style="padding: 15px; color: #666; font-size: 0.85rem; max-width: 300px; word-wrap: break-word; white-space: normal; line-height: 1.4;" :title="rating.noi_dung">
+                                {{ rating.noi_dung || 'Không có nội dung' }}
                             </td>
                             <td style="padding: 15px; text-align: center;">
                                 <button @click="toggleStatus(rating.id, rating.tinh_trang == 1 ? 0 : 1)" 
@@ -108,7 +114,7 @@
                                     <i :class="rating.tinh_trang == 1 ? 'fa-solid fa-eye me-1' : 'fa-solid fa-eye-slash me-1'"></i>
                                     {{ rating.tinh_trang == 1 ? 'Hiển Thị' : 'Ẩn' }}
                                 </button>
-                            </td>
+                            </td> 
                             <td style="padding: 15px; text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
                                     <button @click="openViewModal(rating)" class="action-btn btn-view" title="Xem chi tiết" style="background: #e0f2fe; color: #0284c7; border: none; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
@@ -155,7 +161,7 @@
                         </div>
                         <div>
                             <label style="font-weight: 600; color: #666; font-size: 0.85rem; display: block; margin-bottom: 5px;">👤 Khách Hàng</label>
-                            <p style="margin: 0; color: #333; font-weight: 600;">{{ view_rating.khach_hang_name || 'Khách vãng lai' }}</p>
+                            <p style="margin: 0; color: #333; font-weight: 600;">{{ view_rating.ho_va_ten || 'Khách vãng lai' }}</p>
                         </div>
                     </div>
 
@@ -194,7 +200,7 @@
                 <div style="font-size: 3.5rem; margin-bottom: 15px; animation: shake 0.5s;">⚠️</div>
                 <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.1rem; font-weight: 700;">Xác Nhận Xóa Đánh Giá</h3>
                 <p style="color: #666; margin: 15px 0; font-size: 0.95rem; line-height: 1.6;">
-                    Bạn có chắc chắn muốn xóa đánh giá <br><strong style="color: #ef4444; font-size: 1rem;">{{ del_rating.sao_danh_gia }} sao</strong> từ <strong>{{ del_rating.khach_hang_name }}</strong>? <br>
+                    Bạn có chắc chắn muốn xóa đánh giá <br><strong style="color: #ef4444; font-size: 1rem;">{{ del_rating.sao_danh_gia }} sao</strong> từ <strong>{{ del_rating.ho_va_ten }}</strong>? <br>
                     <span style="font-size: 0.85rem; color: #999; display: inline-block; margin-top: 8px;">⚠️ Hành động này không thể hoàn tác!</span>
                 </p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px;">
@@ -269,7 +275,7 @@ export default {
                 const matchTour = !this.searchTour || 
                     (rating.ten_tour && rating.ten_tour.toLowerCase().includes(this.searchTour.toLowerCase()));
                 const matchCustomer = !this.searchCustomer ||
-                    (rating.khach_hang_name && rating.khach_hang_name.toLowerCase().includes(this.searchCustomer.toLowerCase()));
+                    (rating.ho_va_ten && rating.ho_va_ten.toLowerCase().includes(this.searchCustomer.toLowerCase()));
                 const matchStar = this.filterStar === 0 || rating.sao_danh_gia === this.filterStar;
                 return matchTour && matchCustomer && matchStar;
             });

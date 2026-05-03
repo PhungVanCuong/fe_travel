@@ -201,6 +201,12 @@ const routes = [
         component: () => import("../components/Admin/HoaDon/index.vue"),
         beforeEnter: checkAdmin,
     },
+    {
+        path: "/admin/in-ve/:ma_hoa_don",
+        component: () => import("../components/Admin/InVe/index.vue"),
+        beforeEnter: checkAdmin,
+        props: true,
+    },
      {
         path: "/admin/quan-ly-hdv-va-phan-cong",
         component: () => import("../components/Admin/QuanLyHDVvaPhanCong/index.vue"),
