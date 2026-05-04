@@ -45,26 +45,15 @@
             <!-- Search & Filter -->
             <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div style="display: grid; grid-template-columns: 1fr 150px 150px; gap: 15px; align-items: flex-end;">
-                    <!-- Search -->
                     <div style="position: relative;">
-                        <input v-model="searchQueryHDV" 
-                            type="text" 
-                            placeholder="Tìm kiếm hướng dẫn viên..."
-                            @input="filterDataHDV"
-                            style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <input v-model="searchQueryHDV" type="text" placeholder="Tìm kiếm hướng dẫn viên..." @input="filterDataHDV" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                         <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
-
-                    <!-- Status Filter -->
-                    <select v-model="statusFilterHDV" 
-                        @change="filterDataHDV"
-                        style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
+                    <select v-model="statusFilterHDV" @change="filterDataHDV" style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
                         <option value="">Tất cả Trạng thái</option>
                         <option value="1">Hoạt động</option>
                         <option value="0">Tạm dừng</option>
                     </select>
-
-                    <!-- Add Button -->
                     <button @click="openAddHDVModal" class="btn-primary-gradient">
                         <i class="fa-solid fa-plus me-2"></i>Thêm HDV
                     </button>
@@ -87,51 +76,32 @@
                         <tbody>
                             <tr v-if="filteredHDV.length === 0">
                                 <td colspan="5" style="padding: 30px; text-align: center; color: #999;">
-                                    <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i>
-                                    <p style="margin: 10px 0 0 0;">Không có hướng dẫn viên nào</p>
+                                    <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i><p style="margin: 10px 0 0 0;">Không có hướng dẫn viên nào</p>
                                 </td>
                             </tr>
-                            <tr v-for="hdv in filteredHDV" :key="hdv.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
-                                @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'"
-                                @mouseleave="(e) => e.currentTarget.style.background = ''">
+                            <tr v-for="hdv in filteredHDV" :key="hdv.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'" @mouseleave="(e) => e.currentTarget.style.background = ''">
                                 <td style="padding: 15px; color: #333; font-weight: 600;">{{ hdv.ma_hdv }}</td>
                                 <td style="padding: 15px; color: #666;">
-                                    <div style="font-weight: 600;">{{ hdv.ho_va_ten }}</div>
-                                    <div style="font-size: 0.85rem; color: #999;">📞 {{ hdv.so_dien_thoai }}</div>
+                                    <div style="font-weight: 600; color: #2c3e50;">{{ hdv.ho_va_ten }}</div>
+                                    <div style="font-size: 0.85rem; color: #999;"><i class="fa-solid fa-phone fa-xs me-1"></i> {{ hdv.so_dien_thoai }}</div>
                                 </td>
                                 <td style="padding: 15px; color: #666;">
                                     <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-                                        <span v-for="lang in Array.isArray(hdv.ngon_ngu) ? hdv.ngon_ngu : (hdv.ngon_ngu ? JSON.parse(hdv.ngon_ngu) : [])" 
-                                            :key="lang"
-                                            style="display: inline-block; padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
+                                        <span v-for="lang in Array.isArray(hdv.ngon_ngu) ? hdv.ngon_ngu : (hdv.ngon_ngu ? JSON.parse(hdv.ngon_ngu) : [])" :key="lang" style="display: inline-block; padding: 4px 8px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
                                             {{ lang }}
                                         </span>
                                     </div>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <span :style="{
-                                        display: 'inline-block',
-                                        padding: '6px 12px',
-                                        borderRadius: '6px',
-                                        fontSize: '0.85rem',
-                                        fontWeight: '600',
-                                        background: hdv.trang_thai == 1 ? '#dcfce7' : '#fee2e2',
-                                        color: hdv.trang_thai == 1 ? '#16a34a' : '#dc2626'
-                                    }">
+                                    <span :style="{ display: 'inline-block', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600', background: hdv.trang_thai == 1 ? '#dcfce7' : '#fee2e2', color: hdv.trang_thai == 1 ? '#16a34a' : '#dc2626' }">
                                         {{ hdv.trang_thai == 1 ? 'Hoạt động' : 'Tạm dừng' }}
                                     </span>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
                                     <div style="display: flex; gap: 8px; justify-content: center;">
-                                        <button @click="viewHDV(hdv)" class="action-btn btn-view" title="Xem chi tiết">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </button>
-                                        <button @click="editHDV(hdv)" class="action-btn btn-edit" title="Chỉnh sửa">
-                                            <i class="fa-solid fa-pen-nib"></i>
-                                        </button>
-                                        <button @click="deleteHDV(hdv)" class="action-btn btn-delete" title="Xóa">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                        <button @click="viewHDV(hdv)" class="action-btn btn-view" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>
+                                        <button @click="editHDV(hdv)" class="action-btn btn-edit" title="Chỉnh sửa"><i class="fa-solid fa-pen-nib"></i></button>
+                                        <button @click="deleteHDV(hdv)" class="action-btn btn-delete" title="Xóa"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -145,29 +115,18 @@
         <div v-if="activeTab === 'phancong'">
             <!-- Search & Filter -->
             <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
-                <div style="display: grid; grid-template-columns: 1fr 150px 150px; gap: 15px; align-items: flex-end;">
-                    <!-- Search -->
+                <div style="display: grid; grid-template-columns: 1fr 180px 150px; gap: 15px; align-items: flex-end;">
                     <div style="position: relative;">
-                        <input v-model="searchQueryTour" 
-                            type="text" 
-                            placeholder="Tìm kiếm tour..."
-                            @input="filterDataTour"
-                            style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                        <input v-model="searchQueryTour" type="text" placeholder="Tìm kiếm tên tour, mã tour..." @input="filterDataTour" style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                         <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                     </div>
-
-                    <!-- Status Filter -->
-                    <select v-model="statusFilterTour" 
-                        @change="filterDataTour"
-                        style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
+                    <select v-model="statusFilterTour" @change="filterDataTour" style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
                         <option value="">Tất cả Trạng thái</option>
-                        <option value="1">Đang diễn ra</option>
+                        <option value="1">Đang & Sắp diễn ra</option>
                         <option value="0">Đã kết thúc</option>
                     </select>
-
-                    <!-- Add Button -->
                     <button @click="openAddAssignModal" class="btn-primary-gradient">
-                        <i class="fa-solid fa-plus me-2"></i>Phân Công
+                        <i class="fa-solid fa-plus me-2"></i>Thêm Phân Công
                     </button>
                 </div>
             </div>
@@ -179,60 +138,38 @@
                         <thead>
                             <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
                                 <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Mã Tour</th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tên Tour</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Thông Tin Tour</th>
                                 <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Hướng Dẫn Viên</th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Ngày Khởi Hành</th>
+                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thời Gian</th>
                                 <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Hành Động</th>
+                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-if="filteredAssignments.length === 0">
-                                <td colspan="5" style="padding: 30px; text-align: center; color: #999;">
-                                    <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i>
-                                    <p style="margin: 10px 0 0 0;">Không có phân công nào</p>
+                                <td colspan="6" style="padding: 30px; text-align: center; color: #999;">
+                                    <i class="fa-solid fa-inbox me-2" style="font-size: 1.5rem;"></i><p style="margin: 10px 0 0 0;">Không có phân công nào</p>
                                 </td>
                             </tr>
-                            <tr v-for="assign in filteredAssignments" :key="assign.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
-                                @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'"
-                                @mouseleave="(e) => e.currentTarget.style.background = ''">
+                            <tr v-for="assign in filteredAssignments" :key="assign.id_phan_cong" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'" @mouseleave="(e) => e.currentTarget.style.background = ''">
                                 <td style="padding: 15px; color: #333; font-weight: 600;">{{ assign.ma_tour }}</td>
-                                <td style="padding: 15px; color: #666;">{{ assign.ten_tour }}</td>
+                                <td style="padding: 15px; color: #666; font-weight: 500;">{{ assign.ten_tour }}</td>
                                 <td style="padding: 15px; color: #666;">
-                                    <div style="font-weight: 600;">{{ assign.ten_hdv }}</div>
-                                    <div style="font-size: 0.85rem; color: #999;">📞 {{ assign.so_dien_thoai }}</div>
-                                    <div style="margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px;">
-                                        <span v-for="lang in (Array.isArray(assign.ngon_ngu) ? assign.ngon_ngu : (assign.ngon_ngu ? JSON.parse(assign.ngon_ngu) : []))" 
-                                            :key="lang"
-                                            style="display: inline-block; padding: 2px 6px; background: #dbeafe; color: #0284c7; border-radius: 4px; font-size: 0.75rem;">
-                                            {{ lang }}
-                                        </span>
-                                    </div>
+                                    <div style="font-weight: 600; color: #0284c7;"><i class="fa-solid fa-user-tie me-1"></i> {{ assign.ten_hdv }}</div>
+                                    <div style="font-size: 0.85rem; color: #999;"><i class="fa-solid fa-phone fa-xs me-1"></i> {{ assign.so_dien_thoai }}</div>
                                 </td>
-                                <td style="padding: 15px; text-align: center; color: #666; font-size: 0.9rem;">
-                                    {{ formatDate(assign.ngay_bat_dau) }}
+                                <td style="padding: 15px; text-align: center; color: #666; font-size: 0.85rem; font-weight: 500;">
+                                    {{ formatDate(assign.ngay_bat_dau) }} <br>đến<br> {{ formatDate(assign.ngay_ket_thuc) }}
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <span :style="{
-                                        display: 'inline-block',
-                                        padding: '6px 12px',
-                                        borderRadius: '6px',
-                                        fontSize: '0.85rem',
-                                        fontWeight: '600',
-                                        background: assign.trang_thai == 1 ? '#dbeafe' : '#fee2e2',
-                                        color: assign.trang_thai == 1 ? '#0284c7' : '#dc2626'
-                                    }">
+                                    <span :style="{ display: 'inline-block', padding: '6px 12px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '600', background: assign.trang_thai == 1 ? '#dbeafe' : '#f3f4f6', color: assign.trang_thai == 1 ? '#0284c7' : '#64748b' }">
                                         {{ assign.trang_thai == 1 ? 'Đang diễn ra' : 'Đã kết thúc' }}
                                     </span>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
                                     <div style="display: flex; gap: 8px; justify-content: center;">
-                                        <button @click="editAssign(assign)" class="action-btn btn-edit" title="Chỉnh sửa">
-                                            <i class="fa-solid fa-pen-nib"></i>
-                                        </button>
-                                        <button @click="deleteAssign(assign)" class="action-btn btn-delete" title="Xóa">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                        <button @click="editAssign(assign)" class="action-btn btn-edit" title="Sửa phân công"><i class="fa-solid fa-pen-nib"></i></button>
+                                        <button @click="deleteAssign(assign)" class="action-btn btn-delete" title="Xóa"><i class="fa-solid fa-trash"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -242,78 +179,55 @@
             </div>
         </div>
 
+        <!-- ======================= MODALS ======================= -->
+
         <!-- Modal Xem/Thêm/Sửa HDV -->
         <div v-if="showHDVModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.2);">
                 <h2 style="margin: 0 0 20px 0; color: #333; font-size: 1.3rem;">
-                    {{ hdvFormMode === 'view' ? 'Chi Tiết Hướng Dẫn Viên' : (hdvFormMode === 'edit' ? 'Chỉnh Sửa HDV' : 'Thêm Hướng Dẫn Viên Mới') }}
+                    <i :class="hdvFormMode === 'view' ? 'fa-solid fa-id-card text-info' : 'fa-solid fa-user-plus text-primary'" class="me-2"></i>
+                    {{ hdvFormMode === 'view' ? 'Chi Tiết Hướng Dẫn Viên' : (hdvFormMode === 'edit' ? 'Chỉnh Sửa Thông Tin' : 'Thêm Hướng Dẫn Viên Mới') }}
                 </h2>
-                
                 <div style="display: grid; gap: 15px; margin-bottom: 20px;">
                     <div>
                         <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Họ và Tên:</label>
-                        <input v-model="hdvForm.ho_va_ten" type="text" placeholder="Nhập họ và tên"
-                            :disabled="hdvFormMode === 'view'"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
+                        <input v-model="hdvForm.ho_va_ten" type="text" placeholder="Nhập họ và tên" :disabled="hdvFormMode === 'view'" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
                     </div>
-                    
                     <div>
                         <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Email:</label>
-                        <input v-model="hdvForm.email" type="email" placeholder="Nhập email"
-                            :disabled="hdvFormMode === 'view'"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
+                        <input v-model="hdvForm.email" type="email" placeholder="Nhập email" :disabled="hdvFormMode === 'view'" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
                     </div>
-                    
                     <div>
                         <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Số Điện Thoại:</label>
-                        <input v-model="hdvForm.so_dien_thoai" type="tel" placeholder="Nhập số điện thoại"
-                            :disabled="hdvFormMode === 'view'"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
+                        <input v-model="hdvForm.so_dien_thoai" type="tel" placeholder="Nhập số điện thoại" :disabled="hdvFormMode === 'view'" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
                     </div>
-                    
                     <div>
                         <label style="display: block; font-weight: 600; margin-bottom: 10px; color: #333;">Ngôn Ngữ (Chọn nhiều):</label>
                         <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 6px; background: #fafbfc;">
                             <label v-for="lang in availableLanguages" :key="lang.value" style="display: flex; align-items: center; cursor: pointer;">
-                                <input 
-                                    type="checkbox" 
-                                    :value="lang.value"
-                                    v-model="hdvForm.ngon_ngu"
-                                    :disabled="hdvFormMode === 'view'"
-                                    style="margin-right: 8px; cursor: pointer; width: 16px; height: 16px;">
+                                <input type="checkbox" :value="lang.value" v-model="hdvForm.ngon_ngu" :disabled="hdvFormMode === 'view'" style="margin-right: 8px; cursor: pointer; width: 16px; height: 16px;">
                                 <span style="color: #333; font-size: 0.9rem;">{{ lang.label }}</span>
                             </label>
                         </div>
                         <p v-if="hdvForm.ngon_ngu.length === 0" style="color: #999; font-size: 0.85rem; margin: 8px 0 0 0;">Vui lòng chọn ít nhất 1 ngôn ngữ</p>
-                        <div v-else style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px;">
-                            <span v-for="lang in hdvForm.ngon_ngu" :key="lang" style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-weight: 600; font-size: 0.85rem;">
-                                {{ lang }}
-                            </span>
-                        </div>
                     </div>
-                    
                     <div v-if="hdvFormMode !== 'view'">
                         <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Mật Khẩu:</label>
-                        <input v-model="hdvForm.password" type="password" 
-                            :placeholder="hdvFormMode === 'edit' ? 'Để trống nếu không đổi' : 'Nhập mật khẩu'"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
+                        <input v-model="hdvForm.password" type="password" :placeholder="hdvFormMode === 'edit' ? 'Để trống nếu không muốn đổi' : 'Nhập mật khẩu'" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit;">
                     </div>
-                    
-                    <div>
+                    <div v-if="hdvFormMode !== 'view'">
                         <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Trạng Thái:</label>
-                        <select v-model="hdvForm.is_block" :disabled="hdvFormMode === 'view'"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit; background: white;">
+                        <select v-model="hdvForm.is_block" style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit; background: white;">
                             <option :value="0">Hoạt động</option>
-                            <option :value="1">Tạm dừng</option>
+                            <option :value="1">Tạm dừng (Khóa)</option>
                         </select>
                     </div>
                 </div>
-                
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
                     <button @click="closeHDVModal" style="padding: 10px 20px; background: #e2e8f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
                         {{ hdvFormMode === 'view' ? 'Đóng' : 'Hủy' }}
                     </button>
-                    <button v-if="hdvFormMode !== 'view'" @click="saveHDV" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                    <button v-if="hdvFormMode !== 'view'" @click="saveHDV" class="btn-primary-gradient" style="padding: 10px 20px;">
                         <i class="fa-solid fa-save me-2"></i>{{ hdvFormMode === 'edit' ? 'Cập Nhật' : 'Thêm Mới' }}
                     </button>
                 </div>
@@ -324,39 +238,36 @@
         <div v-if="showAssignModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; overflow-y: auto;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 500px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.2); margin: 20px auto;">
                 <h2 style="margin: 0 0 20px 0; color: #333; font-size: 1.3rem;">
-                    {{ assignFormMode === 'edit' ? 'Chỉnh Sửa Phân Công' : 'Phân Công Tour Cho Hướng Dẫn Viên' }}
+                    <i class="fa-solid fa-briefcase text-primary me-2"></i>
+                    {{ assignFormMode === 'edit' ? 'Cập Nhật Phân Công' : 'Phân Công Tour Mới' }}
                 </h2>
                 
-                <div style="display: grid; gap: 15px; margin-bottom: 20px;">
+                <div style="display: grid; gap: 15px; margin-bottom: 25px;">
                     <div>
-                        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Chọn Tour:</label>
-                        <select v-model="assignForm.id_tour" :disabled="assignFormMode === 'edit'"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit; background: white;">
+                        <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Chọn Tour Du Lịch:</label>
+                        <select v-model="assignForm.id_tour" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit; background: white;">
                             <option value="">-- Chọn Tour --</option>
                             <option v-for="tour in tourList" :key="tour.id" :value="tour.id">
-                                {{ tour.ten_tour }} ({{ formatDate(tour.ngay_bat_dau) }} - {{ formatDate(tour.ngay_ket_thuc) }})
+                                {{ tour.ten_tour }} ({{ formatDate(tour.ngay_bat_dau) }})
                             </option>
                         </select>
                     </div>
                     
                     <div>
                         <label style="display: block; font-weight: 600; margin-bottom: 6px; color: #333;">Chọn Hướng Dẫn Viên:</label>
-                        <select v-model="assignForm.id_huong_dan_vien"
-                            style="width: 100%; padding: 10px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit; background: white;">
+                        <select v-model="assignForm.id_huong_dan_vien" style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 6px; font-family: inherit; background: white;">
                             <option value="">-- Chọn Hướng Dẫn Viên --</option>
                             <option v-for="hdv in availableHDV" :key="hdv.id" :value="hdv.id">
-                                {{ hdv.ho_va_ten }} ({{ hdv.ngon_ngu_text }}) - {{ hdv.so_dien_thoai }}
+                                {{ hdv.ho_va_ten }} ({{ hdv.ngon_ngu_text }})
                             </option>
                         </select>
                     </div>
                 </div>
                 
                 <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                    <button @click="closeAssignModal" style="padding: 10px 20px; background: #e2e8f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                        Hủy
-                    </button>
-                    <button @click="saveAssign" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                        <i class="fa-solid fa-save me-2"></i>{{ assignFormMode === 'edit' ? 'Cập Nhật' : 'Phân Công' }}
+                    <button @click="closeAssignModal" style="padding: 10px 20px; background: #e2e8f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">Hủy</button>
+                    <button @click="saveAssign" class="btn-primary-gradient" style="padding: 10px 20px;">
+                        <i class="fa-solid fa-save me-2"></i>{{ assignFormMode === 'edit' ? 'Lưu Thay Đổi' : 'Xác Nhận Phân Công' }}
                     </button>
                 </div>
             </div>
@@ -391,18 +302,9 @@ export default {
             
             // Modal HDV
             showHDVModal: false,
-            hdvFormMode: 'add', // add, edit, view
-            hdvForm: {
-                id: null,
-                ho_va_ten: '',
-                email: '',
-                so_dien_thoai: '',
-                ngon_ngu: [], // Array of selected languages
-                password: '',
-                is_block: 0
-            },
+            hdvFormMode: 'add',
+            hdvForm: { id: null, ho_va_ten: '', email: '', so_dien_thoai: '', ngon_ngu: [], password: '', is_block: 0 },
             
-            // Available languages
             availableLanguages: [
                 { value: 'Tiếng Việt', label: 'Tiếng Việt' },
                 { value: 'Tiếng Anh', label: 'Tiếng Anh' },
@@ -411,19 +313,13 @@ export default {
                 { value: 'Tiếng Nhật', label: 'Tiếng Nhật' },
                 { value: 'Tiếng Hàn', label: 'Tiếng Hàn' },
                 { value: 'Tiếng Tây Ban Nha', label: 'Tiếng Tây Ban Nha' },
-                { value: 'Tiếng Đức', label: 'Tiếng Đức' },
-                { value: 'Tiếng Ý', label: 'Tiếng Ý' },
-                { value: 'Tiếng Bồ Đào Nha', label: 'Tiếng Bồ Đào Nha' }
+                { value: 'Tiếng Đức', label: 'Tiếng Đức' }
             ],
             
             // Modal Assignment
             showAssignModal: false,
-            assignFormMode: 'add', // add, edit
-            assignForm: {
-                id: null,
-                id_tour: '',
-                id_huong_dan_vien: ''
-            },
+            assignFormMode: 'add',
+            assignForm: { id_phan_cong: null, id_tour: '', id_huong_dan_vien: '' },
             
             isLoading: false,
         }
@@ -434,80 +330,45 @@ export default {
     methods: {
         loadData() {
             this.isLoading = true;
-            
-            // Load dữ liệu từ API - sử dụng allSettled để tránh failed promise
-            Promise.allSettled([
-                this.loadHDVList(),
-                this.loadAssignments(),
-                this.loadTourList()
-            ]).then((results) => {
-                console.log('Data loaded:', results);
+            Promise.allSettled([this.loadHDVList(), this.loadAssignments(), this.loadTourList()])
+            .then(() => {
                 this.filterDataHDV();
                 this.filterDataTour();
                 this.isLoading = false;
-                this.$toast.success('Tải dữ liệu thành công!');
-            }).catch(err => {
-                console.error('Error loading data:', err);
-                this.$toast.error('Lỗi khi tải dữ liệu');
-                this.isLoading = false;
-            });
+            }).catch(() => { this.isLoading = false; });
         },
         
         loadHDVList() {
             return new Promise((resolve, reject) => {
-                axios.get(apiUrl('admin/quan-ly-hdv/danh-sach-hdv'), {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
+                axios.get(apiUrl('admin/quan-ly-hdv/danh-sach-hdv'), { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
                 .then(res => {
-                    console.log('HDV List Response:', res.data);
                     if (res.data.status) {
-                        // Map dữ liệu từ backend
                         this.hdvList = res.data.data.map(hdv => ({
                             id: hdv.id,
                             ma_hdv: '#HDV-' + String(hdv.id).padStart(3, '0'),
                             ho_va_ten: hdv.ho_va_ten,
                             email: hdv.email,
                             so_dien_thoai: hdv.so_dien_thoai || 'N/A',
-                            nguon_goc: hdv.nguon_goc || 'N/A',
                             ngon_ngu: this.parseLanguages(hdv.ngon_ngu),
                             is_block: hdv.is_block,
-                            trang_thai: hdv.is_block ? 0 : 1 // Nếu is_block = 1 thì trang_thai = 0 (tạm dừng)
+                            trang_thai: hdv.is_block ? 0 : 1
                         }));
-                        // Lưu available HDV (chỉ lấy những hướng dẫn viên hoạt động)
                         this.availableHDV = this.hdvList.filter(h => h.trang_thai === 1).map(h => ({
-                            ...h,
-                            ngon_ngu_text: (Array.isArray(h.ngon_ngu) ? h.ngon_ngu : this.parseLanguages(h.ngon_ngu)).join(', ')
+                            ...h, ngon_ngu_text: (Array.isArray(h.ngon_ngu) ? h.ngon_ngu : this.parseLanguages(h.ngon_ngu)).join(', ')
                         }));
                         resolve(res.data);
-                    } else {
-                        console.error('HDV API Error:', res.data.message);
-                        this.$toast.error('Lỗi: ' + res.data.message);
-                        reject(new Error(res.data.message));
                     }
-                })
-                .catch(err => {
-                    console.error('HDV Request Error:', err);
-                    this.$toast.error('Lỗi khi tải danh sách HDV: ' + err.message);
-                    reject(err);
-                });
+                }).catch(err => reject(err));
             });
         },
         
         loadAssignments() {
             return new Promise((resolve, reject) => {
-                axios.get(apiUrl('admin/quan-ly-hdv/danh-sach-phan-cong'), {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
+                axios.get(apiUrl('admin/quan-ly-hdv/danh-sach-phan-cong'), { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
                 .then(res => {
-                    console.log('Assignment List Response:', res.data);
                     if (res.data.status) {
-                        // Map dữ liệu từ backend
                         this.assignments = res.data.data.map(assign => ({
-                            id: assign.id_phan_cong,
+                            id_phan_cong: assign.id_phan_cong,
                             id_tour: assign.id_tour,
                             id_hdv: assign.id_hdv,
                             ma_tour: '#TOUR-' + String(assign.id_tour).padStart(3, '0'),
@@ -517,365 +378,134 @@ export default {
                             ngon_ngu: this.parseLanguages(assign.ngon_ngu),
                             ngay_bat_dau: assign.ngay_bat_dau,
                             ngay_ket_thuc: assign.ngay_ket_thuc,
-                            // Xác định trạng thái dựa vào ngày
                             trang_thai: this.getTourStatus(assign.ngay_bat_dau, assign.ngay_ket_thuc)
                         }));
                         resolve(res.data);
-                    } else {
-                        console.error('Assignment API Error:', res.data.message);
-                        this.$toast.error('Lỗi: ' + res.data.message);
-                        reject(new Error(res.data.message));
                     }
-                })
-                .catch(err => {
-                    console.error('Assignment Request Error:', err);
-                    this.$toast.error('Lỗi khi tải danh sách phân công: ' + err.message);
-                    reject(err);
-                });
+                }).catch(err => reject(err));
             });
         },
         
         loadTourList() {
             return new Promise((resolve, reject) => {
-                axios.get(apiUrl('admin/tour/get-data'), {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
+                axios.get(apiUrl('admin/tour/get-data'), { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
                 .then(res => {
-                    console.log('Tour List Response:', res.data);
-                    if (res.data.status) {
-                        this.tourList = res.data.data || [];
-                        resolve(res.data);
-                    } else {
-                        console.error('Tour API Error:', res.data.message);
-                        reject(new Error(res.data.message));
-                    }
-                })
-                .catch(err => {
-                    console.error('Tour Request Error:', err);
-                    reject(err);
-                });
+                    if (res.data.status) { this.tourList = res.data.data || []; resolve(res.data); }
+                }).catch(err => reject(err));
             });
         },
         
         getTourStatus(ngay_bat_dau, ngay_ket_thuc) {
             const now = new Date();
-            const startDate = new Date(ngay_bat_dau);
             const endDate = new Date(ngay_ket_thuc);
-            
-            if (now >= startDate && now <= endDate) {
-                return 1; // Đang diễn ra
-            } else if (now > endDate) {
-                return 0; // Đã kết thúc
-            } else {
-                return 1; // Chưa bắt đầu nhưng vẫn là "Đang diễn ra" để admin biết
-            }
+            return (now > endDate) ? 0 : 1; // 0: Kết thúc, 1: Đang/Sắp diễn ra
         },
         
         formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
+            return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
         },
-        
-        // ==================== HELPER METHODS ====================
         
         parseLanguages(languageData) {
             if (!languageData) return [];
-            // Nếu đã là array thì trả về
             if (Array.isArray(languageData)) return languageData;
-            // Nếu là JSON string thì parse
-            try {
-                const parsed = JSON.parse(languageData);
-                return Array.isArray(parsed) ? parsed : [languageData];
-            } catch {
-                // Nếu là string thường thì chuyển thành array
-                return languageData.trim() ? [languageData] : [];
-            }
+            try { return JSON.parse(languageData); } catch { return [languageData]; }
         },
-        
         stringifyLanguages(languageArray) {
-            if (!languageArray || languageArray.length === 0) return JSON.stringify(['Tiếng Việt']);
-            return JSON.stringify(languageArray);
+            return (!languageArray || languageArray.length === 0) ? JSON.stringify(['Tiếng Việt']) : JSON.stringify(languageArray);
         },
         
         filterDataHDV() {
             this.filteredHDV = this.hdvList.filter(hdv => {
-                const matchSearch = !this.searchQueryHDV || 
-                    hdv.ho_va_ten.toLowerCase().includes(this.searchQueryHDV.toLowerCase()) ||
-                    hdv.ma_hdv.toLowerCase().includes(this.searchQueryHDV.toLowerCase());
-                
+                const matchSearch = !this.searchQueryHDV || hdv.ho_va_ten.toLowerCase().includes(this.searchQueryHDV.toLowerCase()) || hdv.ma_hdv.toLowerCase().includes(this.searchQueryHDV.toLowerCase());
                 const matchStatus = !this.statusFilterHDV || hdv.trang_thai.toString() === this.statusFilterHDV;
-                
                 return matchSearch && matchStatus;
             });
         },
         
         openAddHDVModal() {
             this.hdvFormMode = 'add';
-            this.hdvForm = {
-                id: null,
-                ho_va_ten: '',
-                email: '',
-                so_dien_thoai: '',
-                ngon_ngu: [],
-                password: '',
-                is_block: 0
-            };
+            this.hdvForm = { id: null, ho_va_ten: '', email: '', so_dien_thoai: '', ngon_ngu: [], password: '', is_block: 0 };
             this.showHDVModal = true;
         },
-        
         viewHDV(hdv) {
             this.hdvFormMode = 'view';
-            this.hdvForm = {
-                id: hdv.id,
-                ho_va_ten: hdv.ho_va_ten,
-                email: hdv.email,
-                so_dien_thoai: hdv.so_dien_thoai,
-                ngon_ngu: Array.isArray(hdv.ngon_ngu) ? hdv.ngon_ngu : this.parseLanguages(hdv.ngon_ngu),
-                password: '',
-                is_block: hdv.is_block
-            };
+            this.hdvForm = { ...hdv, password: '' };
             this.showHDVModal = true;
         },
-        
         editHDV(hdv) {
             this.hdvFormMode = 'edit';
-            this.hdvForm = {
-                id: hdv.id,
-                ho_va_ten: hdv.ho_va_ten,
-                email: hdv.email,
-                so_dien_thoai: hdv.so_dien_thoai,
-                ngon_ngu: Array.isArray(hdv.ngon_ngu) ? hdv.ngon_ngu : this.parseLanguages(hdv.ngon_ngu),
-                password: '',
-                is_block: hdv.is_block
-            };
+            this.hdvForm = { ...hdv, password: '' };
             this.showHDVModal = true;
         },
-        
         saveHDV() {
-            // Validation
-            if (!this.hdvForm.ho_va_ten || !this.hdvForm.email || !this.hdvForm.so_dien_thoai) {
-                this.$toast.warning('Vui lòng điền đầy đủ thông tin!');
-                return;
-            }
-
-            if (this.hdvForm.ngon_ngu.length === 0) {
-                this.$toast.warning('Vui lòng chọn ít nhất 1 ngôn ngữ!');
-                return;
-            }
-
-            if (this.hdvFormMode === 'add') {
-                if (!this.hdvForm.password) {
-                    this.$toast.warning('Vui lòng nhập mật khẩu!');
-                    return;
-                }
-                this.addHDV();
-            } else if (this.hdvFormMode === 'edit') {
-                this.updateHDV();
-            }
-        },
-        
-        addHDV() {
-            const payload = {
-                ho_va_ten: this.hdvForm.ho_va_ten,
-                email: this.hdvForm.email,
-                so_dien_thoai: this.hdvForm.so_dien_thoai,
-                ngon_ngu: this.stringifyLanguages(this.hdvForm.ngon_ngu),
-                password: this.hdvForm.password,
-                is_block: this.hdvForm.is_block
-            };
+            if (!this.hdvForm.ho_va_ten || !this.hdvForm.email) return this.$toast.warning('Điền đủ thông tin!');
+            if (this.hdvFormMode === 'add' && !this.hdvForm.password) return this.$toast.warning('Nhập mật khẩu!');
             
-            axios.post(apiUrl('admin/huong-dan-vien/store'), payload, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
+            const payload = { ...this.hdvForm, ngon_ngu: this.stringifyLanguages(this.hdvForm.ngon_ngu) };
+            if (this.hdvFormMode === 'edit' && !this.hdvForm.password) delete payload.password;
+            
+            const url = this.hdvFormMode === 'add' ? 'admin/huong-dan-vien/store' : 'admin/huong-dan-vien/update';
+            axios.post(apiUrl(url), payload, { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
             .then(res => {
                 if (res.data.status) {
-                    this.$toast.success('Thêm hướng dẫn viên thành công!');
+                    this.$toast.success(res.data.message);
                     this.closeHDVModal();
                     this.loadData();
-                } else {
-                    this.$toast.error(res.data.message || 'Lỗi khi thêm hướng dẫn viên');
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi thêm hướng dẫn viên: ' + (err.response?.data?.message || err.message));
+                } else this.$toast.error(res.data.message);
             });
         },
-        
-        updateHDV() {
-            const payload = {
-                id: this.hdvForm.id,
-                ho_va_ten: this.hdvForm.ho_va_ten,
-                email: this.hdvForm.email,
-                so_dien_thoai: this.hdvForm.so_dien_thoai,
-                ngon_ngu: this.stringifyLanguages(this.hdvForm.ngon_ngu),
-                is_block: this.hdvForm.is_block
-            };
-            
-            // Chỉ thêm password nếu có nhập
-            if (this.hdvForm.password) {
-                payload.password = this.hdvForm.password;
-            }
-            
-            axios.post(apiUrl('admin/huong-dan-vien/update'), payload, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
-            .then(res => {
-                if (res.data.status) {
-                    this.$toast.success('Cập nhật hướng dẫn viên thành công!');
-                    this.closeHDVModal();
-                    this.loadData();
-                } else {
-                    this.$toast.error(res.data.message || 'Lỗi khi cập nhật hướng dẫn viên');
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi cập nhật hướng dẫn viên: ' + (err.response?.data?.message || err.message));
-            });
-        },
-        
         deleteHDV(hdv) {
-            if (confirm(`Bạn chắc chắn muốn xóa hướng dẫn viên ${hdv.ho_va_ten}?\n\nTất cả phân công của hướng dẫn viên này cũng sẽ bị xóa.`)) {
-                axios.post(apiUrl('admin/huong-dan-vien/destroy'), { id: hdv.id }, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
+            if (confirm(`Xóa Hướng dẫn viên ${hdv.ho_va_ten}? Phân công cũng sẽ bị xóa.`)) {
+                axios.post(apiUrl('admin/huong-dan-vien/destroy'), { id: hdv.id }, { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
                 .then(res => {
-                    if (res.data.status) {
-                        this.$toast.success('Đã xóa hướng dẫn viên thành công!');
-                        this.loadData();
-                    } else {
-                        this.$toast.error(res.data.message || 'Lỗi khi xóa hướng dẫn viên');
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    this.$toast.error('Lỗi khi xóa hướng dẫn viên');
+                    if (res.data.status) { this.$toast.success('Xóa thành công!'); this.loadData(); }
                 });
             }
         },
-        
-        closeHDVModal() {
-            this.showHDVModal = false;
-            this.hdvForm = {
-                id: null,
-                ho_va_ten: '',
-                email: '',
-                so_dien_thoai: '',
-                ngon_ngu: [],
-                password: '',
-                is_block: 0
-            };
-        },
-        
-        // ==================== ASSIGNMENT METHODS ====================
-        
+        closeHDVModal() { this.showHDVModal = false; },
+
+        /* PHÂN CÔNG TOUR */
         filterDataTour() {
             this.filteredAssignments = this.assignments.filter(assign => {
-                const matchSearch = !this.searchQueryTour || 
-                    assign.ten_tour.toLowerCase().includes(this.searchQueryTour.toLowerCase()) ||
-                    assign.ma_tour.toLowerCase().includes(this.searchQueryTour.toLowerCase());
-                
+                const matchSearch = !this.searchQueryTour || assign.ten_tour.toLowerCase().includes(this.searchQueryTour.toLowerCase()) || assign.ma_tour.toLowerCase().includes(this.searchQueryTour.toLowerCase());
                 const matchStatus = !this.statusFilterTour || assign.trang_thai.toString() === this.statusFilterTour;
-                
                 return matchSearch && matchStatus;
             });
         },
-        
         openAddAssignModal() {
             this.assignFormMode = 'add';
-            this.assignForm = {
-                id: null,
-                id_tour: '',
-                id_huong_dan_vien: ''
-            };
+            this.assignForm = { id_phan_cong: null, id_tour: '', id_huong_dan_vien: '' };
             this.showAssignModal = true;
         },
-        
         editAssign(assign) {
             this.assignFormMode = 'edit';
-            this.assignForm = {
-                id: assign.id,
-                id_tour: assign.id_tour,
-                id_huong_dan_vien: assign.id_hdv
-            };
+            this.assignForm = { id_phan_cong: assign.id_phan_cong, id_tour: assign.id_tour, id_huong_dan_vien: assign.id_hdv };
             this.showAssignModal = true;
         },
-        
         saveAssign() {
-            // Validation
-            if (!this.assignForm.id_tour || !this.assignForm.id_huong_dan_vien) {
-                this.$toast.warning('Vui lòng chọn Tour và Hướng Dẫn Viên!');
-                return;
-            }
+            if (!this.assignForm.id_tour || !this.assignForm.id_huong_dan_vien) return this.$toast.warning('Chọn đủ Tour và HDV!');
+            const url = this.assignFormMode === 'add' ? 'admin/quan-ly-hdv/tao-phan-cong' : 'admin/quan-ly-hdv/cap-nhat-phan-cong';
             
-            const payload = {
-                id_tour: this.assignForm.id_tour,
-                id_huong_dan_vien: this.assignForm.id_huong_dan_vien
-            };
-            
-            axios.post(apiUrl('admin/quan-ly-hdv/tao-phan-cong'), payload, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
-                }
-            })
+            axios.post(apiUrl(url), this.assignForm, { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
             .then(res => {
                 if (res.data.status) {
-                    this.$toast.success(res.data.message || 'Phân công tour thành công!');
+                    this.$toast.success(res.data.message);
                     this.closeAssignModal();
                     this.loadData();
-                } else {
-                    this.$toast.error(res.data.message || 'Lỗi khi phân công tour');
-                }
-            })
-            .catch(err => {
-                console.error('Error:', err);
-                this.$toast.error('Lỗi khi phân công tour: ' + (err.response?.data?.message || err.message));
+                } else this.$toast.error(res.data.message);
             });
         },
-        
         deleteAssign(assign) {
-            if (confirm(`Bạn chắc chắn muốn xóa phân công tour ${assign.ten_tour} cho ${assign.ten_hdv}?`)) {
-                axios.post(apiUrl('admin/quan-ly-hdv/xoa-phan-cong'), { id: assign.id }, {
-                    headers: {
-                        Authorization: "Bearer " + localStorage.getItem('key_admin')
-                    }
-                })
+            if (confirm(`Xóa phân công này?`)) {
+                axios.post(apiUrl('admin/quan-ly-hdv/xoa-phan-cong'), { id: assign.id_phan_cong }, { headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') } })
                 .then(res => {
-                    if (res.data.status) {
-                        this.$toast.success(res.data.message || 'Đã xóa phân công thành công!');
-                        this.loadData();
-                    } else {
-                        this.$toast.error(res.data.message || 'Lỗi khi xóa phân công');
-                    }
-                })
-                .catch(err => {
-                    console.error('Error:', err);
-                    this.$toast.error('Lỗi khi xóa phân công');
+                    if (res.data.status) { this.$toast.success('Đã xóa thành công!'); this.loadData(); }
                 });
             }
         },
-        
-        closeAssignModal() {
-            this.showAssignModal = false;
-            this.assignForm = {
-                id: null,
-                id_tour: '',
-                id_huong_dan_vien: ''
-            };
-        }
+        closeAssignModal() { this.showAssignModal = false; }
     }
 }
 </script>
@@ -883,55 +513,15 @@ export default {
 <style scoped>
 .btn-primary-gradient {
     background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;
 }
-.btn-primary-gradient:hover {
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
+.btn-primary-gradient:hover { box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); transform: translateY(-2px); }
 
-.action-btn {
-    width: 35px;
-    height: 35px;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    border: none;
-}
-
-.btn-view {
-    background: #e3f2fd;
-    color: #667eea;
-}
-.btn-view:hover {
-    background: #667eea;
-    color: white;
-}
-
-.btn-edit {
-    background: #f0f4f8;
-    color: #764ba2;
-}
-.btn-edit:hover {
-    background: #764ba2;
-    color: white;
-}
-
-.btn-delete {
-    background: #fee;
-    color: #f56565;
-}
-.btn-delete:hover {
-    background: #f56565;
-    color: white;
-}
+.action-btn { width: 35px; height: 35px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; border: none; }
+.btn-view { background: #e3f2fd; color: #667eea; }
+.btn-view:hover { background: #667eea; color: white; transform: scale(1.1); }
+.btn-edit { background: #f0f4f8; color: #764ba2; }
+.btn-edit:hover { background: #764ba2; color: white; transform: scale(1.1); }
+.btn-delete { background: #fee; color: #f56565; }
+.btn-delete:hover { background: #f56565; color: white; transform: scale(1.1); }
 </style>

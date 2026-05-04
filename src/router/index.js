@@ -202,8 +202,14 @@ const routes = [
         beforeEnter: checkAdmin,
     },
     {
+        path: "/admin/quet-hoa-don",
+        component: () => import("../components/Admin/QuetHoaDon/index.vue"),
+        beforeEnter: checkAdmin,
+    },
+    {
         path: "/admin/in-ve/:ma_hoa_don",
         component: () => import("../components/Admin/InVe/index.vue"),
+        meta: { layout: "blank" },
         beforeEnter: checkAdmin,
         props: true,
     },
@@ -214,12 +220,12 @@ const routes = [
     },
     {
         path: "/admin/bai-viet",
-        component: () => import("../components/Admin/quanlybai/index.vue"),
+        component: () => import("../components/Admin/QuanLyBaiViet/index.vue"),
         beforeEnter: checkAdmin,
     },
     {
         path: "/admin/danh-gia",
-        component: () => import("../components/Admin/quanlydanhgia/index.vue"),
+        component: () => import("../components/Admin/QuanLyDanhGia/index.vue"),
         beforeEnter: checkAdmin,
     },
     

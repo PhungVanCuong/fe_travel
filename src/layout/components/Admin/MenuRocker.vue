@@ -69,13 +69,6 @@
 								</a>
 							</li>
 						</router-link>
-						<router-link to="/admin/quoc-gia">
-							<li>	
-								<a class="dropdown-item" href="/admin/quoc-gia">
-									<i class="bx bx-right-arrow-alt"></i>Quốc Gia
-								</a>
-							</li>
-						</router-link>
 					</ul>
 				</li>
 
@@ -98,14 +91,14 @@
 						<router-link to="/admin/hoa-don">
 							<li>
 								<a class="dropdown-item" href="/admin/hoa-don">
-									<i class="bx bx-right-arrow-alt"></i>Hoá đơn
+									<i class="bx bx-right-arrow-alt"></i>Hoá Đơn
 								</a>
 							</li>
 						</router-link>
-						<router-link to="/admin/quet-ve">
+						<router-link to="/admin/quet-hoa-don">
 							<li>	
-								<a class="dropdown-item" href="/admin/quet-ve">
-									<i class="bx bx-right-arrow-alt"></i>Quét Vé
+								<a class="dropdown-item" href="/admin/quet-hoa-don">
+									<i class="bx bx-right-arrow-alt"></i>Quét Hoá Đơn
 								</a>
 							</li>
 						</router-link>

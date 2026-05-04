@@ -5,6 +5,7 @@
         <div class="container my-5">
             <div class="row g-0 auth-card shadow-lg rounded-4 overflow-hidden mx-auto" style="max-width: 900px;">
                 
+                <!-- Cột Trái (Brand) -->
                 <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center align-items-center text-center p-5 auth-brand-panel">
                     <div class="d-flex align-items-center justify-content-center gap-3 mb-4">
                         <img src="https://logo.com/image-cdn/images/kts928pd/production/2422e0e54bc42735594cd2f3800bdd15ce7ab258-317x316.png?w=1080&q=72&fm=webp" alt="" class="img-fluid brand-logo m-0">
@@ -14,6 +15,7 @@
                     <p class="text-white-50 mb-0">Hệ thống quản lý tổng thể dành cho rạp chiếu phim. Đăng nhập để truy cập khu vực quản trị an toàn.</p>
                 </div>
 
+                <!-- Cột Phải (Form) -->
                 <div class="col-lg-7 d-flex align-items-center bg-white p-5 auth-form-panel">
                     <div class="w-100">
                         
@@ -29,6 +31,7 @@
 
                         <div class="form-body">
                             <div class="row g-4">
+                                <!-- Email Input -->
                                 <div class="col-12">
                                     <label class="form-label fw-semibold text-dark">Email Quản Trị</label>
                                     <div class="input-group input-group-lg border rounded-3 p-1 custom-input-wrapper">
@@ -42,11 +45,9 @@
                                     </div>
                                 </div>
 
+                                <!-- Password Input -->
                                 <div class="col-12">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <label class="form-label fw-semibold text-dark mb-0">Mật khẩu</label>
-                                        <a href="#" class="text-decoration-none text-primary small">Quên mật khẩu?</a>
-                                    </div>
+                                    <label class="form-label fw-semibold text-dark mb-1">Mật khẩu</label>
                                     <div class="input-group input-group-lg border rounded-3 p-1 custom-input-wrapper">
                                         <span class="input-group-text bg-transparent border-0 text-primary">
                                             <i class="fa-solid fa-lock"></i>
@@ -61,15 +62,20 @@
                                     </div>
                                 </div>
 
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input class="form-check-input shadow-none" type="checkbox" id="rememberMe">
-                                        <label class="form-check-label text-muted small" for="rememberMe">
-                                            Ghi nhớ đăng nhập
-                                        </label>
+                                <!-- ĐÃ SỬA: Ghi nhớ & Quên mật khẩu ngang hàng -->
+                                <div class="col-12 mt-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="form-check custom-checkbox d-flex align-items-center m-0">
+                                            <input class="form-check-input shadow-none mt-0 me-2" type="checkbox" id="rememberMe" v-model="rememberMe">
+                                            <label class="form-check-label text-muted small fw-medium" for="rememberMe" style="cursor: pointer; user-select: none;">
+                                                Ghi nhớ đăng nhập
+                                            </label>
+                                        </div>
+                                        <a href="#" class="text-decoration-none fw-bold small forgot-link">Quên mật khẩu?</a>
                                     </div>
                                 </div>
 
+                                <!-- Nút Đăng nhập -->
                                 <div class="col-12 mt-4">
                                     <button @click="dangNhap" :disabled="isLoading" 
                                         class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow-sm btn-login d-flex justify-content-center align-items-center gap-2">
@@ -104,6 +110,18 @@ export default {
             },
             passwordVisible: false,
             isLoading: false,
+            rememberMe: false, // Biến lưu trạng thái checkbox
+        }
+    },
+    mounted() {
+        // TỰ ĐỘNG ĐIỀN THÔNG TIN NẾU TRƯỚC ĐÓ ĐÃ CHỌN "GHI NHỚ"
+        const savedEmail = localStorage.getItem('ix_admin_email');
+        const savedPass = localStorage.getItem('ix_admin_pass');
+        
+        if (savedEmail && savedPass) {
+            this.user.email = savedEmail;
+            this.user.password = atob(savedPass); // Giải mã base64 (atob) để hiển thị lại
+            this.rememberMe = true;
         }
     },
     methods: {
@@ -118,6 +136,18 @@ export default {
                 .then((res) => {
                     if (res.data.status) {
                         localStorage.setItem('key_admin', res.data.token);
+                        
+                        // XỬ LÝ LƯU TÀI KHOẢN (GHI NHỚ ĐĂNG NHẬP)
+                        if (this.rememberMe) {
+                            localStorage.setItem('ix_admin_email', this.user.email);
+                            // Mã hóa base64 (btoa) để password không hiện rõ ràng trong Storage
+                            localStorage.setItem('ix_admin_pass', btoa(this.user.password)); 
+                        } else {
+                            // Nếu khách bỏ tick thì xóa thông tin cũ đi
+                            localStorage.removeItem('ix_admin_email');
+                            localStorage.removeItem('ix_admin_pass');
+                        }
+
                         this.$toast.success(res.data.message);
                         this.$router.push('/admin/dashboard');
                     } else {
@@ -178,7 +208,6 @@ export default {
     border-right: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ĐÃ SỬA: Giảm kích thước max-width để logo không bị quá bự khi nằm ngang với chữ */
 .brand-logo {
     max-width: 75px;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
@@ -226,6 +255,27 @@ export default {
     background: #aab0d4;
     transform: none;
     box-shadow: none !important;
+}
+
+/* --- TRANG TRÍ RIÊNG CHO PHẦN GHI NHỚ VÀ QUÊN MẬT KHẨU --- */
+.forgot-link {
+    color: #4e54c8;
+    transition: all 0.2s ease;
+}
+
+.forgot-link:hover {
+    color: #3b3f96;
+    text-decoration: underline !important;
+}
+
+.custom-checkbox .form-check-input {
+    border-color: #ced4da;
+    cursor: pointer;
+}
+
+.custom-checkbox .form-check-input:checked {
+    background-color: #4e54c8;
+    border-color: #4e54c8;
 }
 
 /* Responsive bo góc */
