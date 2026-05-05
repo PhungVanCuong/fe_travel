@@ -1,111 +1,120 @@
 <template>
     <div class="receipt-wrapper">
-
+        <!-- Nút thao tác nhanh -->
         <div class="action-buttons no-print">
-            <button @click="veTrangChu" class="btn-action btn-home">
-                <i class="fa-solid fa-house"></i> Về Trang Chủ
+            <button @click="quayLai" class="btn-action btn-back">
+                <i class="fa-solid fa-chevron-left"></i> Quay Lại
             </button>
-            <button @click="inLai" class="btn-action btn-print">
-                <i class="fa-solid fa-print"></i> In Lại
+            <button @click="inVe" class="btn-action btn-print">
+                <i class="fa-solid fa-print"></i> In Vé Ngay
             </button>
         </div>
-        <div class="receipt-container">
-            <div class="receipt-paper">
-                <div class="receipt-header">
-                    <div class="logo-section">
-                        <div class="logo-circle">
-                            <img src="https://dzfullstack.com/assets/images/logo-1.png" alt="Ixtal Tour Logo"
-                                class="logo-img">
-                        </div>
-                        <h1 class="company-name">Ixtal Tour</h1>
-                        <p class="company-tagline">Tour</p>
-                    </div>
-                    <div class="header-divider"></div>
-                    <div class="company-info">
-                        <p>123 Đường ABC, Quận XYZ</p>
-                        <p>TP. Đà Nẵng, Việt Nam</p>
-                        <p>Tel: 0236.3888.999</p>
-                    </div>
-                </div>
 
-                <div class="invoice-title">
-                    <h2>HÓA ĐƠN TOUR DU LỊCH</h2>
-                    <div class="title-underline"></div>
-                </div>
-
-                <div class="tour-section ms-3">
-                    <h3 class="section-title">THÔNG TIN TOUR</h3>
-                    <div class="tour-name">{{ tt_tour.ten_tour }}</div>
-                    <table class="info-table">
-                        <tr>
-                            <td class="label">Ngày khởi hành:</td>
-                            <td class="value">{{ formatDate(tt_tour.thoi_gian_bat_dau) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Ngày kết thúc:</td>
-                            <td class="value">{{ formatDate(tt_tour.thoi_gian_ket_thuc) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Điểm khởi hành:</td>
-                            <td class="value">{{ tt_tour.ten_phong }}</td>
-                        </tr>
-                        <tr>
-                            <td class="label">Ngôn ngữ hướng dẫn:</td>
-                            <td class="value">{{ tt_tour.ngon_ngu }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="tickets-section">
-                    <h3 class="section-title">CHI TIẾT TOUR</h3>
-                    <div v-for="(value, index) in ds_ve" :key="index" class="ticket-item">
-                        <div class="ticket-header-row">
-                            <span class="seat-number">Khách hàng {{ index + 1 }}</span>
-                            <span class="seat-price">{{ formatVND(value.gia_ve) }}</span>
-                        </div>
-                        <div class="barcode-section">
-                            <img :src="`https://barcode.tec-it.com/barcode.ashx?data=` + value.ma_ve + `&code=Code128&multiplebarcodes=false&translate-esc=false&unit=Fit&dpi=96&imagetype=Gif&rotation=0&color=%23000000&bgcolor=%23ffffff&qunit=Mm&quiet=0`"
-                                alt="Barcode" class="barcode-img">
-                            <p class="barcode-code">{{ value.ma_ve }}</p>
+        <div class="receipt-container" v-if="loaded">
+            <div class="ticket">
+                <!-- Phần đầu vé -->
+                <div class="ticket-header">
+                    <div class="brand">
+                        <img src="https://dzfullstack.com/assets/images/logo-1.png" alt="Logo" class="logo">
+                        <div class="brand-info">
+                            <h1>IXTAL TOUR</h1>
+                            <p>Trải nghiệm du lịch đích thực</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="services-section" v-if="ds_dv.length > 0">
-                    <h3 class="section-title">DỊCH VỤ</h3>
-                    <table class="services-table">
-                        <tr v-for="(value, index) in ds_dv" :key="index">
-                        
-                            <td class="service-price">{{ formatVND(value.gia) }}</td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div class="transaction-section">
-                    <div class="trans-row">
-                        <span>Thời gian:</span>
-                        <span>{{ formatDate(created_at) }}</span>
-                    </div>
-                    <div class="trans-row">
-                        <span>Mã GD:</span>
-                        <span>{{ ma_hoa_don }}</span>
+                    <div class="ticket-status" :class="getStatusClass(hoa_don.trang_thai)">
+                        {{ getStatusText(hoa_don.trang_thai) }}
                     </div>
                 </div>
 
-                <div class="receipt-footer">
-                    <div class="footer-divider"></div>
-                    <p class="thank-you">Cảm ơn quý khách!</p>
-                    <div class="footer-notes">
-                        <p>◆ Vui lòng có mặt đúng giờ tại điểm tập trung</p>
-                        <p>◆ Mang theo giấy tờ tùy thân và voucher này</p>
-                        <p>◆ Liên hệ hotline nếu có thay đổi lịch trình</p>
-                        <p>◆ Chúc quý khách có chuyến đi vui vẻ!</p>
-                    </div>
-                    <p class="website">www.ixtaltour.vn</p>
+                <!-- Đường cắt răng cưa trang trí -->
+                <div class="stub-separator">
+                    <div class="cut-line"></div>
                 </div>
 
-                <div class="perforation"></div>
+                <div class="ticket-body">
+                    <!-- Thông tin khách hàng -->
+                    <div class="info-section customer-info">
+                        <div class="info-item">
+                            <span class="label">KHÁCH HÀNG</span>
+                            <span class="value">{{ khach_hang.ho_va_ten }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">SỐ ĐIỆN THOẠI</span>
+                            <span class="value">{{ khach_hang.so_dien_thoai }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">MÃ HÓA ĐƠN</span>
+                            <span class="value code">{{ hoa_don.ma_hoa_don }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Thông tin Tour -->
+                    <div class="tour-details">
+                        <h2 class="tour-title">{{ tour.ten_tour }}</h2>
+                        <div class="grid-info">
+                            <div class="grid-item">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <div class="content-block">
+                                    <span class="label">KHỞI HÀNH</span>
+                                    <span class="value">{{ formatDate(tour.ngay_bat_dau) }}</span>
+                                </div>
+                            </div>
+                            <div class="grid-item">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <div class="content-block">
+                                    <span class="label">ĐIỂM ĐÓN</span>
+                                    <span class="value">{{ tour.diem_don }}</span>
+                                </div>
+                            </div>
+                            <div class="grid-item">
+                                <i class="fa-solid fa-users"></i>
+                                <div class="content-block">
+                                    <span class="label">SỐ LƯỢNG</span>
+                                    <span class="value">{{ hoa_don.so_luong_nguoi }} Khách</span>
+                                </div>
+                            </div>
+                            <div class="grid-item">
+                                <i class="fa-solid fa-credit-card"></i>
+                                <div class="content-block">
+                                    <span class="label">THANH TOÁN</span>
+                                    <span class="value" style="text-transform: uppercase;">{{ hoa_don.phuong_thuc_thanh_toan }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danh sách vé chi tiết -->
+                    <div class="ticket-list">
+                        <div v-for="(ve, index) in danh_sach_ve" :key="index" class="ve-item">
+                            <div class="ve-info">
+                                <span class="ve-index">VÉ #{{ index + 1 }}</span>
+                                <span class="ve-price">{{ formatVND(ve.gia_ve) }}</span>
+                            </div>
+                            <div class="barcode-wrapper">
+                                <img :src="`https://barcode.tec-it.com/barcode.ashx?data=${ve.ma_ve}&code=Code128`" alt="Barcode">
+                                <p>{{ ve.ma_ve }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tổng tiền & Footer -->
+                <div class="ticket-footer">
+                    <div class="total-section">
+                        <span>TỔNG CỘNG</span>
+                        <span class="total-amount">{{ formatVND(hoa_don.tong_tien) }}</span>
+                    </div>
+                    <div class="footer-msg">
+                        <p>Vui lòng xuất trình mã này tại quầy đón khách.</p>
+                        <p class="website">www.ixtaltour.vn</p>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div v-else class="loading-container">
+            <div class="spinner"></div>
+            <p>Đang khởi tạo vé...</p>
         </div>
     </div>
 </template>
@@ -115,522 +124,223 @@ import axios from 'axios'
 import apiUrl from '../../../utils/api';
 
 export default {
-    props: ['ma_hoa_don'],
     data() {
         return {
             ma_hoa_don: this.$route.params.ma_hoa_don,
-            tt_tour: {},
-            ds_ve: [],
-            ds_dv: [],
-            so_luong_ve: 0,
-            tong_tien: 0,
-            created_at: null,
-        }
-    },
-    computed: {
-        so_luong_ve() {
-            return this.ds_ve.length;
-        },
-        tong_tien() {
-            if (this.ds_ve.length === 0) return 0;
-            this.tong_tien = this.ds_ve.reduce((total, ve) => total + ve.gia_ve, 0);
-            return this.tong_tien;
+            hoa_don: {},
+            khach_hang: {},
+            tour: {},
+            danh_sach_ve: [],
+            loaded: false
         }
     },
     mounted() {
-        this.getTour();
+        this.getTicketData();
     },
     methods: {
-        getTour() {
-            axios.post(apiUrl("admin/hoa-don/in-ve/in-ve"), { ma_hoa_don: this.ma_hoa_don }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem("key_admin"),
-                },
+        getTicketData() {
+            axios.post(apiUrl("admin/hoa-don/in-ve"), { ma_hoa_don: this.ma_hoa_don }, {
+                headers: { Authorization: "Bearer " + localStorage.getItem("key_admin") },
             })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.tt_tour = res.data.data;
-                        this.ds_ve = res.data.ds_ve;
-                        this.ds_dv = res.data.ds_dv;
-                        this.created_at = res.data.data.created_at;
-                    }
-                })
+            .then((res) => {
+                if (res.data.status) {
+                    const result = res.data.data;
+                    this.hoa_don     = result.thong_tin_hoa_don;
+                    this.khach_hang  = result.thong_tin_khach_hang;
+                    this.tour        = result.thong_tin_tour;
+                    this.danh_sach_ve = result.danh_sach_ve;
+                    this.loaded      = true;
+                } else {
+                    this.$toast.error(res.data.message);
+                }
+            })
+            .catch(() => {
+                this.$toast.error("Lỗi tải dữ liệu!");
+            });
         },
-        formatVND(number) {
-            return new Intl.NumberFormat("vi-VI", { style: "currency", currency: "VND" }).format(number,);
+        formatVND(n) {
+            return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(n);
         },
-        formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            const hours = String(date.getHours()).padStart(2, '0');
-            const minutes = String(date.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes} - ${day}/${month}/${year}`;
+        formatDate(d) {
+            if (!d) return '---';
+            const date = new Date(d);
+            const time = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            const day = date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            return `${time} ${day}`;
         },
-
-        // === [MỚI] 2 HÀM XỬ LÝ NÚT BẤM ===
-        veTrangChu() {
-            this.$router.push('/'); // Đổi đường dẫn về trang chủ của bạn
+        getStatusText(s) {
+            const texts = { 0: 'ĐÃ HỦY', 1: 'CHỜ THANH TOÁN', 2: 'ĐÃ THANH TOÁN' };
+            return texts[s] || 'CHƯA XÁC ĐỊNH';
         },
-        inLai() {
-            window.print();
-        }
+        getStatusClass(s) {
+            const classes = { 0: 'status-cancelled', 1: 'status-pending', 2: 'status-paid' };
+            return classes[s] || '';
+        },
+        quayLai() { this.$router.go(-1); },
+        inVe() { window.print(); }
     },
 }
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=JetBrains+Mono&display=swap');
 
 .receipt-wrapper {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    padding: 40px 20px;
+    background: #e2e8f0;
+    padding: 60px 20px;
+    font-family: 'Montserrat', sans-serif;
     display: flex;
     justify-content: center;
-    align-items: center;
-    font-family: 'Inter', -apple-system, sans-serif;
 }
 
-/* === [MỚI] CSS CHO NÚT BẤM === */
-.action-buttons {
-    position: fixed;
-    /* Ghim cố định */
-    top: 20px;
-    right: 20px;
-    display: flex;
-    gap: 12px;
-    z-index: 9999;
-    /* Đảm bảo nằm trên cùng */
-}
-
-.btn-action {
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
-}
-
-.btn-home {
-    background-color: #6c757d;
-    /* Màu xám */
-}
-
-.btn-print {
-    background-color: #0d6efd;
-    /* Màu xanh */
-}
-
-.btn-action:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-}
-
-/* ============================= */
-
-
-.receipt-container {
-    max-width: 420px;
+.ticket {
+    background: white;
     width: 100%;
-    perspective: 1000px;
-}
-
-.receipt-paper {
-    background: #ffffff;
-    box-shadow:
-        0 10px 40px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    position: relative;
     overflow: hidden;
-    animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes slideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) rotateX(10deg);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0) rotateX(0);
-    }
 }
 
 /* Header */
-.receipt-header {
-    padding: 32px 24px;
-    text-align: center;
-    border-bottom: 2px solid #000;
+.ticket-header {
+    padding: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.logo-section {
-    margin-bottom: 16px;
-}
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo { width: 50px; height: 50px; }
+.brand-info h1 { font-size: 20px; font-weight: 800; margin: 0; color: #1e293b; letter-spacing: 1px; }
+.brand-info p { font-size: 10px; margin: 0; color: #64748b; font-weight: 600; }
 
-.logo-circle {
-    width: 80px;
-    height: 80px;
-    background: #fff;
+.ticket-status {
+    font-size: 10px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+}
+.status-paid { background: #dcfce7; color: #166534; }
+.status-pending { background: #fef9c3; color: #854d0e; }
+.status-cancelled { background: #fee2e2; color: #991b1b; }
+
+/* Separator */
+.stub-separator {
+    height: 20px;
+    background: transparent;
+    position: relative;
+    margin: 0 10px;
+}
+.stub-separator::before, .stub-separator::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #e2e8f0;
     border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 12px;
-    padding: 10px;
-    border: 2px solid #e0e0e0;
+    top: 0;
 }
-
-.logo-img {
+.stub-separator::before { left: -20px; }
+.stub-separator::after { right: -20px; }
+.cut-line {
+    border-top: 2px dashed #cbd5e1;
+    position: absolute;
+    top: 50%;
     width: 100%;
-    height: 100%;
-    object-fit: contain;
 }
 
-.company-name {
-    font-size: 28px;
-    font-weight: 800;
-    letter-spacing: 4px;
-    color: #000;
-    margin: 0 0 4px 0;
-}
+/* Body */
+.ticket-body { padding: 25px; }
 
-.company-tagline {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 2px;
-    color: #666;
-    text-transform: uppercase;
-    margin: 0;
-}
-
-.header-divider {
-    height: 1px;
-    background: #ddd;
-    margin: 16px 0;
-}
-
-.company-info {
-    font-size: 12px;
-    line-height: 1.6;
-    color: #555;
-}
-
-.company-info p {
-    margin: 0;
-}
-
-/* Invoice Title */
-.invoice-title {
-    padding: 24px;
-    text-align: center;
-}
-
-.invoice-title h2 {
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    color: #000;
-    margin: 0 0 8px 0;
-}
-
-.title-underline {
-    width: 60px;
-    height: 3px;
-    background: #000;
-    margin: 0 auto;
-}
-
-/* Movie Section */
-.movie-section {
-    padding: 0 24px 24px 24px;
-}
-
-.section-title {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #000;
-    margin: 0 0 16px 0;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #ddd;
-}
-
-.tour-name {
-    font-size: 18px;
-    font-weight: 700;
-    color: #000;
-    margin-bottom: 16px;
-    line-height: 1.4;
-}
-
-.info-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.info-table tr {
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.info-table tr:last-child {
-    border-bottom: none;
-}
-
-.info-table td {
-    padding: 8px 0;
-    font-size: 13px;
-}
-
-.info-table .label {
-    color: #666;
-    font-weight: 500;
-    width: 35%;
-}
-
-.info-table .value {
-    color: #000;
-    font-weight: 600;
-}
-
-/* Tickets */
-.tickets-section {
-    padding: 0 24px 24px 24px;
-}
-
-.ticket-item {
-    background: #fafafa;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    padding: 16px;
-    margin-bottom: 12px;
-}
-
-.ticket-header-row {
+.info-section {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px dashed #ccc;
+    margin-bottom: 25px;
 }
+.info-item { display: flex; flex-direction: column; gap: 4px; }
+.label { font-size: 9px; font-weight: 700; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; }
+.value { font-size: 13px; font-weight: 700; color: #1e293b; }
+.value.code { font-family: 'JetBrains Mono', monospace; color: #6366f1; }
 
-.seat-number {
-    font-size: 15px;
-    font-weight: 700;
-    color: #000;
+.tour-details {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
 }
+.tour-title { font-size: 16px; font-weight: 700; margin: 0 0 15px 0; color: #0f172a; line-height: 1.4; }
 
-.seat-price {
-    font-size: 16px;
-    font-weight: 800;
-    color: #000;
-}
+.grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-.barcode-section {
-    text-align: center;
-}
-
-.barcode-img {
-    width: 100%;
-    max-width: 280px;
-    height: auto;
-    margin-bottom: 8px;
-}
-
-.barcode-code {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    font-weight: 500;
-    color: #666;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-/* Services */
-.services-section {
-    padding: 0 24px 24px 24px;
-}
-
-.services-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.services-table tr {
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.services-table tr:last-child {
-    border-bottom: none;
-}
-
-.services-table td {
-    padding: 10px 0;
-    font-size: 13px;
-}
-
-.service-name {
-    color: #000;
-    font-weight: 600;
-}
-
-.service-price {
-    text-align: right;
-    color: #000;
-    font-weight: 700;
-}
-
-/* QR Section */
-.qr-section {
-    padding: 0 24px 24px 24px;
-    text-align: center;
-}
-
-.qr-box {
-    display: inline-block;
-    padding: 12px;
-    background: #fff;
-    border: 2px solid #000;
-    border-radius: 4px;
-    margin-bottom: 12px;
-}
-
-.qr-code {
-    display: block;
-    width: 120px;
-    height: 120px;
-}
-
-.qr-text {
-    font-size: 12px;
-    font-weight: 600;
-    color: #666;
-    margin: 0;
-}
-
-/* Transaction */
-.transaction-section {
-    padding: 0 24px 24px 24px;
-    background: #fafafa;
-    border-top: 1px solid #e0e0e0;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.trans-row {
+/* Fixed Grid Item Fix */
+.grid-item {
     display: flex;
-    justify-content: space-between;
-    padding: 10px 0;
-    font-size: 12px;
-    color: #666;
+    align-items: flex-start;
+    gap: 12px;
+}
+.grid-item i {
+    color: #6366f1;
+    font-size: 16px;
+    margin-top: 4px;
+}
+.content-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
-.trans-row span:last-child {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    color: #000;
+/* Barcode list */
+.ticket-list { display: flex; flex-direction: column; gap: 15px; }
+.ve-item {
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
 }
+.ve-info { display: flex; justify-content: space-between; margin-bottom: 10px; }
+.ve-index { font-weight: 700; font-size: 12px; color: #64748b; }
+.ve-price { font-weight: 800; font-size: 14px; color: #1e293b; }
+.barcode-wrapper img { width: 100%; max-width: 300px; }
+.barcode-wrapper p { font-family: 'JetBrains Mono'; font-size: 10px; margin: 5px 0 0 0; }
 
 /* Footer */
-.receipt-footer {
-    padding: 24px;
-    text-align: center;
+.ticket-footer {
+    padding: 25px;
+    background: #1e293b;
+    color: white;
 }
-
-.footer-divider {
-    height: 1px;
-    background: repeating-linear-gradient(90deg,
-            #000 0px,
-            #000 4px,
-            transparent 4px,
-            transparent 8px);
-    margin-bottom: 16px;
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #334155;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
+.total-amount { font-size: 22px; font-weight: 800; color: #818cf8; }
+.footer-msg { text-align: center; font-size: 10px; opacity: 0.7; }
+.website { font-weight: 700; margin-top: 10px; opacity: 1; }
 
-.thank-you {
-    font-size: 16px;
-    font-weight: 700;
-    color: #000;
-    margin: 0 0 16px 0;
+/* Buttons */
+.action-buttons { position: fixed; top: 20px; right: 20px; display: flex; gap: 10px; }
+.btn-action {
+    padding: 12px 20px; border-radius: 30px; border: none; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; gap: 8px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
 }
+.btn-back { background: white; color: #1e293b; }
+.btn-print { background: #6366f1; color: white; }
 
-.footer-notes {
-    font-size: 11px;
-    line-height: 1.8;
-    color: #666;
-    margin-bottom: 16px;
-}
+/* Loading */
+.loading-container { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 300px; }
+.spinner { width: 40px; height: 40px; border: 4px solid #cbd5e1; border-top: 4px solid #6366f1; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
-.footer-notes p {
-    margin: 0;
-}
-
-.website {
-    font-size: 13px;
-    font-weight: 700;
-    color: #000;
-    letter-spacing: 1px;
-    margin: 0;
-}
-
-/* Perforation */
-.perforation {
-    height: 16px;
-    background: repeating-linear-gradient(90deg,
-            #f0f0f0 0px,
-            #f0f0f0 8px,
-            #fff 8px,
-            #fff 12px);
-}
-
-/* Print Styles */
 @media print {
-
-    /* === [MỚI] ẨN NÚT KHI IN === */
-    .no-print {
-        display: none !important;
-    }
-
-    /* =========================== */
-
-    .receipt-wrapper {
-        background: #fff;
-        padding: 0;
-    }
-
-    .receipt-paper {
-        box-shadow: none;
-        border-radius: 0;
-    }
-}
-
-/* Responsive */
-@media (max-width: 500px) {
-    .receipt-wrapper {
-        padding: 20px 12px;
-    }
-
-    .company-name {
-        font-size: 24px;
-    }
-
-    .tour-name {
-        font-size: 16px;
-    }
+    .no-print { display: none !important; }
+    .receipt-wrapper { padding: 0; background: white; }
+    .ticket { box-shadow: none; border: 1px solid #eee; width: 100%; max-width: none; }
 }
 </style>

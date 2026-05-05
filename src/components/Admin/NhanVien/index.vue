@@ -484,7 +484,7 @@ export default {
                 return;
             }
 
-            axios.post(apiUrl('admin/nhan-vien/store'), this.newEmployee, {
+            axios.post(apiUrl('admin/nhan-vien/add-data'), this.newEmployee, {
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem('key_admin')
                 }
