@@ -15,7 +15,7 @@
                 <!-- Phần đầu vé -->
                 <div class="ticket-header">
                     <div class="brand">
-                        <img src="https://dzfullstack.com/assets/images/logo-1.png" alt="Logo" class="logo">
+                        <img src="../../../assets/images/Logo1.png" alt="Logo" class="logo">
                         <div class="brand-info">
                             <h1>IXTAL TOUR</h1>
                             <p>Trải nghiệm du lịch đích thực</p>
