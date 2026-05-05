@@ -15,8 +15,8 @@
                 <!-- Phần đầu vé -->
                 <div class="ticket-header">
                     <div class="brand">
-                        <img src="../../../assets/images/Logo1.png" alt="Logo" class="logo">
-                        <div class="brand-info">
+                            <img src="../../../assets/images/Logo1.png" alt="Logo" class="logo" style="height:auto; width:70px">
+                            <div class="brand-info">
                             <h1>IXTAL TOUR</h1>
                             <p>Trải nghiệm du lịch đích thực</p>
                         </div>
@@ -106,7 +106,7 @@
                     </div>
                     <div class="footer-msg">
                         <p>Vui lòng xuất trình mã này tại quầy đón khách.</p>
-                        <p class="website">www.ixtaltour.vn</p>
+                        <p class="website">https://ixtaltravel.deloydz.io.vn/</p>
                     </div>
                 </div>
             </div>
