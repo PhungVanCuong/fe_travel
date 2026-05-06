@@ -4,8 +4,9 @@
       <template v-for="(value, index) in list_slide" :key="index">
         <div class="carousel-item" :class="{ 'active': index === 0 }" style="position: relative;">
 
+          <!-- ĐÃ SỬA: Dùng height: 75vh và object-fit: cover để ép tất cả ảnh bằng đúng 1 khung hình, không bị viền đen -->
           <img :src="value.hinh_anh" class="d-block w-100" :alt="value.tieu_de || 'Slide'"
-            style="width: 100%; height: 100%; object-fit: contain; object-position: center; background-color: #000;">
+            style="width: 100%; height: 75vh; min-height: 500px; object-fit: cover; object-position: center;">
 
           <div
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 30%, rgba(0,0,0,0.8) 100%); z-index: 1; pointer-events: none;">
@@ -71,7 +72,7 @@
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0).slice(0, 6)"
           :key="index">
           <div class="col-lg-4 col-md-6 mb-4 mt-2">
-            .<router-link :to="'/client/chi-tiet-tour/' + value.id">
+            <router-link :to="'/client/chi-tiet-tour/' + value.id">
               <div class="card h-100 shadow-sm border-0 position-relative tour-card "
                 style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
                 <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
@@ -140,7 +141,7 @@
           v-for="(value, index) in list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0 && x.id_quoc_gia == '1').slice(0, 4)"
           :key="index">
           <div class="col-lg-3 col-md-6 mb-4 mt-2">
-            .<router-link :to="'/client/chi-tiet-tour/' + value.id">
+            <router-link :to="'/client/chi-tiet-tour/' + value.id">
               <div class="card h-100 shadow-sm border-0 position-relative tour-card "
                 style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease; ">
 
