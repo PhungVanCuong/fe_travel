@@ -20,7 +20,7 @@
                     <div class="w-100">
                         
                         <div class="d-flex justify-content-center align-items-center gap-2 d-lg-none mb-4">
-                            <img src="../../../assets/images/2-removebg-preview.png" alt="Logo" class="img-fluid" style="max-width: 60px;">
+                            <img src="" alt="Logo" class="img-fluid" style="max-width: 60px;">
                             <h2 class="fw-bold text-dark m-0">IXTAL</h2>
                         </div>
 

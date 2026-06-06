@@ -2,7 +2,7 @@
     <div class="nav-container primary-menu">
         <div class="mobile-topbar-header">
             <div>
-                <img src="../../../../assets/images/2-removebg-preview.png" class="logo-icon" alt="logo icon">
+                <img src="../../../assets/images/Logo1.png" class="logo-icon" alt="logo icon">
             </div>
             <div>
                 <h4 class="logo-text text-primary">IXTAL TOUR</h4>
