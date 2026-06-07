@@ -52,7 +52,7 @@
                                 <p style="margin: 10px 0 0 0;">Không có hóa đơn nào</p>
                             </td>
                         </tr>
-                        <tr v-for="invoice in filteredInvoices" :key="invoice.id" class="invoice-row">
+                        <tr v-for="invoice in paginatedInvoices" :key="invoice.id" class="invoice-row">
                             <td style="padding: 15px; color: #333; font-weight: 600;">{{ invoice.ma_hoa_don }}</td>
                             <td style="padding: 15px; color: #333;">{{ invoice.ten_khach_hang }}</td>
                             <td style="padding: 15px; color: #666;">{{ formatDate(invoice.ngay_tao) }}</td>
@@ -102,6 +102,18 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div style="padding: 20px 0; display: flex; justify-content: center; align-items: center; gap: 5px; border-top: 1px solid #e2e8f0;">
+                <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <span class="page-info">Trang {{ currentPage }} / {{ totalPages || 1 }}</span>
+
+                <button @click="currentPage++" :disabled="currentPage >= totalPages" class="page-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
         </div>
 
@@ -206,6 +218,8 @@ import apiUrl from '../../../utils/api';
 export default {
     data() {
         return {
+            currentPage: 1, // Khai báo biến trang hiện tại
+            pageSize: 10,   // Số lượng hóa đơn trên 1 trang
             invoices: [],
             filteredInvoices: [],
             searchQuery: '',
@@ -220,6 +234,16 @@ export default {
     },
     mounted() {
         this.loadInvoices();
+    },
+    // THÊM COMPUTED ĐỂ TÍNH TOÁN PHÂN TRANG
+    computed: {
+        totalPages() {
+            return Math.ceil(this.filteredInvoices.length / this.pageSize);
+        },
+        paginatedInvoices() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            return this.filteredInvoices.slice(start, start + this.pageSize);
+        }
     },
     methods: {
         loadInvoices() {
@@ -248,7 +272,6 @@ export default {
         },
         filterData() {
             this.filteredInvoices = this.invoices.filter(invoice => {
-                // Sửa thành tìm kiếm theo ma_hoa_don
                 const matchSearch = !this.searchQuery || 
                     (invoice.ma_hoa_don && invoice.ma_hoa_don.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
                     (invoice.ten_khach_hang && invoice.ten_khach_hang.toLowerCase().includes(this.searchQuery.toLowerCase()));
@@ -257,6 +280,8 @@ export default {
                 
                 return matchSearch && matchStatus;
             });
+            // Reset về trang 1 mỗi khi lọc dữ liệu (Tìm kiếm, Filter trạng thái)
+            this.currentPage = 1;
         },
         formatDate(dateString) {
             if (!dateString) return '';
@@ -460,5 +485,37 @@ export default {
 .btn-print:hover {
     background: #666;
     color: white;
+}
+
+/* THÊM CSS CHO CHỨC NĂNG CHUYỂN TRANG */
+.page-btn {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.page-btn:disabled {
+    background: #f7fafc;
+    color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #4a5568;
+    padding: 0 15px;
+    font-size: 0.9rem;
 }
 </style>

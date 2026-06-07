@@ -1,3 +1,8 @@
+Chào bạn, để thêm chức năng phân trang cho trang **Quản Lý Đánh Giá Tour** này, mình sẽ thực hiện các bước tương tự: thêm biến `currentPage` và `pageSize` vào `data`, tính toán `paginatedRatings` trong `computed`, và cập nhật giao diện (template) để lặp qua danh sách đã cắt theo trang, cùng với các nút điều hướng trang.
+
+Dưới đây là toàn bộ file `index.vue` đã được tích hợp chức năng phân trang hoàn chỉnh. Bạn có thể copy và chép đè vào file hiện tại của mình:
+
+```vue
 <template>
     <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
         <div style="margin-bottom: 30px;">
@@ -5,7 +10,6 @@
             <p style="color: #666; margin: 5px 0 0 0;">Quản lý đánh giá và bình luận của khách hàng về các tour du lịch.</p>
         </div>
 
-        <!-- Header & Filter -->
         <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 200px; gap: 15px; align-items: flex-end;">
                 <div style="position: relative;">
@@ -39,7 +43,6 @@
             </div>
         </div>
 
-        <!-- Table -->
         <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
@@ -76,7 +79,7 @@
                                 <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #bbb;">Khách hàng chưa đánh giá tour nào</p>
                             </td>
                         </tr>
-                        <tr v-for="rating in filteredRatings" :key="rating.id" class="data-row" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
+                        <tr v-for="rating in paginatedRatings" :key="rating.id" class="data-row" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
                             <td style="padding: 15px; text-align: center; color: #667eea; font-weight: 700; font-size: 0.95rem;">
                                 #{{ rating.id }}
                             </td>
@@ -129,15 +132,27 @@
                     </tbody>
                 </table>
             </div>
+            
+            <div style="padding: 15px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                <div style="font-size: 0.9rem; color: #475569;">
+                    <i class="fa-solid fa-info-circle me-2" style="color: #667eea;"></i>
+                    Tổng cộng: <strong>{{ list_ratings.length }}</strong> đánh giá | Tìm thấy: <strong>{{ filteredRatings.length }}</strong> đánh giá
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <span class="page-info">Trang {{ currentPage }} / {{ totalPages || 1 }}</span>
+
+                    <button @click="currentPage++" :disabled="currentPage >= totalPages || totalPages === 0" class="page-btn">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
         </div>
 
-        <!-- Stats Bar -->
-        <div style="margin-top: 20px; padding: 15px 20px; background: #f0f4f8; border-radius: 8px; font-size: 0.9rem; color: #475569;">
-            <i class="fa-solid fa-info-circle me-2" style="color: #667eea;"></i>
-            Tổng cộng: <strong>{{ list_ratings.length }}</strong> đánh giá | Đang hiển thị: <strong>{{ filteredRatings.length }}</strong> đánh giá
-        </div>
-
-        <!-- Modal Xem Chi Tiết -->
         <div v-if="showViewModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 25px 20px; color: white; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid rgba(255,255,255,0.1);">
@@ -194,7 +209,6 @@
             </div>
         </div>
 
-        <!-- Modal Xóa -->
         <div v-if="showDeleteModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 420px; padding: 30px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="font-size: 3.5rem; margin-bottom: 15px; animation: shake 0.5s;">⚠️</div>
@@ -224,6 +238,8 @@ export default {
     name: 'QuanLyDanhGia',
     data() {
         return {
+            currentPage: 1, // Khai báo biến trang hiện tại
+            pageSize: 10,   // Số lượng đánh giá hiển thị trên 1 trang
             list_ratings: [],
             filteredRatings: [],
             searchTour: '',
@@ -235,6 +251,16 @@ export default {
 
             view_rating: {},
             del_rating: {}
+        }
+    },
+    computed: {
+        // TÍNH TOÁN PHÂN TRANG
+        totalPages() {
+            return Math.ceil(this.filteredRatings.length / this.pageSize);
+        },
+        paginatedRatings() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            return this.filteredRatings.slice(start, start + this.pageSize);
         }
     },
     mounted() {
@@ -279,6 +305,8 @@ export default {
                 const matchStar = this.filterStar === 0 || rating.sao_danh_gia === this.filterStar;
                 return matchTour && matchCustomer && matchStar;
             });
+            // Reset về trang đầu tiên mỗi khi bộ lọc thay đổi
+            this.currentPage = 1;
         },
 
         openViewModal(rating) {
@@ -394,6 +422,38 @@ export default {
     color: white;
 }
 
+/* THÊM CSS CHO CHỨC NĂNG CHUYỂN TRANG */
+.page-btn {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.page-btn:disabled {
+    background: #f7fafc;
+    color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #4a5568;
+    padding: 0 15px;
+    font-size: 0.9rem;
+}
+
 @keyframes shake {
     0%, 100% { transform: scale(1); }
     25% { transform: scale(1.1) rotate(-2deg); }
@@ -401,3 +461,5 @@ export default {
     75% { transform: scale(1.1) rotate(-2deg); }
 }
 </style>
+
+```

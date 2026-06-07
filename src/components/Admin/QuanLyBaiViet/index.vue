@@ -5,7 +5,6 @@
             <p style="color: #666; margin: 5px 0 0 0;">Viết, quản lý và xuất bản bài viết du lịch cho khách hàng.</p>
         </div>
 
-        <!-- Header & Search -->
         <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="display: flex; gap: 12px; align-items: flex-end; margin-bottom: 0;">
                 <div style="flex: 1; position: relative;">
@@ -20,7 +19,6 @@
             </div>
         </div>
 
-        <!-- Table -->
         <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
@@ -51,7 +49,7 @@
                                 <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #bbb;">Hãy nhấp nút "Viết Bài Mới" để bắt đầu</p>
                             </td>
                         </tr>
-                        <tr v-for="article in filteredArticles" :key="article.id" class="data-row" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
+                        <tr v-for="article in paginatedArticles" :key="article.id" class="data-row" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
                             <td style="padding: 15px; text-align: center; color: #667eea; font-weight: 700; font-size: 0.95rem;">
                                 #{{ article.id }}
                             </td>
@@ -103,13 +101,25 @@
             </div>
         </div>
 
-        <!-- Stats Bar -->
-        <div style="margin-top: 20px; padding: 15px 20px; background: #f0f4f8; border-radius: 8px; font-size: 0.9rem; color: #475569;">
-            <i class="fa-solid fa-info-circle me-2" style="color: #667eea;"></i>
-            Tổng cộng: <strong>{{ list_articles.length }}</strong> bài viết | Đang hiển thị: <strong>{{ filteredArticles.length }}</strong> bài viết
+        <div style="margin-top: 20px; padding: 15px 20px; background: #f0f4f8; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; font-size: 0.9rem; color: #475569;">
+            <div>
+                <i class="fa-solid fa-info-circle me-2" style="color: #667eea;"></i>
+                Tổng cộng: <strong>{{ list_articles.length }}</strong> bài viết | Tìm thấy: <strong>{{ filteredArticles.length }}</strong> bài viết
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <span class="page-info">Trang {{ currentPage }} / {{ totalPages || 1 }}</span>
+
+                <button @click="currentPage++" :disabled="currentPage >= totalPages || totalPages === 0" class="page-btn">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- Modal Form -->
         <div v-if="showFormModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div :style="{ 
@@ -198,7 +208,6 @@
             </div>
         </div>
 
-        <!-- Modal Xem -->
         <div v-if="showViewModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 700px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 25px 20px; color: white; display: flex; justify-content: space-between; align-items: center; border-bottom: 4px solid rgba(255,255,255,0.1);">
@@ -240,7 +249,6 @@
             </div>
         </div>
 
-        <!-- Modal Xóa -->
         <div v-if="showDeleteModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 420px; padding: 30px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="font-size: 3.5rem; margin-bottom: 15px; animation: shake 0.5s;">⚠️</div>
@@ -270,6 +278,8 @@ export default {
     name: 'QuanLyBai',
     data() {
         return {
+            currentPage: 1, // Khai báo trang hiện tại
+            pageSize: 10,   // Số lượng bài viết trên 1 trang
             list_articles: [],
             filteredArticles: [],
             searchKeyword: '',
@@ -290,6 +300,16 @@ export default {
             },
             view_article: {},
             del_article: {}
+        }
+    },
+    computed: {
+        // TÍNH TOÁN PHÂN TRANG
+        totalPages() {
+            return Math.ceil(this.filteredArticles.length / this.pageSize);
+        },
+        paginatedArticles() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            return this.filteredArticles.slice(start, start + this.pageSize);
         }
     },
     mounted() {
@@ -325,6 +345,8 @@ export default {
                     article.tieu_de.toLowerCase().includes(this.searchKeyword.toLowerCase());
                 return matchSearch;
             });
+            // Tự động nhảy về trang 1 khi người dùng gõ tìm kiếm
+            this.currentPage = 1;
         },
 
         openAddModal() {
@@ -520,6 +542,38 @@ export default {
 .custom-input:focus {
     outline: none;
     border-color: #667eea;
+}
+
+/* CSS BỔ SUNG CHO NÚT ĐIỀU HƯỚNG PHÂN TRANG */
+.page-btn {
+    padding: 6px 12px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.page-btn:disabled {
+    background: #f7fafc;
+    color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #4a5568;
+    padding: 0 10px;
+    font-size: 0.85rem;
 }
 
 @keyframes shake {

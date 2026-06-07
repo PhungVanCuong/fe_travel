@@ -1,12 +1,10 @@
 <template>
     <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
-        <!-- Header -->
         <div style="margin-bottom: 30px;">
             <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">📅 Quản Lý Lịch Trình Tour</h1>
             <p style="color: #666; margin: 5px 0 0 0;">Quản lý hoạt động và lịch trình chi tiết cho từng tour du lịch.</p>
         </div>
 
-        <!-- Tabs -->
         <div style="background: white; border-radius: 12px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="display: flex; gap: 0; padding: 0;">
                 <button 
@@ -35,9 +33,7 @@
             </div>
         </div>
 
-        <!-- ======================= TAB 1: LỊCH TRÌNH ======================= -->
         <div v-if="activeTab === 'lichtrinh'">
-            <!-- Thanh Công Cụ Lịch Trình -->
             <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 15px; align-items: flex-end;">
                     <div style="position: relative;">
@@ -59,16 +55,14 @@
                 <p style="margin: 15px 0 0 0; color: #666;">Đang tải dữ liệu...</p>
             </div>
 
-            <!-- Danh Sách Lịch Trình Theo Từng Tour -->
             <div v-else>
                 <div v-if="filteredSchedules.length === 0" style="background: white; border-radius: 12px; padding: 40px; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                     <i class="fa-solid fa-inbox" style="font-size: 2rem; color: #ccc;"></i>
                     <p style="margin: 15px 0 0 0; color: #999;">Không có lịch trình nào</p>
                 </div>
 
-                <div v-for="tour in filteredSchedules" :key="tour.id_tour" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div v-for="tour in paginatedSchedules" :key="tour.id_tour" style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                     
-                    <!-- ĐÃ SỬA: ĐƯA ẢNH TOUR VÀO THẲNG HEADER -->
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <img v-if="tour.anh_tour" :src="tour.anh_tour" alt="Tour" style="width: 70px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -87,7 +81,6 @@
                         </button>
                     </div>
 
-                    <!-- Bảng Lịch Trình Chi Tiết -->
                     <div style="overflow-x: auto;">
                         <table style="width: 100%; border-collapse: collapse;">
                             <thead>
@@ -131,11 +124,18 @@
                         </table>
                     </div>
                 </div>
+
+                <div v-if="filteredSchedules.length > 0" class="pagination-container">
+                    <button @click="schedulePage = 1" :disabled="schedulePage === 1" class="page-btn"><i class="fa-solid fa-angles-left"></i></button>
+                    <button @click="schedulePage--" :disabled="schedulePage === 1" class="page-btn"><i class="fa-solid fa-angle-left"></i></button>
+                    <span class="page-info">Trang {{ schedulePage }} / {{ totalSchedulePages }}</span>
+                    <button @click="schedulePage++" :disabled="schedulePage === totalSchedulePages" class="page-btn"><i class="fa-solid fa-angle-right"></i></button>
+                    <button @click="schedulePage = totalSchedulePages" :disabled="schedulePage === totalSchedulePages" class="page-btn"><i class="fa-solid fa-angles-right"></i></button>
+                </div>
             </div>
         </div>
 
 
-        <!-- ======================= TAB 2: ĐIỂM ĐẾN (Đã làm mượt và căng khung) ======================= -->
         <div v-if="activeTab === 'diemden'">
             <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div style="display: flex; gap: 12px; align-items: flex-end;">
@@ -149,7 +149,6 @@
                 </div>
             </div>
 
-            <!-- Bảng Điểm Đến - Căng full width -->
             <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; width: 100%;">
                 <div style="overflow-x: auto; width: 100%;">
                     <table style="width: 100%; border-collapse: collapse;">
@@ -169,8 +168,8 @@
                                     <p style="margin: 0; font-size: 1rem;">Không có điểm đến nào</p>
                                 </td>
                             </tr>
-                            <!-- ĐÃ SỬA: Bind vào `diem.hinh_anh` thay vì `diem.anh` để hiển thị được ảnh -->
-                            <tr v-for="diem in filteredDiemDens" :key="diem.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'" @mouseleave="(e) => e.currentTarget.style.background = ''">
+                            
+                            <tr v-for="diem in paginatedDiemDens" :key="diem.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'" @mouseleave="(e) => e.currentTarget.style.background = ''">
                                 <td style="padding: 15px; text-align: center; color: #667eea; font-weight: 700;">#{{ diem.id }}</td>
                                 <td style="padding: 15px; text-align: center;">
                                     <img v-if="diem.hinh_anh" :src="diem.hinh_anh" alt="Ảnh điểm đến" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
@@ -195,12 +194,17 @@
                         </tbody>
                     </table>
                 </div>
+
+                <div v-if="filteredDiemDens.length > 0" class="pagination-container" style="padding: 15px; border-top: 1px solid #e2e8f0; margin-top: 0;">
+                    <button @click="diemDenPage = 1" :disabled="diemDenPage === 1" class="page-btn"><i class="fa-solid fa-angles-left"></i></button>
+                    <button @click="diemDenPage--" :disabled="diemDenPage === 1" class="page-btn"><i class="fa-solid fa-angle-left"></i></button>
+                    <span class="page-info">Trang {{ diemDenPage }} / {{ totalDiemDenPages }}</span>
+                    <button @click="diemDenPage++" :disabled="diemDenPage === totalDiemDenPages" class="page-btn"><i class="fa-solid fa-angle-right"></i></button>
+                    <button @click="diemDenPage = totalDiemDenPages" :disabled="diemDenPage === totalDiemDenPages" class="page-btn"><i class="fa-solid fa-angles-right"></i></button>
+                </div>
             </div>
         </div>
 
-        <!-- ======================= MODAL AREA ======================= -->
-
-        <!-- Modal Thêm/Sửa Hoạt Động (Lịch Trình) -->
         <div v-if="showFormModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -245,7 +249,6 @@
             </div>
         </div>
 
-        <!-- Modal Thêm/Sửa Điểm Đến -->
         <div v-if="showDiemDenModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 25px 20px; color: white; display: flex; justify-content: space-between; align-items: center;">
@@ -262,7 +265,6 @@
                         <input v-model="diemDenForm.ten_diem_den" type="text" placeholder="Nhập tên điểm đến..." style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;" required>
                     </div>
 
-                    <!-- Toggle Upload Ảnh -->
                     <div style="margin-bottom: 20px;">
                         <label style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 8px; display: block;">Hình Ảnh Điểm Đến</label>
                         <div style="display: flex; gap: 8px; margin-bottom: 12px; background: #f1f5f9; padding: 5px; border-radius: 8px;">
@@ -294,7 +296,6 @@
             </div>
         </div>
 
-        <!-- Modal Xóa Điểm Đến -->
         <div v-if="showDeleteDiemDenModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;">
                 <div style="background: linear-gradient(135deg, #ef4444, #dc2626); padding: 25px 20px; color: white; text-align: center;">
@@ -330,6 +331,10 @@ export default {
             searchQuery: '',
             loading: false,
 
+            // Biến phân trang cho Lịch Trình
+            schedulePage: 1,
+            schedulePerPage: 3, // Số lượng tour trên mỗi trang
+
             showFormModal: false,
             isEditing: false,
 
@@ -339,6 +344,11 @@ export default {
 
             searchDiemDen: '',
             filteredDiemDens: [],
+            
+            // Biến phân trang cho Điểm Đến
+            diemDenPage: 1,
+            diemDenPerPage: 10, // Số điểm đến trên mỗi trang
+
             showDiemDenModal: false,
             isEditingDiemDen: false,
             diemDenForm: {
@@ -357,6 +367,26 @@ export default {
                 id_phuong_tien: '',
                 tieu_de_hoat_dong: ''
             }
+        }
+    },
+    computed: {
+        // Cắt dữ liệu Lịch Trình theo trang hiện tại
+        paginatedSchedules() {
+            const start = (this.schedulePage - 1) * this.schedulePerPage;
+            return this.filteredSchedules.slice(start, start + this.schedulePerPage);
+        },
+        // Tính tổng số trang Lịch Trình
+        totalSchedulePages() {
+            return Math.ceil(this.filteredSchedules.length / this.schedulePerPage) || 1;
+        },
+        // Cắt dữ liệu Điểm Đến theo trang hiện tại
+        paginatedDiemDens() {
+            const start = (this.diemDenPage - 1) * this.diemDenPerPage;
+            return this.filteredDiemDens.slice(start, start + this.diemDenPerPage);
+        },
+        // Tính tổng số trang Điểm Đến
+        totalDiemDenPages() {
+            return Math.ceil(this.filteredDiemDens.length / this.diemDenPerPage) || 1;
         }
     },
     watch: {
@@ -401,6 +431,7 @@ export default {
 
         filterData() {
             this.filteredSchedules = this.schedules.filter(tour => tour.ten_tour && tour.ten_tour.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            this.schedulePage = 1; // Reset về trang 1 khi tìm kiếm
         },
         resetFilter() {
             this.searchQuery = '';
@@ -473,6 +504,7 @@ export default {
 
         filterDiemDens() {
             this.filteredDiemDens = this.diemDens.filter(diem => diem.ten_diem_den && diem.ten_diem_den.toLowerCase().includes(this.searchDiemDen.toLowerCase()));
+            this.diemDenPage = 1; // Reset về trang 1 khi tìm kiếm điểm đến
         },
 
         openAddDiemDenModal() {
@@ -562,4 +594,11 @@ export default {
 .btn-delete { background: #fee2e2; color: #dc2626; }
 .me-2 { margin-right: 8px; }
 .me-1 { margin-right: 4px; }
+
+/* CSS Mới bổ sung cho thanh phân trang */
+.pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 25px; }
+.page-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid #e2e8f0; background: white; color: #475569; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+.page-btn:hover:not(:disabled) { background: #f1f5f9; color: #333; border-color: #cbd5e1; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-info { font-size: 0.9rem; color: #64748b; font-weight: 600; margin: 0 10px; }
 </style>

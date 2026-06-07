@@ -1,15 +1,12 @@
 <template>
     <div style="padding: 20px; background: #f5f7fa; min-height: 100vh;">
-        <!-- Header -->
         <div style="margin-bottom: 30px;">
             <h1 style="font-size: 1.8rem; font-weight: 700; color: #333; margin: 0;">🎫 Quản Lý Vé</h1>
             <p style="color: #666; margin: 5px 0 0 0;">Quản lý danh sách vé và thông tin đặt chỗ khách hàng.</p>
         </div>
 
-        <!-- Search & Filter Bar -->
         <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="display: grid; grid-template-columns: 1fr 1fr 150px 150px; gap: 15px; align-items: flex-end;">
-                <!-- Search -->
                 <div style="position: relative;">
                     <input v-model="searchQuery" 
                         type="text" 
@@ -19,7 +16,6 @@
                     <i class="fa-solid fa-search" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: #999;"></i>
                 </div>
 
-                <!-- Tour Filter -->
                 <select v-model="tourFilter" 
                     @change="filterData"
                     style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
@@ -27,7 +23,6 @@
                     <option v-for="tour in tours" :key="tour.id" :value="tour.id">{{ tour.ten_tour }}</option>
                 </select>
 
-                <!-- Status Filter -->
                 <select v-model="statusFilter" 
                     @change="filterData"
                     style="padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; background: white; cursor: pointer;">
@@ -37,14 +32,12 @@
                     <option value="2">Đã Thanh Toán</option>
                 </select>
 
-                <!-- Add Button -->
                 <button @click="openAddModal" class="btn-primary-gradient">
                     <i class="fa-solid fa-plus me-2"></i>Thêm Vé
                 </button>
             </div>
         </div>
 
-        <!-- Table -->
         <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
             <div style="overflow-x: auto;">
                 <table style="width: 100%; border-collapse: collapse;">
@@ -65,7 +58,7 @@
                                 <p style="margin: 10px 0 0 0;">Không có vé nào</p>
                             </td>
                         </tr>
-                        <tr v-for="ticket in filteredTickets" :key="ticket.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
+                        <tr v-for="ticket in paginatedTickets" :key="ticket.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;"
                             @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'"
                             @mouseleave="(e) => e.currentTarget.style.background = ''">
                             <td style="padding: 15px; color: #333; font-weight: 600;">{{ ticket.ma_ve }}</td>
@@ -102,9 +95,16 @@
                     </tbody>
                 </table>
             </div>
+
+            <div v-if="filteredTickets.length > 0" class="pagination-container" style="padding: 15px; border-top: 1px solid #e2e8f0; margin-top: 0;">
+                <button @click="currentPage = 1" :disabled="currentPage === 1" class="page-btn"><i class="fa-solid fa-angles-left"></i></button>
+                <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn"><i class="fa-solid fa-angle-left"></i></button>
+                <span class="page-info">Trang {{ currentPage }} / {{ totalPages }}</span>
+                <button @click="currentPage++" :disabled="currentPage === totalPages" class="page-btn"><i class="fa-solid fa-angle-right"></i></button>
+                <button @click="currentPage = totalPages" :disabled="currentPage === totalPages" class="page-btn"><i class="fa-solid fa-angles-right"></i></button>
+            </div>
         </div>
 
-        <!-- View Modal -->
         <div v-if="showViewModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -143,7 +143,6 @@
             </div>
         </div>
 
-        <!-- Edit Modal -->
         <div v-if="showEditModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -211,7 +210,6 @@
             </div>
         </div>
 
-        <!-- Add Modal -->
         <div v-if="showAddModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 600px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-height: 80vh; overflow-y: auto;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -290,7 +288,6 @@
             </div>
         </div>
 
-        <!-- Delete Modal -->
         <div v-if="showDeleteModal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div style="background: white; border-radius: 12px; padding: 30px; max-width: 400px; width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
                 <div style="text-align: center;">
@@ -336,6 +333,21 @@ export default {
             editingTicket: null,
             newTicket: { tinh_trang: 1 },
             isLoading: false,
+
+            // Biến phân trang
+            currentPage: 1,
+            itemsPerPage: 10 // Số vé hiển thị trên mỗi trang
+        }
+    },
+    computed: {
+        // Cắt dữ liệu hiển thị theo trang hiện tại
+        paginatedTickets() {
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            return this.filteredTickets.slice(start, start + this.itemsPerPage);
+        },
+        // Tính tổng số trang
+        totalPages() {
+            return Math.ceil(this.filteredTickets.length / this.itemsPerPage) || 1;
         }
     },
     mounted() {
@@ -425,6 +437,9 @@ export default {
                 
                 return matchSearch && matchTour && matchStatus;
             });
+
+            // Reset về trang 1 khi lọc dữ liệu
+            this.currentPage = 1;
         },
         getTourName(id) {
             if (!id) return 'Chưa xác định';
@@ -621,4 +636,11 @@ export default {
     background: #f56565;
     color: white;
 }
+
+/* CSS Mới bổ sung cho thanh phân trang */
+.pagination-container { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 15px; }
+.page-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid #e2e8f0; background: white; color: #475569; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+.page-btn:hover:not(:disabled) { background: #f1f5f9; color: #333; border-color: #cbd5e1; }
+.page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.page-info { font-size: 0.9rem; color: #64748b; font-weight: 600; margin: 0 10px; }
 </style>

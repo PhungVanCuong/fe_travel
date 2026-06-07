@@ -6,199 +6,212 @@
                 lịch.</p>
         </div>
 
-        <!-- Tabs -->
-        <div style="background: white; border-radius: 12px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+        <div
+            style="background: white; border-radius: 12px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div style="display: flex; gap: 0; padding: 0;">
-                <button 
-                    @click="activeTab = 'tour'"
-                    :style="{
-                        flex: 1,
-                        padding: '16px 20px',
-                        background: activeTab === 'tour' ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#f8fafc',
-                        color: activeTab === 'tour' ? 'white' : '#475569',
-                        border: 'none',
-                        fontWeight: '700',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s',
-                        fontSize: '1rem',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }"
-                    @mouseenter="tourTabHovered = true"
-                    @mouseleave="tourTabHovered = false">
+                <button @click="activeTab = 'tour'" :style="{
+                    flex: 1,
+                    padding: '16px 20px',
+                    background: activeTab === 'tour' ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#f8fafc',
+                    color: activeTab === 'tour' ? 'white' : '#475569',
+                    border: 'none',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    fontSize: '1rem',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }" @mouseenter="tourTabHovered = true" @mouseleave="tourTabHovered = false">
                     <i class="fa-solid fa-map me-3" style="font-size: 1.1rem;"></i>
                     <span style="font-size: 0.95rem;">📍 Danh Sách Tour</span>
-                    <div v-if="activeTab === 'tour'" style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+                    <div v-if="activeTab === 'tour'"
+                        style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2);">
+                    </div>
                 </button>
                 <div style="width: 1px; background: #e2e8f0;"></div>
-                <button 
-                    @click="activeTab = 'quocgia'"
-                    :style="{
-                        flex: 1,
-                        padding: '16px 20px',
-                        background: activeTab === 'quocgia' ? 'linear-gradient(135deg, #10b981, #059669)' : '#f8fafc',
-                        color: activeTab === 'quocgia' ? 'white' : '#475569',
-                        border: 'none',
-                        fontWeight: '700',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s',
-                        fontSize: '1rem',
-                        position: 'relative',
-                        overflow: 'hidden'
-                    }"
-                    @mouseenter="quocGiaTabHovered = true"
-                    @mouseleave="quocGiaTabHovered = false">
+                <button @click="activeTab = 'quocgia'" :style="{
+                    flex: 1,
+                    padding: '16px 20px',
+                    background: activeTab === 'quocgia' ? 'linear-gradient(135deg, #10b981, #059669)' : '#f8fafc',
+                    color: activeTab === 'quocgia' ? 'white' : '#475569',
+                    border: 'none',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s',
+                    fontSize: '1rem',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }" @mouseenter="quocGiaTabHovered = true" @mouseleave="quocGiaTabHovered = false">
                     <i class="fa-solid fa-earth-americas me-3" style="font-size: 1.1rem;"></i>
                     <span style="font-size: 0.95rem;">🌍 Quốc Gia</span>
-                    <div v-if="activeTab === 'quocgia'" style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #10b981, #059669);"></div>
+                    <div v-if="activeTab === 'quocgia'"
+                        style="position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #10b981, #059669);">
+                    </div>
                 </button>
             </div>
         </div>
 
-        <!-- Tab: Danh sách Tour -->
         <div v-if="activeTab === 'tour'">
-        <div
-            style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
             <div
-                style="display: grid; grid-template-columns: 1fr 1fr 2fr 120px 150px; gap: 15px; align-items: flex-end;">
-                <div>
-                    <label
-                        style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Từ
-                        ngày</label>
-                    <input type="date" v-model="filter.tu_ngay"
-                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
+                style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr 2fr 120px 150px; gap: 15px; align-items: flex-end;">
+                    <div>
+                        <label
+                            style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Từ
+                            ngày</label>
+                        <input type="date" v-model="filter.tu_ngay" @change="applyFilters"
+                            style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Đến
+                            ngày</label>
+                        <input type="date" v-model="filter.den_ngay" @change="applyFilters"
+                            style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
+                    </div>
+                    <div style="position: relative;">
+                        <label
+                            style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Tìm
+                            kiếm theo tên</label>
+                        <input type="text" v-model="filter.keyword" placeholder="Nhập tên tour..." @input="applyFilters"
+                            style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
+                        <i class="fa-solid fa-search"
+                            style="position: absolute; right: 12px; bottom: 15px; color: #999;"></i>
+                    </div>
+                    <button @click="resetFilter" class="btn-reset">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Đặt Lại
+                    </button>
+                    <button @click="openAddModal" class="btn-add">
+                        <i class="fa-solid fa-plus me-2"></i>Thêm Mới
+                    </button>
                 </div>
-                <div>
-                    <label
-                        style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Đến
-                        ngày</label>
-                    <input type="date" v-model="filter.den_ngay"
-                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
+            </div>
+
+            <div
+                style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 60px;">
+                                    ID</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 80px;">
+                                    Ảnh</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 25%;">
+                                    Tên Tour</th>
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">
+                                    Lộ Trình</th>
+                                <th
+                                    style="padding: 15px; text-align: right; font-weight: 600; color: #333; font-size: 0.9rem;">
+                                    Giá Vé</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">
+                                    Lịch Trình</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">
+                                    Trạng Thái</th>
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">
+                                    Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="filteredTours.length === 0">
+                                <td colspan="8" style="padding: 40px; text-align: center; color: #999;">
+                                    <i class="fa-solid fa-box-open me-2"
+                                        style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                                    Không tìm thấy dữ liệu tour nào
+                                </td>
+                            </tr>
+                            <tr v-for="value in paginatedTours" :key="value.id" class="data-row">
+                                <td style="padding: 15px; text-align: center; color: #333; font-weight: 600;">{{
+                                    value.id }}
+                                </td>
+                                <td style="padding: 15px;">
+                                    <img v-if="value.hinh_anh" :src="value.hinh_anh" alt="Tour"
+                                        style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                    <div v-else
+                                        style="width: 60px; height: 45px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
+                                        <i class="fa-solid fa-image"></i>
+                                    </div>
+                                </td>
+                                <td style="padding: 15px; color: #333; font-weight: 600;">{{ value.ten_tour }}</td>
+                                <td style="padding: 15px; color: #555; font-size: 0.85rem; line-height: 1.6;">
+                                    <div style="color: #64748b;"><i class="fa-solid fa-location-dot me-1"
+                                            style="color: #10b981;"></i> {{ value.diem_don }}</div>
+                                    <div style="color: #64748b; margin-top: 4px;"><i
+                                            class="fa-solid fa-flag-checkered me-1" style="color: #ef4444;"></i> {{
+                                                value.diem_tra }}</div>
+                                </td>
+                                <td style="padding: 15px; text-align: right; color: #667eea; font-weight: 700;">{{
+                                    formatVND(value.gia) }}</td>
+                                <td style="padding: 15px; text-align: center; font-size: 0.85rem; color: #666;">
+                                    <div>{{ formatDate(value.ngay_bat_dau) }}</div>
+                                    <i class="fa-solid fa-arrow-down"
+                                        style="font-size: 0.7rem; color: #cbd5e1; margin: 2px 0;"></i>
+                                    <div>{{ formatDate(value.ngay_ket_thuc) }}</div>
+                                </td>
+                                <td style="padding: 15px; text-align: center;">
+                                    <button @click="changeStatus(value.id, value.tinh_trang == 1 ? 0 : 1)" :style="{
+                                        border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s',
+                                        background: value.tinh_trang == 1 ? '#dcfce7' : '#fee2e2',
+                                        color: value.tinh_trang == 1 ? '#16a34a' : '#dc2626'
+                                    }">
+                                        {{ value.tinh_trang == 1 ? 'Hiển Thị' : 'Tạm Tắt' }}
+                                    </button>
+                                </td>
+                                <td style="padding: 15px; text-align: center;">
+                                    <div style="display: flex; gap: 8px; justify-content: center;">
+                                        <button @click="openViewModal(value)" class="action-btn btn-view"
+                                            title="Xem chi tiết">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+                                        <button @click="openEditModal(value)" class="action-btn btn-edit"
+                                            title="Cập nhật">
+                                            <i class="fa-solid fa-pen-nib"></i>
+                                        </button>
+                                        <button @click="openDeleteModal(value)" class="action-btn btn-delete"
+                                            title="Xóa tour">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div
+                        style="padding: 20px 0; display: flex; justify-content: center; align-items: center; gap: 5px;">
+                        <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        <span class="page-info">Trang {{ currentPage }} / {{ totalPages }}</span>
+
+                        <button @click="currentPage++" :disabled="currentPage >= totalPages" class="page-btn">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
-                <div style="position: relative;">
-                    <label
-                        style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 5px; display: block;">Tìm
-                        kiếm theo tên</label>
-                    <input type="text" v-model="filter.keyword" placeholder="Nhập tên tour..." @input="applyFilters"
-                        style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit;">
-                    <i class="fa-solid fa-search"
-                        style="position: absolute; right: 12px; bottom: 15px; color: #999;"></i>
-                </div>
-                <button @click="resetFilter" class="btn-reset">
-                    <i class="fa-solid fa-rotate-right me-1"></i> Đặt Lại
-                </button>
-                <button @click="openAddModal" class="btn-add">
-                    <i class="fa-solid fa-plus me-2"></i>Thêm Mới
-                </button>
             </div>
         </div>
 
-        <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
-            <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
-                            <th
-                                style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 60px;">
-                                ID</th>
-                            <th
-                                style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 80px;">
-                                Ảnh</th>
-                            <th
-                                style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 25%;">
-                                Tên Tour</th>
-                            <th
-                                style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">
-                                Lộ Trình</th>
-                            <th
-                                style="padding: 15px; text-align: right; font-weight: 600; color: #333; font-size: 0.9rem;">
-                                Giá Vé</th>
-                            <th
-                                style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">
-                                Lịch Trình</th>
-                            <th
-                                style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">
-                                Trạng Thái</th>
-                            <th
-                                style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">
-                                Thao Tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="filteredTours.length === 0">
-                            <td colspan="8" style="padding: 40px; text-align: center; color: #999;">
-                                <i class="fa-solid fa-box-open me-2"
-                                    style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
-                                Không tìm thấy dữ liệu tour nào
-                            </td>
-                        </tr>
-                        <tr v-for="value in filteredTours" :key="value.id" class="data-row">
-                            <td style="padding: 15px; text-align: center; color: #333; font-weight: 600;">{{ value.id }}
-                            </td>
-                            <td style="padding: 15px;">
-                                <img v-if="value.hinh_anh" :src="value.hinh_anh" alt="Tour"
-                                    style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                <div v-else
-                                    style="width: 60px; height: 45px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
-                                    <i class="fa-solid fa-image"></i>
-                                </div>
-                            </td>
-                            <td style="padding: 15px; color: #333; font-weight: 600;">{{ value.ten_tour }}</td>
-                            <td style="padding: 15px; color: #555; font-size: 0.85rem; line-height: 1.6;">
-                                <div style="color: #64748b;"><i class="fa-solid fa-location-dot me-1"
-                                        style="color: #10b981;"></i> {{ value.diem_don }}</div>
-                                <div style="color: #64748b; margin-top: 4px;"><i class="fa-solid fa-flag-checkered me-1"
-                                        style="color: #ef4444;"></i> {{ value.diem_tra }}</div>
-                            </td>
-                            <td style="padding: 15px; text-align: right; color: #667eea; font-weight: 700;">{{
-                                formatVND(value.gia) }}</td>
-                            <td style="padding: 15px; text-align: center; font-size: 0.85rem; color: #666;">
-                                <div>{{ formatDate(value.ngay_bat_dau) }}</div>
-                                <i class="fa-solid fa-arrow-down"
-                                    style="font-size: 0.7rem; color: #cbd5e1; margin: 2px 0;"></i>
-                                <div>{{ formatDate(value.ngay_ket_thuc) }}</div>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <button @click="changeStatus(value.id, value.tinh_trang == 1 ? 0 : 1)" :style="{
-                                    border: 'none', padding: '6px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s',
-                                    background: value.tinh_trang == 1 ? '#dcfce7' : '#fee2e2',
-                                    color: value.tinh_trang == 1 ? '#16a34a' : '#dc2626'
-                                }">
-                                    {{ value.tinh_trang == 1 ? 'Hiển Thị' : 'Tạm Tắt' }}
-                                </button>
-                            </td>
-                            <td style="padding: 15px; text-align: center;">
-                                <div style="display: flex; gap: 8px; justify-content: center;">
-                                    <button @click="openViewModal(value)" class="action-btn btn-view"
-                                        title="Xem chi tiết">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </button>
-                                    <button @click="openEditModal(value)" class="action-btn btn-edit" title="Cập nhật">
-                                        <i class="fa-solid fa-pen-nib"></i>
-                                    </button>
-                                    <button @click="openDeleteModal(value)" class="action-btn btn-delete"
-                                        title="Xóa tour">
-                                        <i class="fa-solid fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        </div>
-
-        <!-- Tab: Quốc Gia -->
         <div v-if="activeTab === 'quocgia'">
-            <!-- Header & Search -->
-            <div style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+            <div
+                style="background: white; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
                 <div style="display: flex; gap: 12px; align-items: flex-end; margin-bottom: 0;">
                     <div style="flex: 1; position: relative;">
-                        <label style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 6px; display: block;">🔍 Tìm kiếm Quốc Gia</label>
+                        <label
+                            style="font-size: 0.85rem; font-weight: 600; color: #666; margin-bottom: 6px; display: block;">🔍
+                            Tìm kiếm Quốc Gia</label>
                         <input type="text" v-model="searchQuocGia" placeholder="Nhập tên quốc gia để tìm kiếm..."
                             style="width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; font-size: 0.9rem;">
-                        <i class="fa-solid fa-search" style="position: absolute; right: 12px; bottom: 14px; color: #999; font-size: 0.9rem;"></i>
+                        <i class="fa-solid fa-search"
+                            style="position: absolute; right: 12px; bottom: 14px; color: #999; font-size: 0.9rem;"></i>
                     </div>
                     <button @click="openAddQuocGiaModal" class="btn-add" style="height: 45px;">
                         <i class="fa-solid fa-plus me-2"></i>Thêm Quốc Gia
@@ -206,22 +219,26 @@
                 </div>
             </div>
 
-            <!-- Table -->
-            <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
+            <div
+                style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden;">
                 <div style="overflow-x: auto;">
                     <table style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
-                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 70px;">
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 70px;">
                                     <i class="fa-solid fa-hashtag me-1" style="color: #667eea;"></i>ID
                                 </th>
-                                <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; flex: 1;">
+                                <th
+                                    style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; flex: 1;">
                                     <i class="fa-solid fa-earth-americas me-2" style="color: #667eea;"></i>Tên Quốc Gia
                                 </th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 140px;">
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 140px;">
                                     <i class="fa-solid fa-toggle-on me-1" style="color: #667eea;"></i>Trạng Thái
                                 </th>
-                                <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 160px;">
+                                <th
+                                    style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 160px;">
                                     <i class="fa-solid fa-sliders me-1" style="color: #667eea;"></i>Hành Động
                                 </th>
                             </tr>
@@ -231,40 +248,46 @@
                                 <td colspan="4" style="padding: 50px 20px; text-align: center; color: #999;">
                                     <div style="font-size: 3rem; margin-bottom: 15px;">🌍</div>
                                     <p style="margin: 0; font-size: 1rem;">Không tìm thấy quốc gia nào</p>
-                                    <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #bbb;">Hãy nhấp nút "Thêm Quốc Gia" để bắt đầu</p>
+                                    <p style="margin: 8px 0 0 0; font-size: 0.85rem; color: #bbb;">Hãy nhấp nút "Thêm
+                                        Quốc Gia" để bắt đầu</p>
                                 </td>
                             </tr>
-                            <tr v-for="qg in filteredQuocGia" :key="qg.id" class="data-row" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
-                                <td style="padding: 15px; text-align: center; color: #667eea; font-weight: 700; font-size: 0.95rem;">
+                            <tr v-for="qg in paginatedQuocGia" :key="qg.id" class="data-row"
+                                style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;">
+                                <td
+                                    style="padding: 15px; text-align: center; color: #667eea; font-weight: 700; font-size: 0.95rem;">
                                     #{{ qg.id }}
                                 </td>
                                 <td style="padding: 15px; color: #333; font-weight: 600; font-size: 0.95rem;">
                                     {{ qg.ten_quoc_gia }}
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <button @click="changeQuocGiaStatus(qg.id, qg.tinh_trang == 1 ? 0 : 1)" 
-                                        :style="{
-                                            border: 'none', 
-                                            padding: '6px 14px', 
-                                            borderRadius: '6px', 
-                                            fontSize: '0.8rem', 
-                                            fontWeight: '600', 
-                                            cursor: 'pointer', 
-                                            transition: 'all 0.2s',
-                                            background: qg.tinh_trang == 1 ? '#dcfce7' : '#fee2e2',
-                                            color: qg.tinh_trang == 1 ? '#16a34a' : '#dc2626'
-                                        }"
-                                        :title="qg.tinh_trang == 1 ? 'Nhấp để tạm tắt' : 'Nhấp để kích hoạt'">
-                                        <i :class="qg.tinh_trang == 1 ? 'fa-solid fa-check me-1' : 'fa-solid fa-lock me-1'"></i>
+                                    <button @click="changeQuocGiaStatus(qg.id, qg.tinh_trang == 1 ? 0 : 1)" :style="{
+                                        border: 'none',
+                                        padding: '6px 14px',
+                                        borderRadius: '6px',
+                                        fontSize: '0.8rem',
+                                        fontWeight: '600',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        background: qg.tinh_trang == 1 ? '#dcfce7' : '#fee2e2',
+                                        color: qg.tinh_trang == 1 ? '#16a34a' : '#dc2626'
+                                    }" :title="qg.tinh_trang == 1 ? 'Nhấp để tạm tắt' : 'Nhấp để kích hoạt'">
+                                        <i
+                                            :class="qg.tinh_trang == 1 ? 'fa-solid fa-check me-1' : 'fa-solid fa-lock me-1'"></i>
                                         {{ qg.tinh_trang == 1 ? 'Hoạt Động' : 'Tạm Tắt' }}
                                     </button>
                                 </td>
                                 <td style="padding: 15px; text-align: center;">
                                     <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
-                                        <button @click="openEditQuocGiaModal(qg)" class="action-btn btn-edit" title="Chỉnh sửa thông tin" style="background: #f0f4f8; color: #764ba2; border: none; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                        <button @click="openEditQuocGiaModal(qg)" class="action-btn btn-edit"
+                                            title="Chỉnh sửa thông tin"
+                                            style="background: #f0f4f8; color: #764ba2; border: none; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
                                             <i class="fa-solid fa-pen-nib"></i>
                                         </button>
-                                        <button @click="openDeleteQuocGiaModal(qg)" class="action-btn btn-delete" title="Xóa quốc gia" style="background: #fee2e2; color: #ef4444; border: none; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                                        <button @click="openDeleteQuocGiaModal(qg)" class="action-btn btn-delete"
+                                            title="Xóa quốc gia"
+                                            style="background: #fee2e2; color: #ef4444; border: none; width: 36px; height: 36px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
                                             <i class="fa-solid fa-trash"></i>
                                         </button>
                                     </div>
@@ -272,13 +295,26 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div
+                        style="padding: 20px 0; display: flex; justify-content: center; align-items: center; gap: 5px;">
+                        <button @click="currentPage--" :disabled="currentPage === 1" class="page-btn">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        <span class="page-info">Trang {{ currentPage }} / {{ totalPages }}</span>
+
+                        <button @click="currentPage++" :disabled="currentPage >= totalPages" class="page-btn">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Stats/Info Bar -->
-            <div style="margin-top: 20px; padding: 15px 20px; background: #f0f4f8; border-radius: 8px; font-size: 0.9rem; color: #475569;">
+            <div
+                style="margin-top: 20px; padding: 15px 20px; background: #f0f4f8; border-radius: 8px; font-size: 0.9rem; color: #475569;">
                 <i class="fa-solid fa-info-circle me-2" style="color: #667eea;"></i>
-                Tổng cộng: <strong>{{ list_quoc_gia.length }}</strong> quốc gia | Đang hiển thị: <strong>{{ filteredQuocGia.length }}</strong> quốc gia
+                Tổng cộng: <strong>{{ list_quoc_gia.length }}</strong> quốc gia | Đang hiển thị: <strong>{{
+                    filteredQuocGia.length }}</strong> quốc gia
             </div>
         </div>
 
@@ -415,7 +451,7 @@
                             <div>
                                 <span style="color: #64748b; font-size: 0.85rem; display: block;">Giá Vé</span>
                                 <strong style="color: #ef4444; font-size: 1.1rem;">{{ formatVND(view_tour.gia)
-                                }}</strong>
+                                    }}</strong>
                             </div>
                             <div>
                                 <span style="color: #64748b; font-size: 0.85rem; display: block;">Khách Tối Đa</span>
@@ -457,24 +493,24 @@
             </div>
         </div>
 
-        <!-- Modal Quốc Gia Form -->
         <div v-if="showQuocGiaModal"
             style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div
                 style="background: white; border-radius: 12px; width: 90%; max-width: 500px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); overflow: hidden;">
-                <div
-                    :style="{ 
-                        background: isEditQuocGia ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #667eea, #764ba2)', 
-                        padding: '25px 20px', 
-                        color: 'white', 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center',
-                        borderBottom: '4px solid rgba(255,255,255,0.1)'
-                    }">
+                <div :style="{
+                    background: isEditQuocGia ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #667eea, #764ba2)',
+                    padding: '25px 20px',
+                    color: 'white',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    borderBottom: '4px solid rgba(255,255,255,0.1)'
+                }">
                     <div style="display: flex; align-items: center; gap: 12px;">
-                        <i :class="isEditQuocGia ? 'fa-solid fa-pen-fancy' : 'fa-solid fa-earth-americas'" style="font-size: 1.3rem;"></i>
-                        <h2 style="margin: 0; font-size: 1.2rem;">{{ isEditQuocGia ? '✏️ Chỉnh Sửa Quốc Gia' : '🌍 Thêm Quốc Gia Mới' }}</h2>
+                        <i :class="isEditQuocGia ? 'fa-solid fa-pen-fancy' : 'fa-solid fa-earth-americas'"
+                            style="font-size: 1.3rem;"></i>
+                        <h2 style="margin: 0; font-size: 1.2rem;">
+                            {{ isEditQuocGia ? '✏️ Chỉnh Sửa Quốc Gia' : '🌍Thêm Quốc Gia Mới' }}</h2>
                     </div>
                     <button @click="showQuocGiaModal = false"
                         style="background: rgba(255,255,255,0.2); border: none; color: white; font-size: 1.5rem; cursor: pointer; width: 32px; height: 32px; border-radius: 6px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">×</button>
@@ -483,47 +519,50 @@
                 <div style="padding: 25px; color: #333;">
                     <div style="margin-bottom: 20px;">
                         <label class="form-label" style="font-weight: 700; color: #333; font-size: 0.95rem;">
-                            <i class="fa-solid fa-marker me-2" style="color: #667eea;"></i>Tên Quốc Gia <span style="color: #ef4444;">*</span>
+                            <i class="fa-solid fa-marker me-2" style="color: #667eea;"></i>Tên Quốc Gia <span
+                                style="color: #ef4444;">*</span>
                         </label>
-                        <input type="text" class="custom-input" v-model="quocGiaForm.ten_quoc_gia" placeholder="VD: Việt Nam, Thái Lan, Nhật Bản..." style="font-size: 0.95rem;">
+                        <input type="text" class="custom-input" v-model="quocGiaForm.ten_quoc_gia"
+                            placeholder="VD: Việt Nam, Thái Lan, Nhật Bản..." style="font-size: 0.95rem;">
                     </div>
 
                     <div style="margin-bottom: 25px;">
                         <label class="form-label" style="font-weight: 700; color: #333; font-size: 0.95rem;">
                             <i class="fa-solid fa-toggle-on me-2" style="color: #667eea;"></i>Trạng Thái
                         </label>
-                        <select class="custom-input" v-model.number="quocGiaForm.tinh_trang" style="font-size: 0.95rem;">
+                        <select class="custom-input" v-model.number="quocGiaForm.tinh_trang"
+                            style="font-size: 0.95rem;">
                             <option :value="1">✅ Hoạt động (Hiển thị cho khách)</option>
                             <option :value="0">🔒 Tạm tắt (Ẩn khỏi khách)</option>
                         </select>
                     </div>
 
-                    <div style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 20px; border-top: 2px solid #e2e8f0;">
+                    <div
+                        style="display: flex; gap: 12px; justify-content: flex-end; padding-top: 20px; border-top: 2px solid #e2e8f0;">
                         <button @click="showQuocGiaModal = false"
                             style="padding: 11px 20px; background: #f1f5f9; border: none; border-radius: 8px; font-weight: 600; color: #475569; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;">
                             <i class="fa-solid fa-times me-2"></i>Hủy Bỏ
                         </button>
-                        <button @click="saveQuocGia"
-                            :style="{ 
-                                background: isEditQuocGia ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #667eea, #764ba2)', 
-                                color: 'white', 
-                                padding: '11px 24px', 
-                                border: 'none', 
-                                borderRadius: '8px', 
-                                fontWeight: '600', 
-                                cursor: 'pointer',
-                                transition: 'all 0.2s',
-                                fontSize: '0.9rem',
-                                boxShadow: isEditQuocGia ? '0 4px 12px rgba(16, 185, 129, 0.3)' : '0 4px 12px rgba(102, 126, 234, 0.3)'
-                            }">
-                            <i :class="isEditQuocGia ? 'fa-solid fa-check me-2' : 'fa-solid fa-plus me-2'"></i>{{ isEditQuocGia ? 'Lưu Cập Nhật' : 'Thêm Mới' }}
+                        <button @click="saveQuocGia" :style="{
+                            background: isEditQuocGia ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #667eea, #764ba2)',
+                            color: 'white',
+                            padding: '11px 24px',
+                            border: 'none',
+                            borderRadius: '8px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            fontSize: '0.9rem',
+                            boxShadow: isEditQuocGia ? '0 4px 12px rgba(16, 185, 129, 0.3)' : '0 4px 12px rgba(102, 126, 234, 0.3)'
+                        }">
+                            <i :class="isEditQuocGia ? 'fa-solid fa-check me-2' : 'fa-solid fa-plus me-2'"></i>{{
+                                isEditQuocGia ? 'Lưu Cập Nhật' : 'Thêm Mới' }}
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Xóa Quốc Gia -->
         <div v-if="showDeleteQuocGiaModal"
             style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
             <div
@@ -531,10 +570,13 @@
                 <div style="font-size: 3.5rem; margin-bottom: 15px; animation: shake 0.5s;">
                     ⚠️
                 </div>
-                <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.1rem; font-weight: 700;">Xác Nhận Xóa Quốc Gia</h3>
+                <h3 style="margin: 0 0 10px 0; color: #333; font-size: 1.1rem; font-weight: 700;">Xác Nhận Xóa Quốc Gia
+                </h3>
                 <p style="color: #666; margin: 15px 0; font-size: 0.95rem; line-height: 1.6;">
-                    Bạn có chắc chắn muốn xóa <br><strong style="color: #ef4444; font-size: 1rem;">{{ del_quoc_gia.ten_quoc_gia }}</strong>? <br>
-                    <span style="font-size: 0.85rem; color: #999; display: inline-block; margin-top: 8px;">⚠️ Hành động này không thể hoàn tác!</span>
+                    Bạn có chắc chắn muốn xóa <br><strong style="color: #ef4444; font-size: 1rem;">{{
+                        del_quoc_gia.ten_quoc_gia }}</strong>? <br>
+                    <span style="font-size: 0.85rem; color: #999; display: inline-block; margin-top: 8px;">⚠️ Hành động
+                        này không thể hoàn tác!</span>
                 </p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 25px;">
                     <button @click="showDeleteQuocGiaModal = false"
@@ -560,7 +602,11 @@ export default {
     data() {
         return {
             activeTab: 'tour',
-            
+
+            // Phân trang chung cho table hiện tại
+            currentPage: 1,
+            pageSize: 5, // Mỗi trang hiển thị 5 dòng, bạn có thể chỉnh lại thành 10 tùy ý.
+
             // Tour Data
             list_tour: [],
             list_quoc_gia: [],
@@ -581,7 +627,7 @@ export default {
             },
             view_tour: {},
             del_tour: {},
-            
+
             // Quốc Gia Data
             filteredQuocGia: [],
             searchQuocGia: '',
@@ -598,6 +644,26 @@ export default {
             quocGiaTabHovered: false
         }
     },
+    computed: {
+        // Tính tổng số trang dựa trên tab đang kích hoạt
+        totalPages() {
+            if (this.activeTab === 'tour') {
+                return Math.ceil(this.filteredTours.length / this.pageSize) || 1;
+            } else {
+                return Math.ceil(this.filteredQuocGia.length / this.pageSize) || 1;
+            }
+        },
+        // Cắt mảng Tour hiển thị trên trang hiện tại
+        paginatedTours() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            return this.filteredTours.slice(start, start + this.pageSize);
+        },
+        // Cắt mảng Quốc Gia hiển thị trên trang hiện tại
+        paginatedQuocGia() {
+            const start = (this.currentPage - 1) * this.pageSize;
+            return this.filteredQuocGia.slice(start, start + this.pageSize);
+        }
+    },
     mounted() {
         this.getTour();
         this.getQuocGia();
@@ -605,6 +671,10 @@ export default {
     watch: {
         searchQuocGia() {
             this.filterQuocGia();
+        },
+        // Reset về trang 1 khi chuyển đổi qua lại giữa các tab
+        activeTab() {
+            this.currentPage = 1;
         }
     },
     methods: {
@@ -620,7 +690,7 @@ export default {
             return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(number || 0);
         },
         getQuocGia() {
-            axios.get(apiUrl('admin/quoc-gia/get-data'), { // Thay đổi đường dẫn này theo API thực tế của bạn
+            axios.get(apiUrl('admin/quoc-gia/get-data'), { 
                 headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
             })
                 .then((res) => {
@@ -661,8 +731,8 @@ export default {
                 return matchKeyword && matchTuNgay && matchDenNgay;
             });
 
-            // Yêu cầu: Sắp xếp ID theo thứ tự tăng dần (1 -> 7)
             this.filteredTours = result.sort((a, b) => a.id - b.id);
+            this.currentPage = 1;
         },
 
         resetFilter() {
@@ -752,10 +822,11 @@ export default {
 
         filterQuocGia() {
             this.filteredQuocGia = this.list_quoc_gia.filter(qg => {
-                const matchSearch = !this.searchQuocGia || 
+                const matchSearch = !this.searchQuocGia ||
                     qg.ten_quoc_gia.toLowerCase().includes(this.searchQuocGia.toLowerCase());
                 return matchSearch;
             });
+            this.currentPage = 1;
         },
 
         openAddQuocGiaModal() {
@@ -961,9 +1032,54 @@ export default {
 }
 
 @keyframes shake {
-    0%, 100% { transform: scale(1); }
-    25% { transform: scale(1.1) rotate(-2deg); }
-    50% { transform: scale(1.1) rotate(2deg); }
-    75% { transform: scale(1.1) rotate(-2deg); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    25% {
+        transform: scale(1.1) rotate(-2deg);
+    }
+
+    50% {
+        transform: scale(1.1) rotate(2deg);
+    }
+
+    75% {
+        transform: scale(1.1) rotate(-2deg);
+    }
+}
+
+/* CSS cho thanh phân trang */
+.page-btn {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: #4a5568;
+    display: flex;
+    align-items: center;
+}
+
+.page-btn:hover:not(:disabled) {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.page-btn:disabled {
+    background: #f7fafc;
+    color: #cbd5e0;
+    cursor: not-allowed;
+}
+
+.page-info {
+    font-weight: 600;
+    color: #4a5568;
+    padding: 0 15px;
+    font-size: 0.9rem;
 }
 </style>
