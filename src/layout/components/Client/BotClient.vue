@@ -1,109 +1,99 @@
 <template>
-    <footer class="text-dark text-center" style="background-color: #f5f5f5;">
-        <div class="container py-4">
-            <!-- Social Media Links -->
-            <section class="mb-4">
-                <a class="btn btn-outline-info btn-floating m-1" href="https://facebook.com" role="button" target="_blank">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a class="btn btn-outline-info btn-floating m-1" href="https://twitter.com" role="button" target="_blank">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a class="btn btn-outline-info btn-floating m-1" href="https://instagram.com" role="button" target="_blank">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a class="btn btn-outline-info btn-floating m-1" href="https://linkedin.com" role="button" target="_blank">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-            </section>
-
-            <!-- Newsletter Signup -->
-            <section class="mb-4">
-                <form>
-                    <div class="row d-flex justify-content-center align-items-center">
-                        <div class="col-auto">
-                            <p class="mb-0 fw-bold">Đăng ký nhận thông tin mới</p>
-                        </div>
-                        <div class="col-md-5 col-12">
-                            <div class="form-outline form-white mb-3 mb-md-0">
-                                <input type="email" class="form-control" placeholder="Nhập email của bạn" />
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <button type="submit" class="btn btn-outline-danger">Đăng ký</button>
-                        </div>
-                    </div>
-                </form>
-            </section>
-
-            <!-- Navigation and Company Info -->
-            <section>
-                <div class="row text-start">
-                    <!-- Brand Name -->
-                    <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
-                        <h5 class="text-uppercase fw-bold mb-3 text-dark">IxtalTour</h5>
-                        <p>
-                            Đặt vé dễ dàng, nhanh chóng với trải nghiệm tuyệt vời!
-                        </p>
-                    </div>
-
-                    <!-- Navigation Links -->
-                    <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                        <h6 class="fw-bold mb-3 text-dark">Điều hướng</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <a href="/" class="text-dark text-decoration-none">Trang chủ</a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="/movies" class="text-dark text-decoration-none">Phim đang chiếu</a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="/news" class="text-dark text-decoration-none">Tin tức</a>
-                            </li>
-                            <li>
-                                <a href="/promotions" class="text-dark text-decoration-none">Khuyến mãi</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Support Links -->
-                    <div class="col-lg-2 col-md-6 mb-4 mb-md-0">
-                        <h6 class="fw-bold mb-3 text-dark">Hỗ trợ</h6>
-                        <ul class="list-unstyled">
-                            <li class="mb-2">
-                                <a href="/contact" class="text-dark text-decoration-none">Liên hệ</a>
-                            </li>
-                            <li class="mb-2">
-                                <a href="/about" class="text-dark text-decoration-none">Về chúng tôi</a>
-                            </li>
-                            <li>
-                                <a href="/privacy" class="text-dark text-decoration-none">Chính sách bảo mật</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <!-- Company Info -->
-                    <div class="col-lg-5 col-md-6 mb-4 mb-md-0">
-                        <h6 class="fw-bold mb-3 text-dark">Thông tin công ty</h6>
-                        <p>
-                            CÔNG TY TNHH IxtalTour<br>
-                            Số ĐKKD: 0317891234<br>
-                            Nơi cấp: Sở Kế hoạch và Đầu tư Tp. Hồ Chí Minh<br>
-                            Ngày đăng ký: 15/06/2021<br>
-                            Địa chỉ: 836 Nguyễn Hữu Thọ, P.22, Q. Thanh Khê, Tp. Đà Nẵng
-                        </p>
-                    </div>
-                </div>
-            </section>
+  <footer class="modern-footer-grid">
+    <div class="footer-container">
+      <div class="footer-content">
+        
+        <div class="link-group">
+          <h3>VỀ IXTALTOUR</h3>
+          <a href="#">Giới thiệu</a>
+          <a href="#">Câu hỏi thường gặp</a>
+          <a href="#">Điều khoản dịch vụ</a>
         </div>
 
-        <!-- Copyright -->
-        <div class="text-center p-3 bg-black text-white">
-            © 2025 IxtalTour. All rights reserved.
+        <div class="link-group">
+          <h3>HỖ TRỢ</h3>
+          <a href="#">Đăng ký giảng viên</a>
+          <a href="#">Chính sách hoa hồng</a>
+          <a href="#">Điều khoản hợp tác</a>
         </div>
-    </footer>
+
+        <div class="link-group">
+          <h3>LIÊN HỆ</h3>
+          <p>836 Nguyễn Hữu Thọ<br>Thanh Khê, Đà Nẵng</p>
+          <p>Hotline: 0236 365 0403</p>
+        </div>
+
+        <div class="map-side">
+          <div id="map" class="map-container"></div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 IxtalTour. Tất cả quyền được bảo lưu.</p>
+      </div>
+    </div>
+  </footer>
 </template>
 
-<script>
-export default {};
+<script setup>
+import { onMounted } from 'vue';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+onMounted(() => {
+  // Tọa độ ĐH Duy Tân
+  const map = L.map('map').setView([16.0583, 108.2120], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  L.marker([16.0583, 108.2120]).addTo(map)
+    .bindPopup('Đại học Duy Tân');
+});
 </script>
+
+<style scoped>
+/* CSS cho Footer */
+.modern-footer-grid { 
+  background-color: #f4fdf8; 
+  color: #1a3326; 
+  padding: 4rem 24px 2rem; 
+  border-top: 1px solid rgba(143, 223, 181, 0.4);
+}
+
+.footer-container { max-width: 1400px; margin: 0 auto; }
+
+/* Grid 4 cột */
+.footer-content { 
+  display: grid; 
+  grid-template-columns: repeat(4, 1fr); 
+  gap: 30px; 
+  padding-bottom: 3rem;
+}
+
+.link-group h3 { font-size: 0.75rem; letter-spacing: 0.2em; color: #6a9a80; margin-bottom: 1.5rem; }
+.link-group a, .link-group p { display: block; color: #1a3326; text-decoration: none; margin-bottom: 10px; font-size: 0.9rem; }
+
+/* Cấu hình bản đồ */
+.map-container { 
+  width: 100%; 
+  height: 200px; /* Chiều cao khớp với các cột chữ */
+  border-radius: 12px; 
+  overflow: hidden;
+  border: 1px solid rgba(143, 223, 181, 0.5);
+}
+
+.footer-bottom { 
+  text-align: center; padding-top: 2rem; border-top: 1px solid rgba(143, 223, 181, 0.3); 
+  font-size: 0.85rem; color: #6a9a80;
+}
+
+@media (max-width: 1024px) {
+  .footer-content { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .footer-content { grid-template-columns: 1fr; }
+}
+</style>

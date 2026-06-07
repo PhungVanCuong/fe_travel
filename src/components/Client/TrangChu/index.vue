@@ -49,10 +49,10 @@
       </div>
 
       <!-- Nút điều hướng Slide Hero -->
-      <button @click="prevHero" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);z-index:20;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);" class="hover-lift">
+      <button @click="prevHero" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);z-index:20;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:black;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);" class="hover-lift">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <button @click="nextHero" style="position:absolute;right:24px;top:50%;transform:translateY(-50%);z-index:20;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);" class="hover-lift">
+      <button @click="nextHero" style="position:absolute;right:24px;top:50%;transform:translateY(-50%);z-index:20;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:black;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);" class="hover-lift">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
@@ -471,5 +471,3 @@ export default {
 .fade-enter-active, .fade-leave-active { transition: opacity 0.4s ease; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>
-
-```
