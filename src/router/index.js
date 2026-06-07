@@ -259,6 +259,12 @@ const routes = [
         beforeEnter: checkAdmin,
         name: "thong-ke-tour",
     },
+    {
+        path: "/admin/lien-he",
+        component: () => import("../components/Admin/LienHe/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "lien-he",
+    },
 
 
     // ===============================================

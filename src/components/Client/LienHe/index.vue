@@ -50,22 +50,22 @@
       </section>
 
       <section class="section-padding section-alt observe-me stats-container">
-  <div class="container-sm relative-z10">
-    <div class="text-center mb-4 fade-in-up">
-      <p class="section-subtitle teal-text">Những Con Số Biết Nói</p>
-      <h2 class="section-title text-center">Một thập kỷ của những hành trình phi thường</h2>
-    </div>
-    <div class="stats-flexbox">
-      <div v-for="(s, i) in displayStats" :key="s.label" class="stat-card fade-in-up"
-        :style="{ transitionDelay: `${i * 0.1}s` }">
-        <div class="stat-value">
-          {{ s.currentValue.toLocaleString() }}{{ s.suffix }}
+        <div class="container-sm relative-z10">
+          <div class="text-center mb-4 fade-in-up">
+            <p class="section-subtitle teal-text">Những Con Số Biết Nói</p>
+            <h2 class="section-title text-center">Một thập kỷ của những hành trình phi thường</h2>
+          </div>
+          <div class="stats-flexbox">
+            <div v-for="(s, i) in displayStats" :key="s.label" class="stat-card fade-in-up"
+              :style="{ transitionDelay: `${i * 0.1}s` }">
+              <div class="stat-value">
+                {{ s.currentValue.toLocaleString() }}{{ s.suffix }}
+              </div>
+              <div class="stat-label">{{ s.label }}</div>
+            </div>
+          </div>
         </div>
-        <div class="stat-label">{{ s.label }}</div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
       <section id="team" class="section-padding container observe-me">
         <div class="team-header fade-in-up">
@@ -122,21 +122,27 @@
               <form @submit.prevent="handleSubmit" novalidate>
                 <div class="form-row">
                   <div class="input-group">
-                    <input type="text" v-model="fields.name" class="custom-input" required placeholder=" " />
+                    <input type="text" v-model="fields.ho_ten" class="custom-input" required placeholder=" " :readonly="isLoggedIn" />
                     <label class="custom-label">Họ và Tên</label>
-                    <p v-if="errors.name" class="error-text">{{ errors.name }}</p>
+                    <p v-if="errors.ho_ten" class="error-text">{{ errors.ho_ten }}</p>
                   </div>
                   <div class="input-group">
-                    <input type="email" v-model="fields.email" class="custom-input" required placeholder=" " />
+                    <input type="email" v-model="fields.email" class="custom-input" required placeholder=" " :readonly="isLoggedIn" />
                     <label class="custom-label">Địa chỉ Email</label>
                     <p v-if="errors.email" class="error-text">{{ errors.email }}</p>
                   </div>
                 </div>
+
                 <div class="input-group mb-4">
-                  <textarea v-model="fields.message" class="custom-input textarea-input" required
+                  <input type="text" v-model="fields.so_dien_thoai" class="custom-input" placeholder=" " />
+                  <label class="custom-label">Số điện thoại (Tuỳ chọn)</label>
+                </div>
+
+                <div class="input-group mb-4">
+                  <textarea v-model="fields.noi_dung" class="custom-input textarea-input" required
                     placeholder=" "></textarea>
                   <label class="custom-label">Hãy kể cho chúng tôi về chuyến đi mơ ước của bạn…</label>
-                  <p v-if="errors.message" class="error-text">{{ errors.message }}</p>
+                  <p v-if="errors.noi_dung" class="error-text">{{ errors.noi_dung }}</p>
                 </div>
                 <button type="submit" :disabled="submitState !== 'idle'" class="submit-btn"
                   :class="{ 'success-btn': submitState === 'success' }">
@@ -148,7 +154,7 @@
             </div>
 
             <div class="info-cards">
-              <div v-for="info in INFO" :key="info.label" class="info-card">
+              <div v-for="info in INFO" :key="info.label" class="info-card glowing-card">
                 <h4 class="info-title">{{ info.label }}</h4>
                 <p v-for="l in info.lines" :key="l" class="info-line">{{ l }}</p>
               </div>
@@ -161,9 +167,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, getCurrentInstance } from 'vue';
+import axios from 'axios';
+import apiUrl from '../../../utils/api'; // Đường dẫn cấu hình API của bạn
 import confetti from 'canvas-confetti';
 
+// Lấy instance để dùng Toast trong Script setup
+const { proxy } = getCurrentInstance();
 
 // --- DATA ---
 const STATS = [
@@ -221,22 +231,50 @@ const scrollY = ref(0);
 const typedText = ref("");
 const fullText = "Nơi Mỗi Hành Trình\nTrở Thành Một Câu Chuyện.";
 
-const fields = ref({ name: "", email: "", message: "" });
+// API State
+const isLoggedIn = ref(false);
+const fields = ref({ id_khach_hang: null, ho_ten: "", email: "", so_dien_thoai: "", noi_dung: "" });
 const errors = ref({});
 const submitState = ref("idle");
 
-// --- LOGIC ---
+// --- LOGIC RÀNG BUỘC SỐ ĐIỆN THOẠI (CHỈ NHẬP SỐ, MAX 10 KÝ TỰ) ---
+const limitPhone = (e) => {
+  let val = e.target.value.replace(/[^0-9]/g, ''); // Loại bỏ mọi ký tự không phải là số
+  if (val.length > 10) val = val.slice(0, 10);      // Giới hạn max 10 ký tự
+  fields.value.so_dien_thoai = val;
+};
+
+// Lấy thông tin khách hàng nếu đã đăng nhập
+const checkUserLogin = async () => {
+  const token = localStorage.getItem('key_khach_hang');
+  if (token) {
+    try {
+      const res = await axios.get(apiUrl('client/profile/get-data'), {
+        headers: { Authorization: "Bearer " + token }
+      });
+      if (res.data.status && res.data.data) {
+        isLoggedIn.value = true;
+        fields.value.id_khach_hang = res.data.data.id;
+        fields.value.ho_ten = res.data.data.ho_va_ten || '';
+        fields.value.email = res.data.data.email || '';
+        fields.value.so_dien_thoai = res.data.data.so_dien_thoai || '';
+      }
+    } catch (err) {
+      console.error("Không thể lấy dữ liệu khách hàng", err);
+    }
+  }
+};
+
 const startCounting = () => {
   displayStats.value.forEach((stat, index) => {
     const finalValue = STATS[index].value;
     let start = null;
-    const duration = 2000; // Thời gian số chạy (2000ms = 2 giây)
+    const duration = 2000; 
 
     const step = (timestamp) => {
       if (!start) start = timestamp;
       const progress = Math.min((timestamp - start) / duration, 1);
       
-      // Công thức ease-out (chạy nhanh lúc đầu, chậm dần về cuối cho đẹp)
       const easeOut = 1 - Math.pow(1 - progress, 4);
       stat.currentValue = Math.floor(easeOut * finalValue);
 
@@ -253,9 +291,10 @@ const startCounting = () => {
 const resetCounting = () => {
   if (animationFrameId) cancelAnimationFrame(animationFrameId);
   displayStats.value.forEach(stat => {
-    stat.currentValue = 0; // Trả hết số về 0
+    stat.currentValue = 0; 
   });
 };
+
 const handleScroll = () => {
   scrollY.value = window.scrollY;
 };
@@ -275,14 +314,11 @@ const setupObserver = () => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('is-visible');
-        
         if (entry.target.classList.contains('stats-container')) {
           startCounting();
         }
       } else {
-  
         entry.target.classList.remove('is-visible');
-        
         if (entry.target.classList.contains('stats-container')) {
           resetCounting();
         }
@@ -293,33 +329,73 @@ const setupObserver = () => {
   document.querySelectorAll('.observe-me').forEach(el => observer.observe(el));
 };
 
-const handleSubmit = () => {
+// Gọi API Gửi Form kèm Validation + Toast Notifications
+const handleSubmit = async () => {
   const errs = {};
-  if (!fields.value.name.trim()) errs.name = "Vui lòng nhập họ tên của bạn";
-  if (!fields.value.email.trim()) errs.email = "Vui lòng cung cấp địa chỉ email";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.value.email)) errs.email = "Địa chỉ email không hợp lệ";
-  if (!fields.value.message.trim()) errs.message = "Vui lòng mô tả về chuyến đi bạn mong muốn";
+  
+  if (!fields.value.ho_ten.trim()) {
+    errs.ho_ten = "Vui lòng nhập họ tên của bạn";
+  }
+  
+  if (!fields.value.email.trim()) {
+    errs.email = "Vui lòng cung cấp địa chỉ email";
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.value.email)) {
+    errs.email = "Bạn nhập sai email, vui lòng nhập lại";
+  }
+  
+  // Ràng buộc số điện thoại nếu có nhập phải đủ 10 số
+  if (fields.value.so_dien_thoai && fields.value.so_dien_thoai.length < 10) {
+    errs.so_dien_thoai = "Bạn nhập sai định dạng điện thoại, vui lòng nhập lại đt (Yêu cầu 10 số)";
+  }
 
+  if (!fields.value.noi_dung.trim()) {
+    errs.noi_dung = "Vui lòng mô tả về chuyến đi bạn mong muốn";
+  }
+
+  // NẾU CÓ LỖI: Hiện Toast báo lỗi đầu tiên mắc phải
   if (Object.keys(errs).length) {
     errors.value = errs;
+    const firstErrorMessage = Object.values(errs)[0];
+    if (proxy && proxy.$toast) {
+      proxy.$toast.error(firstErrorMessage);
+    }
     return;
   }
 
   errors.value = {};
   submitState.value = "loading";
 
-  setTimeout(() => {
-    submitState.value = "success";
-    confetti({ particleCount: 90, spread: 60, origin: { y: 0.7 }, colors: ["#8fdfb5", "#2db88a", "#ffffff"], ticks: 200 });
-    setTimeout(() => {
+  try {
+    const response = await axios.post(apiUrl('client/lien-he'), fields.value);
+    
+    if (response.data.status) {
+      submitState.value = "success";
+      if (proxy && proxy.$toast) {
+        proxy.$toast.success(response.data.message || "Đã gửi liên hệ thành công!");
+      }
+      confetti({ particleCount: 90, spread: 60, origin: { y: 0.7 }, colors: ["#8fdfb5", "#2db88a", "#ffffff"], ticks: 200 });
+      setTimeout(() => {
+        submitState.value = "idle";
+        fields.value.noi_dung = ""; // Xóa nội dung điền, giữ lại thông tin người dùng
+      }, 4000);
+    } else {
+      if (proxy && proxy.$toast) {
+        proxy.$toast.error(response.data.message);
+      }
       submitState.value = "idle";
-      fields.value = { name: "", email: "", message: "" };
-    }, 4000);
-  }, 1800);
+    }
+  } catch (error) {
+    console.error("Lỗi khi gửi liên hệ:", error);
+    if (proxy && proxy.$toast) {
+      proxy.$toast.error("Có lỗi xảy ra khi kết nối máy chủ, vui lòng thử lại sau!");
+    }
+    submitState.value = "idle";
+  }
 };
 
 // --- LIFECYCLE ---
 onMounted(() => {
+  checkUserLogin(); // Gọi hàm kiểm tra đăng nhập khi vừa load trang
   window.addEventListener("scroll", handleScroll, { passive: true });
   setupTypewriter();
   setTimeout(setupObserver, 100);
@@ -909,67 +985,63 @@ html {
 .info-cards {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
-.info-card {
+/* HIỆU ỨNG GLOWING (PHÁT SÁNG XỊN XÒ) CHO KHỐI INFO CARD */
+.glowing-card {
   background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 0.75rem;
-  padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(143, 223, 181, .1);
-  transition: transform 0.2s;
+  border: 1px solid rgba(143, 223, 181, 0.5); 
+  border-radius: 1rem;
+  padding: 1.75rem;
+  box-shadow: 0 4px 20px rgba(143, 223, 181, 0.15), 0 0 15px rgba(45, 184, 138, 0.1); 
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
 }
 
-.info-card:hover {
-  transform: translateY(-4px);
+.glowing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--mint), var(--teal));
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.glowing-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(143, 223, 181, 0.3), 0 0 25px rgba(45, 184, 138, 0.25);
+  border-color: var(--mint);
+}
+
+.glowing-card:hover::before {
+  opacity: 1;
 }
 
 .info-title {
   font-family: 'Fraunces', serif;
-  font-weight: 600;
-  color: var(--mint);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--teal);
   margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .info-line {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   line-height: 1.7;
-  color: var(--text-sub);
-}
-
-/* --- MAP SECTION --- */
-.map-container {
-  width: 100%;
-  border-radius: 1.5rem;
-  /* Bo góc cho map */
-  overflow: hidden;
-  /* Đảm bảo iframe không tràn góc */
-  box-shadow: 0 20px 40px rgba(143, 223, 181, .15);
-  /* Đổ bóng sang trọng */
-  border: 1px solid var(--border-color);
-}
-
-.map-section {
-  width: 100%;
-  display: block;
-  line-height: 0;
-  background: var(--bg-alt);
-}
-
-.map-section iframe {
-  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
-  /* Tạo viền bóng mờ ngăn cách nhẹ nhàng với Contact Section */
+  color: var(--text-main);
+  font-weight: 500;
 }
 
 /* --- ANIMATIONS --- */
 @keyframes blink {
-
   0%,
   100% {
     opacity: 1;
   }
-
   50% {
     opacity: 0;
   }
@@ -985,7 +1057,6 @@ html {
   animation: blink 1s step-end infinite;
 }
 
-/* Trạng thái ẩn ban đầu */
 .fade-in-up,
 .slide-in-left,
 .slide-in-right {
@@ -1005,7 +1076,6 @@ html {
   transform: translateX(60px);
 }
 
-/* Trạng thái hiện (kích hoạt bằng IntersectionObserver) */
 .is-visible .fade-in-up,
 .is-visible.fade-in-up {
   opacity: 1;
@@ -1022,7 +1092,6 @@ html {
   transform: translateX(0);
 }
 
-/* Delays */
 .delay-2 {
   transition-delay: 0.2s;
 }
@@ -1031,7 +1100,6 @@ html {
   transition-delay: 0.4s;
 }
 
-/* Responsive Adjustments */
 @media (max-width: 768px) {
   .section-padding {
     padding: 4rem 0;

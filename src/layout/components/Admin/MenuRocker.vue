@@ -111,6 +111,14 @@
         <a-menu-item key="/admin/thong-ke/tour">Tour</a-menu-item>
       </a-sub-menu>
 
+      <!-- 10. Quản lý Liên hệ -->
+      <a-menu-item key="/admin/lien-he">
+        <template #icon>
+          <i class="fa-solid fa-address-book menu-icon"></i>
+        </template>
+        Quản lý Liên hệ
+      </a-menu-item>
+
       <!-- Đường kẻ ngang phân cách -->
       <a-divider style="border-color: rgba(255, 255, 255, 0.2); margin: 10px 0;" />
 
