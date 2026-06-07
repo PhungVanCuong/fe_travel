@@ -1,229 +1,254 @@
 <template>
-	<div class="nav-container primary-menu">
-		<nav class="navbar navbar-expand-xl w-100">
-			<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
-				<!-- Dashboard -->
-				<router-link to="/admin/dashboard">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/dashboard">
-							<div class="parent-icon">
-								<i class="bx bx-home-circle"></i>
-							</div>
-							<div class="menu-title">Dashboard</div>
-						</a>
-					</li>
-				</router-link>
+  <a-layout-sider v-model:collapsed="trangThaiThuGonMenu" width="260px" class="glass-sidebar`">
+    
+    <div :style="{ display: 'flex', alignItems: 'center', justifyContent: trangThaiThuGonMenu ? 'center' : 'space-between', padding: '16px' }">
+  <!-- Thay thế h2 bằng thẻ img -->
+  <img 
+    v-if="!trangThaiThuGonMenu" 
+    src="../../../assets/images/Logo1.png" 
+    alt="Logo IxtalTour" 
+    style="height: 80px; width: auto; object-fit: contain;" 
+  />
+  
+  <MenuOutlined style="font-size: 20px; cursor: pointer; color: black;" @click="thayDoiTrangThaiMenu" />
+</div>
 
-				<!-- Quản lý tài khoản -->
-				<li class="nav-item dropdown">
-					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						<div class="parent-icon"><i class="fa-solid fa-user-group"></i>
-						</div>
-						<div class="menu-title">Quản lý tài khoản</div>
-					</a>
-					<ul class="dropdown-menu">
-						<router-link to="/admin/nhan-vien">
-							<li>
-								<a class="dropdown-item" href="/admin/nhan-vien">
-									<i class="bx bx-right-arrow-alt"></i>Nhân Viên
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/khach-hang">
-							<li>
-								<a class="dropdown-item" href="/admin/khach-hang">
-									<i class="bx bx-right-arrow-alt"></i>Khách Hàng
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/huong-dan-vien">
-							<li>
-								<a class="dropdown-item" href="/admin/huong-dan-vien">
-									<i class="bx bx-right-arrow-alt"></i>Hướng Dẫn Viên
-								</a>
-							</li>
-						</router-link>
-					</ul>
-				</li>
+    <a-menu
+      v-model:selectedKeys="danhSachDuongDanDuocChon"
+      theme="dark"
+      mode="inline"
+      @click="xuLyChuyenTrang"
+    >
+      <!-- 1. Dashboard -->
+      <a-menu-item key="/admin/dashboard">
+        <template #icon>
+          <i class="bx bx-home-circle menu-icon"></i>
+        </template>
+        Dashboard
+      </a-menu-item>
 
-				<li class="nav-item dropdown">
-					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						<div class="parent-icon"><i class="fa-brands fa-servicestack"></i>
-						</div>
-						<div class="menu-title">Quản lý tour & lịch trình</div>
-					</a>
-					<ul class="dropdown-menu">
-						<router-link to="/admin/quan-ly-tour">
-							<li>
-								<a class="dropdown-item" href="/admin/quan-ly-tour">
-									<i class="bx bx-right-arrow-alt"></i>Tour
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/lich-trinh">
-							<li>
-								<a class="dropdown-item" href="/admin/lich-trinh">
-									<i class="bx bx-right-arrow-alt"></i>Lịch Trình
-								</a>
-							</li>
-						</router-link>
-					</ul>
-				</li>
+      <!-- 2. Quản lý tài khoản -->
+      <a-sub-menu key="danh-muc-tai-khoan">
+        <template #icon>
+          <i class="fa-solid fa-user-group menu-icon"></i>
+        </template>
+        <template #title>Quản lý tài khoản</template>
+        
+        <a-menu-item key="/admin/nhan-vien">Nhân Viên</a-menu-item>
+        <a-menu-item key="/admin/khach-hang">Khách Hàng</a-menu-item>
+        <a-menu-item key="/admin/huong-dan-vien">Hướng Dẫn Viên</a-menu-item>
+      </a-sub-menu>
 
-				<!-- Quản lý vé & Hoá đơn -->
-				<li class="nav-item dropdown">
-					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						<div class="parent-icon"><i class="fa-brands fa-servicestack"></i>
-						</div>
-						<div class="menu-title">Quản lý Vé & Hoá đơn</div>
-					</a>
-					<ul class="dropdown-menu">
-						<router-link to="/admin/ve">
-							<li>
-								<a class="dropdown-item" href="/admin/ve">
-									<i class="bx bx-right-arrow-alt"></i>Vé
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/hoa-don">
-							<li>
-								<a class="dropdown-item" href="/admin/hoa-don">
-									<i class="bx bx-right-arrow-alt"></i>Hoá Đơn
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/quet-hoa-don">
-							<li>	
-								<a class="dropdown-item" href="/admin/quet-hoa-don">
-									<i class="bx bx-right-arrow-alt"></i>Quét Hoá Đơn
-								</a>
-							</li>
-						</router-link>
-					</ul>
-				</li>
+      <!-- 3. Quản lý tour & lịch trình -->
+      <a-sub-menu key="danh-muc-tour-va-lich-trinh">
+        <template #icon>
+          <i class="fa-brands fa-servicestack menu-icon"></i>
+        </template>
+        <template #title>Quản lý tour & lịch trình</template>
+        
+        <a-menu-item key="/admin/quan-ly-tour">Tour</a-menu-item>
+        <a-menu-item key="/admin/lich-trinh">Lịch Trình</a-menu-item>
+      </a-sub-menu>
 
-				<!-- Quản lý Phương Tiện -->
-				<router-link to="/admin/quan-ly-phuong-tien">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/quan-ly-phuong-tien">
-							<div class="parent-icon">
-								<i class="fa-solid fa-bus"></i>
-							</div>
-							<div class="menu-title">Quản lý Phương Tiện</div>
-						</a>
-					</li>
-				</router-link>
+      <!-- 4. Quản lý Vé & Hoá đơn -->
+      <a-sub-menu key="danh-muc-ve-va-hoa-don">
+        <template #icon>
+          <i class="fa-brands fa-servicestack menu-icon"></i>
+        </template>
+        <template #title>Quản lý Vé & Hoá đơn</template>
+        
+        <a-menu-item key="/admin/ve">Vé</a-menu-item>
+        <a-menu-item key="/admin/hoa-don">Hoá Đơn</a-menu-item>
+        <a-menu-item key="/admin/quet-hoa-don">Quét Hoá Đơn</a-menu-item>
+      </a-sub-menu>
 
-				<!-- Quản lý HDV & Phân Công -->
-				<router-link to="/admin/quan-ly-hdv-va-phan-cong">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/quan-ly-hdv-va-phan-cong">
-							<div class="parent-icon">
-								<i class="fa-solid fa-people-group"></i>
-							</div>
-							<div class="menu-title">Quản lý HDV & Phân Công</div>
-						</a>
-					</li>
-				</router-link>
+      <!-- 5. Quản lý Phương Tiện -->
+      <a-menu-item key="/admin/quan-ly-phuong-tien">
+        <template #icon>
+          <i class="fa-solid fa-bus menu-icon"></i>
+        </template>
+        Quản lý Phương Tiện
+      </a-menu-item>
 
-				<!-- Phân quyền -->
-				<router-link to="/admin/phan-quyen">
-					<li class="nav-item">
-						<a class="nav-link" href="/admin/phan-quyen">
-							<div class="parent-icon">
-								<i class="fa-solid fa-user-shield"></i>
-							</div>
-							<div class="menu-title">Phân Quyền</div>
-						</a>
-					</li>
-				</router-link>
+      <!-- 6. Quản lý Hướng Dẫn Viên & Phân Công -->
+      <a-menu-item key="/admin/quan-ly-hdv-va-phan-cong">
+        <template #icon>
+          <i class="fa-solid fa-people-group menu-icon"></i>
+        </template>
+        Quản lý Hướng Dẫn Viên & Phân Công
+      </a-menu-item>
 
-				<!-- Bài viết -->
-				<!-- Quản lý Nội dung -->
-				<li class="nav-item dropdown">
-					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						<div class="parent-icon">
-							<i class="fa-solid fa-newspaper"></i>
-						</div>
-						<div class="menu-title">Quản lý Nội dung</div>
-					</a>
-					<ul class="dropdown-menu">
-						<router-link to="/admin/bai-viet">
-							<li>
-								<a class="dropdown-item" href="/admin/bai-viet">
-									<i class="bx bx-right-arrow-alt"></i>Bài Viết
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/danh-gia">
-							<li>
-								<a class="dropdown-item" href="/admin/danh-gia">
-									<i class="bx bx-right-arrow-alt"></i>Đánh Giá
-								</a>
-							</li>
-						</router-link>
-					</ul>
-				</li>
-				<!-- Thông kê -->
-				<li class="nav-item dropdown">
-					<a href="javascript:;" class="nav-link dropdown-toggle dropdown-toggle-nocaret"
-						data-bs-toggle="dropdown" aria-expanded="false">
-						<div class="parent-icon"><i class="fa-solid fa-chart-line"></i>
-						</div>
-						<div class="menu-title">Thống kê</div>
-					</a>
-					<ul class="dropdown-menu">
-						<router-link to="/admin/thong-ke/doanh-thu">
-							<li>
-								<a class="dropdown-item" href="/admin/thong-ke/doanh-thu">
-									<i class="bx bx-right-arrow-alt"></i>Doanh Thu
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/thong-ke/khach-hang-moi">
-							<li>
-								<a class="dropdown-item" href="/admin/thong-ke/khach-hang-moi">
-									<i class="bx bx-right-arrow-alt"></i>Khách Hàng Mới
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/thong-ke/ve-ban-ra">
-							<li>
-								<a class="dropdown-item" href="/admin/thong-ke/ve-ban-ra">
-									<i class="bx bx-right-arrow-alt"></i>vé Bán Ra
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/thong-ke/chi-tieu-khach-hang">
-							<li>
-								<a class="dropdown-item" href="/admin/thong-ke/chi-tieu-khach-hang">
-									<i class="bx bx-right-arrow-alt"></i>Chi Tiêu Khách Hàng
-								</a>
-							</li>
-						</router-link>
-						<router-link to="/admin/thong-ke/tour">
-							<li>
-								<a class="dropdown-item" href="/admin/thong-ke/tour">
-									<i class="bx bx-right-arrow-alt"></i>Tour
-								</a>
-							</li>
-						</router-link>
-					</ul>
-				</li>
+      <!-- 7. Phân Quyền -->
+      <a-menu-item key="/admin/phan-quyen">
+        <template #icon>
+          <i class="fa-solid fa-user-shield menu-icon"></i>
+        </template>
+        Phân Quyền
+      </a-menu-item>
 
-				<!-- Thông tin cá nhân -->
-				
-			</ul>
-		</nav>
-	</div>
+      <!-- 8. Quản lý Nội dung -->
+      <a-sub-menu key="danh-muc-noi-dung">
+        <template #icon>
+          <i class="fa-solid fa-newspaper menu-icon"></i>
+        </template>
+        <template #title>Quản lý Nội dung</template>
+        
+        <a-menu-item key="/admin/bai-viet">Bài Viết</a-menu-item>
+        <a-menu-item key="/admin/danh-gia">Đánh Giá</a-menu-item>
+      </a-sub-menu>
+
+      <!-- 9. Thống kê -->
+      <a-sub-menu key="danh-muc-thong-ke">
+        <template #icon>
+          <i class="fa-solid fa-chart-line menu-icon"></i>
+        </template>
+        <template #title>Thống kê</template>
+        
+        <a-menu-item key="/admin/thong-ke/doanh-thu">Doanh Thu</a-menu-item>
+        <a-menu-item key="/admin/thong-ke/khach-hang-moi">Khách Hàng Mới</a-menu-item>
+        <a-menu-item key="/admin/thong-ke/ve-ban-ra">Vé Bán Ra</a-menu-item>
+        <a-menu-item key="/admin/thong-ke/chi-tieu-khach-hang">Chi Tiêu Khách Hàng</a-menu-item>
+        <a-menu-item key="/admin/thong-ke/tour">Tour</a-menu-item>
+      </a-sub-menu>
+
+      <!-- Đường kẻ ngang phân cách -->
+      <a-divider style="border-color: rgba(255, 255, 255, 0.2); margin: 10px 0;" />
+
+      <!-- 10. Khu vực Tài khoản và Đăng xuất -->
+      <a-sub-menu key="danh-muc-tai-khoan-ca-nhan">
+        <template #icon>
+          <img 
+            src="https://www.shutterstock.com/image-vector/admin-icon-strategy-collection-thin-600nw-2307398667.jpg" 
+            style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" 
+          />
+        </template>
+        <template #title>Quản trị viên</template>
+        
+        <a-menu-item key="/admin/profile">Thông tin cá nhân</a-menu-item>
+        <a-menu-item key="chuc-nang-dang-xuat">Đăng xuất</a-menu-item>
+        <a-menu-item key="chuc-nang-dang-xuat-tat-ca">Đăng xuất tất cả</a-menu-item>
+      </a-sub-menu>
+
+    </a-menu>
+  </a-layout-sider>
 </template>
-<script>
-export default {
 
-}
+<script setup>
+import { ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { MenuOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import axios from 'axios';
+import apiUrl from '../../../utils/api'; 
+
+const trangThaiThuGonMenu = ref(false);
+const danhSachDuongDanDuocChon = ref([]);
+const route = useRoute();
+const router = useRouter();
+
+const thayDoiTrangThaiMenu = () => {
+  trangThaiThuGonMenu.value = !trangThaiThuGonMenu.value;
+};
+
+watch(
+  () => route.path,
+  (duongDanMoi) => {
+    danhSachDuongDanDuocChon.value = [duongDanMoi];
+  },
+  { immediate: true }
+);
+
+// HÀM MỚI: Xử lý mọi cú click vào Menu
+const xuLyChuyenTrang = (menuInfo) => {
+  const khoaCuaMenu = menuInfo.key; // Lấy ra key của mục vừa bấm
+
+  // Nếu bấm vào đăng xuất
+  if (khoaCuaMenu === 'chuc-nang-dang-xuat') {
+    thucHienDangXuat();
+  } 
+  // Nếu bấm vào đăng xuất tất cả
+  else if (khoaCuaMenu === 'chuc-nang-dang-xuat-all') {
+    thucHienDangXuatTatCaTaiKhoan();
+  } 
+  // Ngược lại, nếu key bắt đầu bằng dấu '/' thì nó là đường dẫn URL -> Chuyển trang
+  else if (typeof khoaCuaMenu === 'string' && khoaCuaMenu.startsWith('/')) {
+    router.push(khoaCuaMenu);
+  }
+};
+
+const thucHienDangXuat = () => {
+  axios.post(apiUrl("admin/dang-xuat"), {}, {
+    headers: { Authorization: "Bearer " + localStorage.getItem("key_admin") }
+  }).then((ketQuaTraVe) => {
+    if (ketQuaTraVe.data.status) {
+      localStorage.removeItem("key_admin");
+      localStorage.removeItem("ho_va_ten");
+      router.push("/admin/dang-nhap");
+      message.success(ketQuaTraVe.data.message);
+    } else {
+      message.error(ketQuaTraVe.data.message);
+    }
+  }).catch((loi) => console.log(loi));
+};
+
+const thucHienDangXuatTatCaTaiKhoan = () => {
+  axios.post(apiUrl("admin/dang-xuat-all"), {}, {
+    headers: { Authorization: "Bearer " + localStorage.getItem("key_admin") }
+  }).then((ketQuaTraVe) => {
+    if (ketQuaTraVe.data.status) {
+      localStorage.removeItem("key_admin");
+      localStorage.removeItem("ho_va_ten");
+      router.push("/admin/dang-nhap");
+      message.success(ketQuaTraVe.data.message);
+    } else {
+      message.error(ketQuaTraVe.data.message);
+    }
+  }).catch((loi) => console.log(loi));
+};
 </script>
-<style></style>
+
+<style scoped>
+/* 1. Ép Sidebar nhận màu sắc cố định */
+.ant-layout-sider {
+  background-color: #f4fdf8 !important;
+}
+
+/* 2. Ép Menu và các thành phần con nhận màu nền này */
+:deep(.ant-menu),
+:deep(.ant-menu-root),
+:deep(.ant-menu-sub),
+:deep(.ant-menu-submenu-title),
+:deep(.ant-menu-item) {
+  background-color: #f4fdf8 !important;
+}
+
+/* 3. Màu chữ hiển thị trên nền xanh (Dùng màu tối để dễ đọc) */
+:deep(.ant-menu-item),
+:deep(.ant-menu-submenu-title) {
+  color: #000 !important; 
+}
+
+/* 4. Hiệu ứng khi di chuột (Hover) */
+:deep(.ant-menu-item:hover),
+:deep(.ant-menu-submenu-title:hover) {
+  background-color: #7ccb9f !important; /* Màu xanh đậm hơn một chút khi hover */
+}
+
+/* 5. Hiệu ứng chọn mục (Selected) */
+:deep(.ant-menu-item-selected) {
+  background-color: #6bb78a !important;
+  color: #004d40 !important; 
+  font-weight: bold;
+}
+
+/* --- Tinh chỉnh icon và ảnh --- */
+.menu-icon {
+  font-size: 1.2rem;
+  color: #004d40;
+}
+
+:deep(.ant-layout-sider-collapsed img) {
+  margin: 0 auto;
+  display: block;
+}
+</style>

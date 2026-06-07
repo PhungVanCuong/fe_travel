@@ -1,19 +1,24 @@
 <template>
-    <div class="wrapper">
-		<div class="header-wrapper">
-            <TopRocker></TopRocker>
-            <MenuRocker></MenuRocker>
-		</div>
-		<div class="page-wrapper">
-			<div class="page-content">
-                <router-view> </router-view>
-            </div>
-		</div>
-        <BotRocker></BotRocker>
-	</div>
+  <a-layout style="min-height: 100vh">
+    
+    <!-- Thanh điều hướng bên trái (Đã bao gồm cả Logo, Avatar và nút thu gọn) -->
+    <MenuRocker />
+    <a-layout>
+      <!-- Khu vực nội dung chính hiển thị các màn hình -->
+      <a-layout-content style="margin: 16px">
+        <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
+          <router-view></router-view>
+        </div>
+      </a-layout-content>
+
+      <a-layout-footer style="text-align: center">
+        <BotRocker />
+      </a-layout-footer>
+    </a-layout>
+  </a-layout>
 </template>
 <script>
-import TopRocker from "../components/Admin/TopRocker.vue";
+
 import BotRocker from "../components/Admin/BotRocker.vue";
 import MenuRocker from "../components/Admin/MenuRocker.vue";
 
@@ -28,7 +33,7 @@ import "../../assets/js/pace.min.js";
 export default {
     name        :   "app",
     components  :   {
-        TopRocker, MenuRocker, BotRocker
+         MenuRocker, BotRocker
     }
 }
 </script>
