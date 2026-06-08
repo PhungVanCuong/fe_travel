@@ -36,6 +36,7 @@
                     <thead>
                         <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
                             <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 60px;">ID</th>
+                            <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 100px;">Thứ Tự</th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem; width: 250px;">Hình Ảnh</th>
                             <th style="padding: 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Tiêu Đề</th>
                             <th style="padding: 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Trạng Thái</th>
@@ -44,7 +45,7 @@
                     </thead>
                     <tbody>
                         <tr v-if="filteredSlides.length === 0">
-                            <td colspan="5" style="padding: 30px; text-align: center; color: #999;">
+                            <td colspan="6" style="padding: 30px; text-align: center; color: #999;">
                                 <i class="fa-solid fa-images me-2" style="font-size: 1.5rem;"></i>
                                 <p style="margin: 10px 0 0 0;">Không có slide nào</p>
                             </td>
@@ -55,6 +56,12 @@
                             
                             <td style="padding: 15px; color: #666; font-weight: 600;">#{{ slide.id }}</td>
                             
+                            <td style="padding: 15px; text-align: center; color: #333; font-weight: 700;">
+                                <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 6px; border: 1px solid #cbd5e1;">
+                                    {{ slide.thu_tu }}
+                                </span>
+                            </td>
+
                             <td style="padding: 15px; text-align: center;">
                                 <div style="width: 200px; height: 100px; border-radius: 8px; overflow: hidden; margin: 0 auto; border: 1px solid #e2e8f0; background: #f0f0f0;">
                                     <img :src="getImageUrl(slide.hinh_anh)" alt="Slide Image" style="width: 100%; height: 100%; object-fit: cover;">
@@ -110,6 +117,14 @@
                             Tiêu Đề Slide
                         </label>
                         <input v-model="formData.tieu_de" type="text" placeholder="Nhập tiêu đề (Không bắt buộc)"
+                            style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; font-weight: 600; color: #333; margin-bottom: 8px; font-size: 0.9rem;">
+                            Thứ tự vị trí hiển thị (Số nhỏ đứng trước, nhập được cả số âm)
+                        </label>
+                        <input v-model.number="formData.thu_tu" type="number" placeholder="Ví dụ: -1, 0, 1, 2..."
                             style="width: 100%; padding: 10px 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; font-family: inherit;">
                     </div>
 
@@ -213,7 +228,8 @@ export default {
                 id: null,
                 tieu_de: '',
                 hinh_anh_url: '',
-                tinh_trang: 1
+                tinh_trang: 1,
+                thu_tu: 0 // Đã thêm trường lưu trữ dữ liệu Thứ tự
             },
             
             selectedSlideId: null,
@@ -221,7 +237,6 @@ export default {
         }
     },
     computed: {
-        // Fix: Hoạt động chuẩn xác giữa URL ngoài và File thư mục
         previewImageUrl() {
             if (this.uploadType === 'file') {
                 return this.previewFileUrl || (this.formData.hinh_anh_url ? this.getImageUrl(this.formData.hinh_anh_url) : '');
@@ -261,18 +276,14 @@ export default {
             });
         },
         
-        // HÀM QUAN TRỌNG: Tự động ghép đúng tên miền dù bạn test localhost hay Deploy web thật
         getImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300?text=No+Image';
             
-            // Nếu là dạng link http/https từ bên ngoài, trả về luôn
             if (url.startsWith('http') || url.startsWith('data:')) {
                 return url; 
             }
 
-            // Nếu là dạng file (/uploads/slides/...), tự động bóc tách Domain Backend từ file apiUrl
-            const baseApiUrl = apiUrl(''); // Ví dụ: trả về http://localhost:8000/api/
-            // Cắt chữ /api/ ở đuôi để lấy domain gốc
+            const baseApiUrl = apiUrl(''); 
             const backendDomain = baseApiUrl.replace(/\/api\/?$/, ''); 
 
             return backendDomain + (url.startsWith('/') ? '' : '/') + url;
@@ -296,15 +307,15 @@ export default {
             
             if (mode === 'add') {
                 this.uploadType = 'url';
-                this.formData = { id: null, tieu_de: '', hinh_anh_url: '', tinh_trang: 1 };
+                this.formData = { id: null, tieu_de: '', hinh_anh_url: '', tinh_trang: 1, thu_tu: 0 };
             } else {
                 this.formData = { 
                     id: slide.id, 
                     tieu_de: slide.tieu_de || '', 
                     hinh_anh_url: slide.hinh_anh || '', 
-                    tinh_trang: slide.tinh_trang 
+                    tinh_trang: slide.tinh_trang,
+                    thu_tu: slide.thu_tu ?? 0 // Gán giá trị thứ tự cũ khi sửa
                 };
-                // Đoán xem ảnh cũ là URL ngoài hay File hệ thống để bật đúng Tab
                 if (slide.hinh_anh && slide.hinh_anh.startsWith('http')) {
                     this.uploadType = 'url';
                 } else {
@@ -326,6 +337,7 @@ export default {
             const payload = new FormData();
             payload.append('tieu_de', this.formData.tieu_de);
             payload.append('tinh_trang', this.formData.tinh_trang);
+            payload.append('thu_tu', this.formData.thu_tu); // Gửi kèm dữ liệu thứ tự lên backend
             
             if (this.modalMode === 'edit') {
                 payload.append('id', this.formData.id);

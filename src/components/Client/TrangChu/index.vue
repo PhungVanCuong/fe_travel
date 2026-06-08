@@ -292,14 +292,12 @@ export default {
     }
   },
   computed: {
-    // ĐÃ FIX ẢNH HERO BACKGROUND: Cập nhật gọi hàm getImageUrl
     currentHeroImage() {
       if (this.list_slide && this.list_slide.length > 0) {
         return this.getImageUrl(this.list_slide[this.activeSlide].hinh_anh);
       }
       return 'https://images.unsplash.com/photo-1609779340167-207589f3f94f?w=1920&q=90&auto=format&fit=crop';
     },
-    // Trả về tiêu đề slide nếu có
     currentHeroTitle() {
       if (this.list_slide && this.list_slide.length > 0) {
         return this.list_slide[this.activeSlide].tieu_de || 'Trải Nghiệm Cùng';
@@ -315,8 +313,8 @@ export default {
   },
   mounted() {
     this.loadData();
-    this.startAutoSlide(); // Hàm cho Testimonials
-    this.startHeroSlide(); // Bật chạy Slider Hero
+    this.startAutoSlide(); 
+    this.startHeroSlide(); 
     AOS.init({
       duration: 800, 
       once: false,    
@@ -325,10 +323,9 @@ export default {
   },
   beforeUnmount() {
     this.stopAutoSlide();
-    this.stopHeroSlide(); // Tắt Slider khi chuyển trang
+    this.stopHeroSlide(); 
   },
   methods: {
-    // THÊM HÀM XỬ LÝ URL ẢNH
     getImageUrl(url) {
         if (!url) return 'https://via.placeholder.com/600x300?text=No+Image';
         if (url.startsWith('http') || url.startsWith('data:')) {
@@ -338,7 +335,6 @@ export default {
         const backendDomain = baseApiUrl.replace(/\/api\/?$/, ''); 
         return backendDomain + (url.startsWith('/') ? '' : '/') + url;
     },
-
     startHeroSlide() {
       if (this.heroInterval) clearInterval(this.heroInterval);
       this.heroInterval = setInterval(() => {
@@ -366,9 +362,13 @@ export default {
           this.list_tour = res.data.data.tours || [];
           this.list_bv = res.data.data.baiViets || [];
           
-          // Lọc ra slide đang bật (tinh_trang == 1)
+          // Lấy danh sách slide gốc
           let allSlides = res.data.data.slides || [];
-          this.list_slide = allSlides.filter(s => s.tinh_trang == 1);
+          
+          // ĐÃ THAY ĐỔI: Lọc các slide bật (tinh_trang == 1) và SẮP XẾP theo trường thu_tu tăng dần
+          this.list_slide = allSlides
+            .filter(s => s.tinh_trang == 1)
+            .sort((a, b) => Number(a.thu_tu || 0) - Number(b.thu_tu || 0));
           
           this.$nextTick(() => {
             AOS.refresh();
