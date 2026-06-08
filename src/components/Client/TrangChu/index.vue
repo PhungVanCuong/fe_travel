@@ -2,15 +2,21 @@
   <div class="voyagr-home">
     <section style="position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;" @mouseenter="stopHeroSlide" @mouseleave="startHeroSlide">
       <div style="position:absolute;inset:0;">
-        <transition name="fade" mode="out-in">
-          <img :key="activeSlide" :src="currentHeroImage" alt="Hero Background" style="width:100%;height:100%;object-fit:cover;filter: saturate(1.2); position:absolute; inset:0;" />
-        </transition>
         
-        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(12,26,46,0.8) 0%, transparent 50%);"></div>
+        <div v-show="isYouTube(currentHeroLink)" style="position: absolute; inset: 0; width: 100%; height: 100%;  z-index: 3;">
+          <div id="youtube-hero-player"></div>
+        </div>
+
+        <div v-show="!isYouTube(currentHeroLink)" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1;">
+          <transition name="fade" mode="out-in">
+            <img :key="activeSlide" :src="currentHeroImage" alt="Hero Background" style="width:100%;height:100%;object-fit:cover;filter: saturate(1.2); position:absolute; inset:0;" />
+          </transition>
+        </div>
         
-        <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to top,#f8fafc,transparent);"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(12,26,46,0.8) 0%, transparent 50%); z-index: 2;"></div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to top,#f8fafc,transparent); z-index: 2;"></div>
       </div>
-      <div style="position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px);background-size:60px 60px;"></div>
+      <div style="position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px);background-size:60px 60px; z-index: 2;"></div>
       
       <div style="position:relative;z-index:10;max-width:1500px;margin:0 auto;padding:0 24px;width:100%;">
         <div class="hero-content">
@@ -24,7 +30,7 @@
           
           <transition name="fade" mode="out-in">
             <h1 :key="activeSlide" class="font-serif hero-title">
-              {{ currentHeroTitle }}<br><span style="color:#8fdfb5;">Ixtal Tour</span>
+              <br><span style="color:#8fdfb5;">Ixtal Tour</span>
             </h1>
           </transition>
           
@@ -48,7 +54,7 @@
       </button>
 
       <div style="position:absolute;bottom:180px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:20;">
-        <div v-for="(slide, index) in list_slide" :key="index" @click="activeSlide = index" 
+        <div v-for="(slide, index) in list_slide" :key="index" @click="goToHero(index)" 
              :style="{ height: '6px', width: index === activeSlide ? '32px' : '6px', borderRadius: '9999px', background: index === activeSlide ? '#8fdfb5' : 'rgba(255,255,255,.3)', cursor: 'pointer', transition: 'all .3s', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }">
         </div>
       </div>
@@ -259,8 +265,14 @@ export default {
       list_bv: [],
       list_slide: [],
       activeSlide: 0,
-      heroInterval: null,
+      
+      // ĐỔI THÀNH TIMEOUT: Thay thế heroInterval sang heroTimeout để linh động kiểm soát giây của Ảnh tĩnh
+      heroTimeout: null,
       heroSlideDuration: 4000,
+      
+      // THÊM: Các trạng thái hỗ trợ API Iframe của YouTube
+      player: null,
+      isApiReady: false,
 
       // Testimonial Data & State
       activeTestimonial: 0,
@@ -282,7 +294,7 @@ export default {
           role: 'Travel Blogger'
         },
         {
-          img: 'https://images.unsplash.com/photo-1651478881270-6c3a0fc883f4?w=500&h=400&fit=crop&auto=format',
+          img: 'https://images.unsplash.com/photo-1661478881270-6c3a0fc883f4?w=500&h=400&fit=crop&auto=format',
           text: '"Tour Thái Lan giá quá tốt so với chất lượng. Đồ ăn ngon, xe đưa đón xịn xò và không hề bị ép mua sắm. Cảm ơn Ixtal Tour đã mang đến trải nghiệm ưng ý."',
           avatar: 'https://randomuser.me/api/portraits/men/65.jpg',
           name: 'Phạm Minh Tuấn',
@@ -292,6 +304,13 @@ export default {
     }
   },
   computed: {
+    // THÊM: Trả về link gốc (để check xem có phải Youtube không)
+    currentHeroLink() {
+      if (this.list_slide && this.list_slide.length > 0) {
+        return this.list_slide[this.activeSlide].hinh_anh;
+      }
+      return '';
+    },
     currentHeroImage() {
       if (this.list_slide && this.list_slide.length > 0) {
         return this.getImageUrl(this.list_slide[this.activeSlide].hinh_anh);
@@ -314,7 +333,7 @@ export default {
   mounted() {
     this.loadData();
     this.startAutoSlide(); 
-    this.startHeroSlide(); 
+    this.loadYouTubeAPI(); // THAY THẾ: Gọi hàm khởi chạy API thay vì gọi interval cứng
     AOS.init({
       duration: 800, 
       once: false,    
@@ -335,41 +354,145 @@ export default {
         const backendDomain = baseApiUrl.replace(/\/api\/?$/, ''); 
         return backendDomain + (url.startsWith('/') ? '' : '/') + url;
     },
-    startHeroSlide() {
-      if (this.heroInterval) clearInterval(this.heroInterval);
-      this.heroInterval = setInterval(() => {
-        this.nextHero();
-      }, this.heroSlideDuration);
-    },
-    stopHeroSlide() {
-      if (this.heroInterval) {
-        clearInterval(this.heroInterval);
+
+    // THÊM: Tải thư viện Iframe API từ Google
+    loadYouTubeAPI() {
+      if (!window.YT) {
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        
+        window.onYouTubeIframeAPIReady = () => {
+          this.isApiReady = true;
+          this.playSlideLogic();
+        };
+      } else {
+        this.isApiReady = true;
+        this.playSlideLogic();
       }
     },
+
+    // THÊM: Nhận biết link YouTube
+    isYouTube(url) {
+      if (!url) return false;
+      return url.includes('youtube.com') || url.includes('youtu.be');
+    },
+
+    // THÊM: Bóc tách mã Video ID từ link
+    getYouTubeID(url) {
+      if (!url) return '';
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) ? match[2] : '';
+    },
+
+    // TRÁI TIM LOGIC MỚI: Xử lý thông minh việc đếm thời gian cho cả Ảnh và Video
+    playSlideLogic() {
+      if (this.heroTimeout) clearTimeout(this.heroTimeout);
+      const url = this.currentHeroLink;
+
+      // Nhánh 1: Nếu slide này là video YouTube -> Đợi chạy hết mới nhảy slide
+      if (this.isYouTube(url)) {
+        const videoId = this.getYouTubeID(url);
+        if (!videoId) return;
+
+        if (!this.player && window.YT && window.YT.Player) {
+          this.player = new window.YT.Player('youtube-hero-player', {
+            height: '100%',
+            width: '100%',
+            videoId: videoId,
+            playerVars: {
+              autoplay: 1,
+              mute: 0,
+              controls: 1,
+              showinfo: 0,
+              rel: 0,
+              modestbranding: 1,
+              loop: 0, 
+              iv_load_policy: 3
+            },
+            events: {
+              onReady: (event) => {
+                event.target.mute();
+                event.target.playVideo();
+              },
+              onStateChange: (event) => {
+                // Trạng thái = 0 nghĩa là video đã ENDED (chạy hết sạch giây)
+                if (event.data === window.YT.PlayerState.ENDED || event.data === 0) {
+                  this.nextHero();
+                }
+              }
+            }
+          });
+        } else if (this.player && this.player.loadVideoById) {
+          this.player.loadVideoById({
+            videoId: videoId,
+            startSeconds: 0
+          });
+          this.player.mute();
+          this.player.playVideo();
+        }
+      } 
+      // Nhánh 2: Nếu slide này là ảnh tĩnh bình thường -> Đếm đúng 4 giây tự chuyển
+      else {
+        if (this.player && this.player.pauseVideo) {
+          this.player.pauseVideo();
+        }
+        this.heroTimeout = setTimeout(() => {
+          this.nextHero();
+        }, this.heroSlideDuration);
+      }
+    },
+
+    // ĐỔI LOGIC: Khi di chuột ra ngoài, chỉ kích hoạt đếm giây tiếp nếu slide hiện tại là ảnh tĩnh
+    startHeroSlide() {
+      if (!this.isYouTube(this.currentHeroLink)) {
+        if (this.heroTimeout) clearTimeout(this.heroTimeout);
+        this.heroTimeout = setTimeout(() => {
+          this.nextHero();
+        }, this.heroSlideDuration);
+      }
+    },
+    stopHeroSlide() {
+      if (this.heroTimeout) {
+        clearTimeout(this.heroTimeout);
+      }
+    },
+
+    // CẬP NHẬT: Các hàm chuyển đổi slide bắt buộc phải chạy qua lớp xử lý playSlideLogic()
     nextHero() {
       if (this.list_slide.length > 0) {
         this.activeSlide = (this.activeSlide + 1) % this.list_slide.length;
+        this.playSlideLogic();
       }
     },
     prevHero() {
       if (this.list_slide.length > 0) {
         this.activeSlide = (this.activeSlide - 1 + this.list_slide.length) % this.list_slide.length;
+        this.playSlideLogic();
       }
     },
+    goToHero(index) {
+      this.activeSlide = index;
+      this.playSlideLogic();
+    },
+
     loadData() {
       axios.get(apiUrl('client/trang-chu/get-data'))
         .then((res) => {
           this.list_tour = res.data.data.tours || [];
           this.list_bv = res.data.data.baiViets || [];
           
-          // Lấy danh sách slide gốc
           let allSlides = res.data.data.slides || [];
           
-          // ĐÃ THAY ĐỔI: Lọc các slide bật (tinh_trang == 1) và SẮP XẾP theo trường thu_tu tăng dần
           this.list_slide = allSlides
             .filter(s => s.tinh_trang == 1)
             .sort((a, b) => Number(a.thu_tu || 0) - Number(b.thu_tu || 0));
           
+          // Sau khi nạp dữ liệu slide từ API xong, chạy logic kiểm tra slide đầu tiên ngay lập tức
+          this.playSlideLogic();
+
           this.$nextTick(() => {
             AOS.refresh();
           });
@@ -418,6 +541,18 @@ export default {
 .voyagr-home { font-family: 'Inter', sans-serif; background: #f8fafc; color: #0c1a2e; }
 .font-serif { font-family: 'Playfair Display', serif; }
 
+/* CẤU HÌNH CSS ÉP VIDEO YOUTUBE BACKGROUND PHỦ KÍN 100% KHÔNG BỊ DẢI ĐEN */
+:deep(#youtube-hero-player) {
+  width: 100vw !important;
+  height: 51.25vw !important; /* Tỷ lệ 16:9 chuẩn dựa trên chiều rộng */
+  min-height: 100vh !important;
+  min-width: 177.77vh !important; /* Tỷ lệ 16:9 chuẩn dựa trên chiều cao */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.15) !important; /* Chỉ cần scale tầm 1.15 hoặc 1.2 là đủ phủ kín */
+  pointer-events: none; /* Thêm thuộc tính này để khách không click nhầm dừng video nền */
+}
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 
