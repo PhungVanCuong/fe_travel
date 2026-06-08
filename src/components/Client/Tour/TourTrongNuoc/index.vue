@@ -10,14 +10,12 @@
     <div class="container mt-5">
       <div class="row">
 
-        <!-- CỘT BỘ LỌC BÊN TRÁI -->
         <div class="col-lg-3 col-md-4 mb-4">
           <div class="sidebar-sticky">
 
             <div class="filters-wrapper p-4 rounded-4 bg-white shadow-sm border-0 mb-4">
               <h5 class="fw-bold mb-4" style="color: #125633;">Bộ lọc tìm kiếm</h5>
 
-              <!-- ĐÃ SỬA: LỌC THEO MIỀN BẮC, TRUNG, NAM -->
               <div class="filter-group mb-4">
                 <h6 class="fw-bold mb-3 d-flex align-items-center"><i class="bi bi-geo-alt-fill text-success me-2"></i>
                   Khu vực (Vùng miền)</h6>
@@ -35,7 +33,6 @@
                 </div>
               </div>
 
-              <!-- LỌC THỜI GIAN (GIỮ NGUYÊN) -->
               <div class="filter-group mb-4">
                 <h6 class="fw-bold mb-3 d-flex align-items-center"><i
                     class="bi bi-calendar-event-fill text-success me-2"></i> Thời gian</h6>
@@ -56,7 +53,6 @@
                 </div>
               </div>
 
-              <!-- LỌC MỨC GIÁ (GIỮ NGUYÊN) -->
               <div class="filter-group mb-4">
                 <h6 class="fw-bold mb-3 d-flex align-items-center"><i class="bi bi-cash-coin text-success me-2"></i> Mức
                   giá</h6>
@@ -81,7 +77,6 @@
               </button>
             </div>
 
-            <!-- CẨM NANG DU LỊCH (GIỮ NGUYÊN) -->
             <div class="articles-wrapper p-3 rounded-4 shadow-sm bg-white border-0">
               <h6 class="fw-bold text-uppercase mb-3" style="color: #005baa;">
                 <i class="fa-solid fa-map-location-dot me-2"></i> Cẩm nang du lịch
@@ -106,26 +101,41 @@
           </div>
         </div>
 
-        <!-- CỘT DANH SÁCH TOUR BÊN PHẢI -->
         <div class="col-lg-9 col-md-8">
 
-          <div
-            class="d-flex flex-wrap justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm mb-4">
-            <div class="input-group w-50">
+          <div class="d-flex flex-wrap justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm mb-4 gap-3 border-light">
+            <div class="input-group" style="max-width: 560Px;">
               <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
               <input type="text" class="form-control border-start-0 ps-0 shadow-none"
                 placeholder="Tìm tên tour trong nước..." v-model="filterSearch">
             </div>
 
-            <div class="d-flex align-items-center mt-3 mt-md-0">
-              <span class="me-2 text-muted small">Sắp xếp:</span>
-              <select class="form-select border-0 shadow-none fw-bold" style="background-color: #F2F7FA;"
-                v-model="sortBy">
-                <option value="newest">Mới nhất</option>
-                <option value="price-asc">Giá tăng dần</option>
-                <option value="price-desc">Giá giảm dần</option>
-                <option value="rating">Đánh giá cao</option>
-              </select>
+            <div class="d-flex align-items-center gap-3">
+              <div class="d-none d-sm-flex align-items-center border rounded-pill overflow-hidden bg-light" style="height: 38px;">
+                <button
+                  class="btn border-0 d-flex align-items-center justify-content-center h-100 px-3 view-toggle-btn rounded-start-pill"
+                  :class="{ 'active': viewMode === 'grid' }"
+                  @click="viewMode = 'grid'">
+                  <i class="bi bi-grid" style="font-size: 1.1rem; line-height: 0;"></i>
+                </button>
+                <button
+                  class="btn border-0 d-flex align-items-center justify-content-center h-100 px-3 view-toggle-btn rounded-end-pill"
+                  :class="{ 'active': viewMode === 'list' }"
+                  @click="viewMode = 'list'">
+                  <i class="bi bi-list-ul" style="font-size: 1.2rem; line-height: 0;"></i>
+                </button>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <span class="me-2 text-muted small d-none d-md-inline">Sắp xếp:</span>
+                <select class="form-select border-0 shadow-none fw-bold" style="background-color: #F2F7FA;"
+                  v-model="sortBy">
+                  <option value="newest">Mới nhất</option>
+                  <option value="price-asc">Giá tăng dần</option>
+                  <option value="price-desc">Giá giảm dần</option>
+                  <option value="rating">Đánh giá cao</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -142,69 +152,133 @@
             <button class="btn btn-outline-success rounded-pill" @click="resetFilters">Xóa bộ lọc</button>
           </div>
 
-          <div v-else class="row">
-            <template v-for="(value, index) in filteredAndSortedTours" :key="index">
-              <div class="col-lg-4 col-md-6 mb-4 mt-2">
-                <div class="card h-100 shadow-sm border-0 position-relative tour-card"
-                  style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease;"
-                  @click="viewDetail(value.id)">
+          <div v-else>
+            
+            <div v-if="viewMode === 'grid'" class="row">
+              <template v-for="(value, index) in filteredAndSortedTours" :key="index">
+                <div class="col-lg-6 col-md-6 mb-4 mt-2 tour-grid-item" :style="{ animationDelay: `${index * 0.05}s` }">
+                  <div class="card h-100 bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column tour-card-custom"
+                    @click="viewDetail(value.id)">
+                    
+                    <div class="position-relative overflow-hidden" style="height: 250px;">
+                      <img :src="value.hinh_anh" :alt="value.ten_tour"
+                        class="w-100 h-100 object-fit-cover tour-image-custom">
+                      
+                      <div class="position-absolute top-0 start-0 w-100 h-100" 
+                           style="background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 40%);"></div>
 
-                  <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
-                    style="height: 200px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-
-                  <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
-                    style="top: 160px; right: 10px; font-size: 0.85rem;">
-                    <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }} khách
-                  </div>
-
-                  <div class="card-body d-flex flex-column pt-3">
-                    <h5 class="card-title fw-bold text-dark mb-2"
-                      style="font-size: 1.1rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                      {{ value.ten_tour }}
-                    </h5>
-
-                    <div class="mb-3" style="color: #FEE715; font-size: 13px;">
-                      <i class="fa-solid fa-star me-1"></i>
-                      <span class="fw-bold text-dark">
-                        {{ value.avg_sao ? Number(value.avg_sao).toFixed(1) : 'Chưa có đánh giá' }}
+                      <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
+                        Còn {{ value.so_nguoi_toi_da }} chỗ
                       </span>
-                      <span class="text-muted">({{ value.so_luot_danh_gia || 0 }} đánh giá)</span>
                     </div>
 
-                    <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.9rem;">
-                      <div class="d-flex align-items-start gap-2">
-                        <i class="bi bi-geo-alt text-primary mt-1"></i>
-                        <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
-                      </div>
-                      <div class="d-flex align-items-start gap-2">
-                        <i class="bi bi-clock text-primary mt-1"></i>
-                        <span>Thời gian: <strong>{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }} ngày</strong></span>
-                      </div>
-                    </div>
+                    <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                      <h3 class="fw-bold mb-3 tour-title-custom" 
+                          style="font-size: 1.5rem; line-height: 1.4; color: #1b6b43;">
+                        {{ value.ten_tour }}
+                      </h3>
 
-                    <div class="mt-auto pt-3 border-top">
-                      <div class="mb-3">
-                        <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{ formatDate(value.ngay_bat_dau) }}</span>
-                        <h5 class="fw-bold mb-0 text-danger">
-                          {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
-                        </h5>
+                      <div class="d-flex align-items-center mb-3" style="font-size: 1rem;">
+                        <div class="d-flex gap-1 me-2" style="color: #FEE715;">
+                          <i v-for="i in 5" :key="i" :class="getStarClass(value.avg_sao, i)" style="font-size: 0.95rem;"></i>
+                        </div>
+                        <span class="fw-bold text-dark me-1">{{ value.avg_sao ? Number(value.avg_sao).toFixed(1) : '5.0' }}</span>
+                        <span class="text-secondary" style="font-size: 0.9rem;">({{ value.so_luot_danh_gia || 0 }} đánh giá)</span>
                       </div>
-                      <div class="d-flex gap-2">
-                        <button class="btn btn-outline-success btn-sm w-100 fw-bold rounded-pill"
-                          @click.stop="viewDetail(value.id)">
-                          Chi tiết
+
+                      <div class="d-flex flex-column gap-2 mb-4" style="font-size: 0.9rem;">
+                        <div>
+                          <span class="text-secondary">Đón tại:</span> 
+                          <span class="fw-bold text-secondary ms-1">{{ value.diem_don }}</span>
+                        </div>
+                        <div>
+                          <span class="text-secondary">Thời gian:</span> 
+                          <span class="fw-bold text-secondary ms-1">{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }} ngày</span>
+                        </div>
+                      </div>
+
+                      <div class="d-flex align-items-end justify-content-between mt-auto pt-3 border-top border-light">
+                        <div>
+                          <div class="text-secondary mb-1" style="font-size: 0.85rem;">Khởi hành: {{ formatDate(value.ngay_bat_dau) }}</div>
+                          <div class="fw-bold " style="font-size: 1.25rem; color: rgb(27, 107, 67);">
+                            {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                          </div>
+                        </div>
+                        <button class="border-0 text-white fw-semibold px-4 py-2 rounded-3 btn-book-custom"
+                                style="background-color: #1b6b43; font-size: 0.85rem;"
+                                @click.stop="viewDetail(value.id)">
+                          Đặt ngay
                         </button>
                       </div>
                     </div>
-
                   </div>
                 </div>
-              </div>
-            </template>
+              </template>
+            </div>
+
+            <div v-else class="d-flex flex-column gap-4 mt-2">
+              <template v-for="(value, index) in filteredAndSortedTours" :key="'list-'+index">
+                <div class="card bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column flex-md-row tour-card-custom tour-list-item"
+                     @click="viewDetail(value.id)" :style="{ animationDelay: `${index * 0.05}s` }">
+                  
+                  <div class="position-relative overflow-hidden tour-image-container-list flex-shrink-0">
+                    <img :src="value.hinh_anh" :alt="value.ten_tour"
+                      class="w-100 h-100 object-fit-cover tour-image-custom">
+                    
+                    <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
+                      Còn {{ value.so_nguoi_toi_da }} chỗ
+                    </span>
+                  </div>
+
+                  <div class="card-body p-4 d-flex flex-column flex-grow-1 min-w-0">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                      <h3 class="fw-bold mb-0 tour-title-custom" 
+                          style="font-size: 1.2rem; line-height: 1.4; color: #1b6b43;">
+                        {{ value.ten_tour }}
+                      </h3>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3" style="font-size: 1rem;">
+                      <div class="d-flex gap-1 me-2" style="color: #FEE715;">
+                        <i v-for="i in 5" :key="i" :class="getStarClass(value.avg_sao, i)" style="font-size: 0.95rem;"></i>
+                      </div>
+                      <span class="fw-bold text-dark me-1">{{ value.avg_sao ? Number(value.avg_sao).toFixed(1) : '5.0' }}</span>
+                      <span class="text-secondary" style="font-size: 0.9rem;">({{ value.so_luot_danh_gia || 0 }} đánh giá)</span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mb-4" style="font-size: 0.95rem;">
+                      <div>
+                        <span class="text-secondary">Đón tại:</span> 
+                        <span class="fw-bold text-secondary ms-1">{{ value.diem_don }}</span>
+                      </div>
+                      <div>
+                        <span class="text-secondary">Thời gian:</span> 
+                        <span class="fw-bold text-secondary ms-1">{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }} ngày</span>
+                      </div>
+                    </div>
+
+                    <div class="d-flex align-items-end justify-content-between mt-auto pt-3 border-top border-light">
+                      <div>
+                        <div class="text-secondary mb-1" style="font-size: 0.9rem;">Khởi hành: {{ formatDate(value.ngay_bat_dau) }}</div>
+                        <div class="fw-bold text-danger" style="font-size: 1.35rem;">
+                          {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                        </div>
+                      </div>
+                      <button class="border-0 text-white fw-semibold px-4 py-2 rounded-3 btn-book-custom"
+                              style="background-color: #1b6b43; font-size: 0.9rem;"
+                              @click.stop="viewDetail(value.id)">
+                        Đặt ngay
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+
           </div>
 
-          <div v-if="totalPages > 1" class="d-flex justify-content-center mt-4">
-            <ul class="pagination shadow-sm">
+          <div v-if="totalPages > 1" class="d-flex justify-content-center mt-5 mb-3">
+            <ul class="pagination shadow-sm custom-pagination">
               <li class="page-item" :class="{ disabled: currentPage === 1 }">
                 <button class="page-link px-3" @click="currentPage--">Trước</button>
               </li>
@@ -227,16 +301,15 @@
 import axios from 'axios'
 import apiUrl from '../../../../utils/api'
 
-// HẰNG SỐ: Khai báo sẵn 63 tỉnh thành chia làm 3 miền
 const VIETNAM_REGIONS = {
   'Miền Bắc': [
     'Hà Nội', 'Hà Giang', 'Cao Bằng', 'Bắc Kạn', 'Tuyên Quang', 'Lào Cai', 'Điện Biên', 'Lai Châu', 'Sơn La', 'Yên Bái', 'Hòa Bình', 'Thái Nguyên', 'Lạng Sơn', 'Quảng Ninh', 'Bắc Giang', 'Phú Thọ', 'Vĩnh Phúc', 'Bắc Ninh', 'Hải Dương', 'Hải Phòng', 'Hưng Yên', 'Thái Bình', 'Hà Nam', 'Nam Định', 'Ninh Bình'
   ],
   'Miền Trung': [
-    'Thanh Hóa', 'Nghệ An', 'Hà Tĩnh', 'Quảng Bình', 'Quảng Trị', 'Thừa Thiên Huế', 'Đà Nẵng', 'Quảng Nam', 'Quảng Ngãi', 'Bình Định', 'Phú Yên', 'Khánh Hòa', 'Ninh Thuận', 'Bình Thuận', 'Kon Tum', 'Gia Lai', 'Đắk Lắk', 'Đắk Nông', 'Lâm Đồng', 'Đà Lạt' // Bổ sung "Đà Lạt" vì đôi khi data ghi là Đà Lạt thay vì Lâm Đồng
+    'Thanh Hóa', 'Nghệ An', 'Hà Tĩnh', 'Quảng Bình', 'Quảng Trị', 'Thừa Thiên Huế', 'Đà Nẵng', 'Quảng Nam', 'Quảng Ngãi', 'Bình Định', 'Phú Yên', 'Khánh Hòa', 'Ninh Thuận', 'Bình Thuận', 'Kon Tum', 'Gia Lai', 'Đắk Lắk', 'Đắk Nông', 'Lâm Đồng', 'Đà Lạt'
   ],
   'Miền Nam': [
-    'Bình Phước', 'Tây Ninh', 'Bình Dương', 'Đồng Nai', 'Bà Rịa - Vũng Tàu', 'Bà Rịa Vũng Tàu', 'Hồ Chí Minh', 'TP. Hồ Chí Minh', 'Long An', 'Tiền Giang', 'Bến Tre', 'Trà Vinh', 'Vĩnh Long', 'Đồng Tháp', 'An Giang', 'Kiên Giang', 'Phú Quốc', 'Cần Thơ', 'Hậu Giang', 'Sóc Trăng', 'Bạc Liêu', 'Cà Mau' // Bổ sung "Phú Quốc" 
+    'Bình Phước', 'Tây Ninh', 'Bình Dương', 'Đồng Nai', 'Bà Rịa - Vũng Tàu', 'Bà Rịa Vũng Tàu', 'Hồ Chí Minh', 'TP. Hồ Chí Minh', 'Long An', 'Tiền Giang', 'Bến Tre', 'Trà Vinh', 'Vĩnh Long', 'Đồng Tháp', 'An Giang', 'Kiên Giang', 'Phú Quốc', 'Cần Thơ', 'Hậu Giang', 'Sóc Trăng', 'Bạc Liêu', 'Cà Mau'
   ]
 };
 
@@ -251,13 +324,15 @@ export default {
       danhSachIdBaiViet: [1, 4, 5],
 
       filterSearch: '',
-      filterRegions: [], // Đã đổi từ filterDestinations sang array chứa tên Miền (Miền Bắc, Miền Trung...)
+      filterRegions: [], 
       filterDuration: '',
       priceRanges: [],
       sortBy: 'newest',
+      
+      viewMode: 'grid', 
 
       currentPage: 1,
-      pageSize: 9,
+      pageSize: 8, 
     }
   },
   computed: {
@@ -283,7 +358,7 @@ export default {
   },
   watch: {
     filterSearch() { this.applyFilters(); },
-    filterRegions: { handler() { this.applyFilters(); }, deep: true }, // Theo dõi thay đổi của check box Miền
+    filterRegions: { handler() { this.applyFilters(); }, deep: true },
     filterDuration() { this.applyFilters(); },
     priceRanges: { handler() { this.applyFilters(); }, deep: true },
     sortBy() { this.currentPage = 1; }
@@ -294,7 +369,6 @@ export default {
       try {
         const response = await axios.get(apiUrl('client/tour/get-data'));
         if (response.data.status) {
-          // Lọc ra các tour trong nước (id_quoc_gia = 1)
           this.allTours = response.data.data.filter(tour => tour.id_quoc_gia === 1 && tour.so_nguoi_toi_da > 0);
           this.applyFilters();
         }
@@ -320,26 +394,20 @@ export default {
     applyFilters() {
       let results = this.allTours.slice();
 
-      // 1. Lọc theo Tên Tour
       if (this.filterSearch) {
         results = results.filter(t => t.ten_tour.toLowerCase().includes(this.filterSearch.toLowerCase()));
       }
 
-      // 2. LỌC THEO MIỀN BẮC, TRUNG, NAM
       if (this.filterRegions.length > 0) {
-        // Gộp tất cả các tỉnh thành thuộc các miền mà người dùng đã tick
         let allowedCities = [];
         this.filterRegions.forEach(region => {
             allowedCities = allowedCities.concat(VIETNAM_REGIONS[region]);
         });
 
-        // Tìm kiếm xem Tour đó có điểm đến nào nằm trong allowedCities không
         results = results.filter(t => {
             if (t.lich_trinhs && t.lich_trinhs.length > 0) {
-                // Kiểm tra tất cả các lịch trình của tour này
                 return t.lich_trinhs.some(lt => {
                     if (lt.diem_den && lt.diem_den.thanh_pho) {
-                        // So sánh linh hoạt (VD: "Đà Nẵng" sẽ khớp nếu trong data là "TP. Đà Nẵng")
                         return allowedCities.some(city => lt.diem_den.thanh_pho.includes(city) || city.includes(lt.diem_den.thanh_pho));
                     }
                     return false;
@@ -349,7 +417,6 @@ export default {
         });
       }
 
-      // 3. Lọc theo Thời gian
       if (this.filterDuration) {
         results = results.filter(t => {
           const days = this.calculateDays(t.ngay_bat_dau, t.ngay_ket_thuc);
@@ -359,7 +426,6 @@ export default {
         });
       }
 
-      // 4. Lọc theo Giá
       if (this.priceRanges.length > 0) {
         results = results.filter(t => {
           const price = parseFloat(t.gia);
@@ -377,7 +443,7 @@ export default {
 
     resetFilters() {
       this.filterSearch = '';
-      this.filterRegions = []; // Reset bộ lọc Miền
+      this.filterRegions = []; 
       this.filterDuration = '';
       this.priceRanges = [];
       this.sortBy = 'newest';
@@ -396,16 +462,40 @@ export default {
     },
 
     viewDetail(id) { this.$router.push(`/client/chi-tiet-tour/${id}`); },
+
+    getStarClass(rating, index) {
+      const val = rating ? parseFloat(rating) : 5; 
+      if (val >= index) {
+        return 'fa-solid fa-star'; // Sao đầy
+      } else if (val >= index - 0.5) {
+        return 'fa-solid fa-star-half-alt'; // Sao rưỡi
+      } else {
+        return 'fa-regular fa-star text-secondary opacity-50'; // Sao rỗng
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-.tour-card:hover {
-  transform: translateY(-5px) !important;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+/* Keyframes hiệu ứng xuất hiện cho Card */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
+.tour-grid-item, .tour-list-item {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Form Checkbox */
 .form-check-input:checked {
   background-color: #125633;
   border-color: #125633;
@@ -416,13 +506,96 @@ export default {
   top: 20px;
   z-index: 10;
 }
+.sidebar-sticky::-webkit-scrollbar { width: 4px; }
+.sidebar-sticky::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
-.sidebar-sticky::-webkit-scrollbar {
-  width: 4px;
+/* Nút Toggle Grid / List */
+.view-toggle-btn {
+  color: #6c757d;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+.view-toggle-btn:hover:not(.active) {
+  background-color: #e9ecef;
+  color: #343a40;
+}
+.view-toggle-btn.active {
+  background-color: #1b6b43 !important;
+  color: white !important;
 }
 
-.sidebar-sticky::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+/* Hiệu ứng Glassmorphism cho Badge số lượng chỗ */
+.glass-badge {
+  background: rgba(158, 247, 244, 0.65); /* Tone màu đỏ nhưng hơi trong suốt */
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Custom Card Bouncy Hover */
+.tour-card-custom {
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.tour-card-custom:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(27, 107, 67, 0.12) !important;
+  border-color: rgba(27, 107, 67, 0.2) !important;
+}
+
+/* Hover Ảnh Tour */
+.tour-image-custom {
+  transition: transform 0.6s ease;
+}
+.tour-card-custom:hover .tour-image-custom {
+  transform: scale(1.08); 
+}
+
+/* Layout Ảnh List View */
+.tour-image-container-list { width: 100%; }
+@media (min-width: 768px) {
+  .tour-image-container-list { width: 320px; }
+}
+
+.tour-title-custom {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+.tour-card-custom:hover .tour-title-custom {
+  color: #125633 !important; /* Xanh đậm hơn khi hover vào Card */
+}
+
+/* Nút Đặt Ngay Hover */
+.btn-book-custom {
+  transition: all 0.3s ease;
+}
+.btn-book-custom:hover {
+  background-color: #155535 !important;
+  transform: scale(1.05); 
+  box-shadow: 0 4px 10px rgba(21, 85, 53, 0.3);
+}
+
+/* Phân trang (Pagination) Custom */
+.custom-pagination .page-item.active .page-link {
+  background-color: #1b6b43;
+  border-color: #1b6b43;
+  color: white;
+  box-shadow: 0 4px 8px rgba(27, 107, 67, 0.3);
+}
+.custom-pagination .page-link {
+  color: #1b6b43;
+  border: none;
+  margin: 0 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.custom-pagination .page-link:hover {
+  background-color: #e6f2ec;
+  transform: translateY(-2px);
 }
 </style>

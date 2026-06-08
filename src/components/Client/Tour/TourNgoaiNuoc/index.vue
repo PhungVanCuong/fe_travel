@@ -2,9 +2,9 @@
   <div class="tour-browse-container" style="background-color: #F2F7FA; min-height: 100vh; padding-bottom: 50px;">
 
     <div class="page-header text-center py-5 text-white"
-      style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=1920&q=80') center/cover;">
+      style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1920&q=80') center/cover;">
       <h1 class="fw-bold text-white">Khám Phá Thế Giới</h1>
-      <p class="fs-5 mt-2">Hành trình vươn tầm quốc tế, trải nghiệm văn hóa đa quốc gia cùng Ixtal Tour</p>
+      <p class="fs-5 mt-2">Hành trình tuyệt vời năm châu cùng Ixtal Tour</p>
     </div>
 
     <div class="container mt-5">
@@ -71,7 +71,7 @@
 
             <div class="articles-wrapper p-3 rounded-4 shadow-sm bg-white border-0">
               <h6 class="fw-bold text-uppercase mb-3" style="color: #005baa;">
-                <i class="fa-solid fa-passport me-2"></i> Cẩm nang xuất ngoại
+                <i class="fa-solid fa-map-location-dot me-2"></i> Cẩm nang du lịch
               </h6>
 
               <div class="article-item mb-3 pb-2 border-bottom" v-for="(bai, index) in baiVietNoiBat" :key="index">
@@ -86,8 +86,8 @@
                 </router-link>
               </div>
 
-              <router-link to="/client/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài
-                viết <i class="fa-solid fa-arrow-right ms-1"></i></router-link>
+              <router-link to="/client/bai-viet" class="text-primary small fw-bold text-decoration-none">Xem tất cả bài viết <i
+                  class="fa-solid fa-arrow-right ms-1"></i></router-link>
             </div>
 
           </div>
@@ -95,23 +95,39 @@
 
         <div class="col-lg-9 col-md-8">
 
-          <div
-            class="d-flex flex-wrap justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm mb-4">
-            <div class="input-group w-50">
+          <div class="d-flex flex-wrap justify-content-between align-items-center bg-white p-3 rounded-4 shadow-sm mb-4 gap-3 border-light">
+            <div class="input-group" style="max-width: 350px;">
               <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
               <input type="text" class="form-control border-start-0 ps-0 shadow-none"
-                placeholder="Tìm tên tour quốc tế..." v-model="filterSearch">
+                placeholder="Tìm tên tour ngoài nước..." v-model="filterSearch">
             </div>
 
-            <div class="d-flex align-items-center mt-3 mt-md-0">
-              <span class="me-2 text-muted small">Sắp xếp:</span>
-              <select class="form-select border-0 shadow-none fw-bold" style="background-color: #F2F7FA;"
-                v-model="sortBy">
-                <option value="newest">Mới nhất</option>
-                <option value="price-asc">Giá tăng dần</option>
-                <option value="price-desc">Giá giảm dần</option>
-                <option value="rating">Đánh giá cao</option>
-              </select>
+            <div class="d-flex align-items-center gap-3">
+              <div class="d-none d-sm-flex align-items-center border rounded-pill overflow-hidden bg-light" style="height: 38px;">
+                <button
+                  class="btn border-0 d-flex align-items-center justify-content-center h-100 px-3 view-toggle-btn rounded-start-pill"
+                  :class="{ 'active': viewMode === 'grid' }"
+                  @click="viewMode = 'grid'">
+                  <i class="bi bi-grid" style="font-size: 1.1rem; line-height: 0;"></i>
+                </button>
+                <button
+                  class="btn border-0 d-flex align-items-center justify-content-center h-100 px-3 view-toggle-btn rounded-end-pill"
+                  :class="{ 'active': viewMode === 'list' }"
+                  @click="viewMode = 'list'">
+                  <i class="bi bi-list-ul" style="font-size: 1.2rem; line-height: 0;"></i>
+                </button>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <span class="me-2 text-muted small d-none d-md-inline">Sắp xếp:</span>
+                <select class="form-select border-0 shadow-none fw-bold" style="background-color: #F2F7FA;"
+                  v-model="sortBy">
+                  <option value="newest">Mới nhất</option>
+                  <option value="price-asc">Giá tăng dần</option>
+                  <option value="price-desc">Giá giảm dần</option>
+                  <option value="rating">Đánh giá cao</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -123,76 +139,138 @@
           <div v-else-if="filteredAndSortedTours.length === 0"
             class="alert bg-white shadow-sm border-0 text-center py-5 rounded-4">
             <i class="bi bi-globe-americas fs-1 text-muted"></i>
-            <h5 class="mt-3 fw-bold">Không tìm thấy tour quốc tế phù hợp</h5>
+            <h5 class="mt-3 fw-bold">Không tìm thấy tour ngoài nước phù hợp</h5>
             <p class="text-muted">Vui lòng thử lại với các tiêu chí lọc khác.</p>
             <button class="btn btn-outline-success rounded-pill" @click="resetFilters">Xóa bộ lọc</button>
           </div>
 
-          <div v-else class="row">
-            <template v-for="(value, index) in filteredAndSortedTours" :key="index">
-              <div class="col-lg-4 col-md-6 mb-4 mt-2">
-                <div class="card h-100 shadow-sm border-0 position-relative tour-card"
-                  style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease;"
-                  @click="viewDetail(value.id)">
+          <div v-else>
+            
+            <div v-if="viewMode === 'grid'" class="row">
+              <template v-for="(value, index) in filteredAndSortedTours" :key="index">
+                <div class="col-lg-6 col-md-6 mb-4 mt-2 tour-grid-item" :style="{ animationDelay: `${index * 0.05}s` }">
+                  <div class="card h-100 bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column tour-card-custom"
+                    @click="viewDetail(value.id)">
+                    
+                    <div class="position-relative overflow-hidden" style="height: 250px;">
+                      <img :src="value.hinh_anh" :alt="value.ten_tour"
+                        class="w-100 h-100 object-fit-cover tour-image-custom">
+                      
+                      <div class="position-absolute top-0 start-0 w-100 h-100" 
+                           style="background: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 40%);"></div>
 
-                  <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
-                    style="height: 200px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
-
-                  <div class="position-absolute z-2 text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
-                    style="top: 160px; right: 10px; font-size: 0.85rem;">
-                    <i class="bi bi-people-fill"></i> Còn lại: {{ value.so_nguoi_toi_da }}
-                  </div>
-
-                  <div class="card-body d-flex flex-column pt-3">
-                    <h5 class="card-title fw-bold text-dark mb-2"
-                      style="font-size: 1.1rem; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                      {{ value.ten_tour }}
-                    </h5>
-
-                    <div class="mb-3" style="color: #FEE715; font-size: 13px;">
-                      <i class="fa-solid fa-star me-1"></i>
-                      <span class="fw-bold text-dark">
-                        {{ value.avg_sao ? Number(value.avg_sao).toFixed(1) : 'Chưa có đánh giá' }}
+                      <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
+                        Còn {{ value.so_nguoi_toi_da }} chỗ
                       </span>
-                      <span class="text-muted">({{ value.so_luot_danh_gia || 0 }} đánh giá)</span>
                     </div>
 
-                    <div class="d-flex flex-column gap-2 mb-3 text-secondary" style="font-size: 0.9rem;">
-                      <div class="d-flex align-items-start gap-2">
-                        <i class="bi bi-geo-alt text-primary mt-1"></i>
-                        <span>Đón tại: <strong>{{ value.diem_don }}</strong></span>
-                      </div>
-                      <div class="d-flex align-items-start gap-2">
-                        <i class="bi bi-clock text-primary mt-1"></i>
-                        <span>Thời gian: <strong>{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }}
-                            ngày</strong></span>
-                      </div>
-                    </div>
+                    <div class="card-body p-4 d-flex flex-column flex-grow-1">
+                      <h3 class="fw-bold mb-3 tour-title-custom" 
+                          style="font-size: 1.15rem; line-height: 1.4; color: #1b6b43;">
+                        {{ value.ten_tour }}
+                      </h3>
 
-                    <div class="mt-auto pt-3 border-top">
-                      <div class="mb-3">
-                        <span class="d-block text-muted mb-1" style="font-size: 0.85rem;">Khởi hành: {{
-                          formatDate(value.ngay_bat_dau) }}</span>
-                        <h5 class="fw-bold mb-0 text-danger">
-                          {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
-                        </h5>
+                      <div class="d-flex align-items-center mb-3" style="font-size: 1rem;">
+                        <div class="d-flex gap-1 me-2" style="color: #FEE715;">
+                          <i v-for="i in 5" :key="i" :class="getStarClass(value.avg_sao, i)" style="font-size: 0.95rem;"></i>
+                        </div>
+                        <span class="fw-bold text-dark me-1">{{ value.avg_sao ? Number(value.avg_sao).toFixed(1) : '5.0' }}</span>
+                        <span class="text-secondary" style="font-size: 0.9rem;">({{ value.so_luot_danh_gia || 0 }} đánh giá)</span>
                       </div>
-                      <div class="d-flex gap-2">
-                        <button class="btn btn-outline-success btn-sm w-100 fw-bold rounded-pill"
-                          @click.stop="viewDetail(value.id)">
-                          Chi tiết
+
+                      <div class="d-flex flex-column gap-2 mb-4" style="font-size: 0.9rem;">
+                        <div>
+                          <span class="text-secondary">Đón tại:</span> 
+                          <span class="fw-bold text-secondary ms-1">{{ value.diem_don }}</span>
+                        </div>
+                        <div>
+                          <span class="text-secondary">Thời gian:</span> 
+                          <span class="fw-bold text-secondary ms-1">{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }} ngày</span>
+                        </div>
+                      </div>
+
+                      <div class="d-flex align-items-end justify-content-between mt-auto pt-3 border-top border-light">
+                        <div>
+                          <div class="text-secondary mb-1" style="font-size: 0.85rem;">Khởi hành: {{ formatDate(value.ngay_bat_dau) }}</div>
+                          <div class="fw-bold text-danger" style="font-size: 1.25rem;">
+                            {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                          </div>
+                        </div>
+                        <button class="border-0 text-white fw-semibold px-4 py-2 rounded-3 btn-book-custom"
+                                style="background-color: #1b6b43; font-size: 0.85rem;"
+                                @click.stop="viewDetail(value.id)">
+                          Đặt ngay
                         </button>
                       </div>
                     </div>
-
                   </div>
                 </div>
-              </div>
-            </template>
+              </template>
+            </div>
+
+            <div v-else class="d-flex flex-column gap-4 mt-2">
+              <template v-for="(value, index) in filteredAndSortedTours" :key="'list-'+index">
+                <div class="card bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column flex-md-row tour-card-custom tour-list-item"
+                     @click="viewDetail(value.id)" :style="{ animationDelay: `${index * 0.05}s` }">
+                  
+                  <div class="position-relative overflow-hidden tour-image-container-list flex-shrink-0">
+                    <img :src="value.hinh_anh" :alt="value.ten_tour"
+                      class="w-100 h-100 object-fit-cover tour-image-custom">
+                    
+                    <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
+                      Còn {{ value.so_nguoi_toi_da }} chỗ
+                    </span>
+                  </div>
+
+                  <div class="card-body p-4 d-flex flex-column flex-grow-1 min-w-0">
+                    <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                      <h3 class="fw-bold mb-0 tour-title-custom" 
+                          style="font-size: 1.2rem; line-height: 1.4; color: #1b6b43;">
+                        {{ value.ten_tour }}
+                      </h3>
+                    </div>
+
+                    <div class="d-flex align-items-center mb-3" style="font-size: 1rem;">
+                      <div class="d-flex gap-1 me-2" style="color: #FEE715;">
+                        <i v-for="i in 5" :key="i" :class="getStarClass(value.avg_sao, i)" style="font-size: 0.95rem;"></i>
+                      </div>
+                      <span class="fw-bold text-dark me-1">{{ value.avg_sao ? Number(value.avg_sao).toFixed(1) : '5.0' }}</span>
+                      <span class="text-secondary" style="font-size: 0.9rem;">({{ value.so_luot_danh_gia || 0 }} đánh giá)</span>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2 mb-4" style="font-size: 0.95rem;">
+                      <div>
+                        <span class="text-secondary">Đón tại:</span> 
+                        <span class="fw-bold text-secondary ms-1">{{ value.diem_don }}</span>
+                      </div>
+                      <div>
+                        <span class="text-secondary">Thời gian:</span> 
+                        <span class="fw-bold text-secondary ms-1">{{ calculateDays(value.ngay_bat_dau, value.ngay_ket_thuc) }} ngày</span>
+                      </div>
+                    </div>
+
+                    <div class="d-flex align-items-end justify-content-between mt-auto pt-3 border-top border-light">
+                      <div>
+                        <div class="text-secondary mb-1" style="font-size: 0.9rem;">Khởi hành: {{ formatDate(value.ngay_bat_dau) }}</div>
+                        <div class="fw-bold text-danger" style="font-size: 1.35rem;">
+                          {{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value.gia) }}
+                        </div>
+                      </div>
+                      <button class="border-0 text-white fw-semibold px-4 py-2 rounded-3 btn-book-custom"
+                              style="background-color: #1b6b43; font-size: 0.9rem;"
+                              @click.stop="viewDetail(value.id)">
+                        Đặt ngay
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
+
           </div>
 
-          <div v-if="totalPages > 1" class="d-flex justify-content-center mt-4">
-            <ul class="pagination shadow-sm">
+          <div v-if="totalPages > 1" class="d-flex justify-content-center mt-5 mb-3">
+            <ul class="pagination shadow-sm custom-pagination">
               <li class="page-item" :class="{ disabled: currentPage === 1 }">
                 <button class="page-link px-3" @click="currentPage--">Trước</button>
               </li>
@@ -222,30 +300,47 @@ export default {
       allTours: [],
       filteredTours: [],
 
-      baiVietNoiBat: [], // Mảng rỗng chờ API đổ vào
-      // BẠN CÓ THỂ ĐỔI ID BÀI VIẾT Ở ĐÂY ĐỂ HIỂN THỊ (VD: Tour Ngoài Nước hiển thị bài 6, 7, 8)
-      danhSachIdBaiViet: [6, 7, 2],
+      baiVietNoiBat: [], 
+      danhSachIdBaiViet: [1, 4, 5],
 
       filterSearch: '',
-      filterDestinations: [],
+      filterDestinations: [], // Đã đổi thành filterDestinations
       filterDuration: '',
       priceRanges: [],
       sortBy: 'newest',
+      
+      viewMode: 'grid', 
 
       currentPage: 1,
-      pageSize: 9,
+      pageSize: 8, 
     }
   },
   computed: {
-    uniqueDestinations() {
-      const nations = this.allTours
-        .map(t => t.quoc_gia ? t.quoc_gia.ten_quoc_gia : null)
-        .filter(Boolean);
-      return [...new Set(nations)];
-    },
-
     totalPages() {
       return Math.ceil(this.filteredTours.length / this.pageSize);
+    },
+
+    // Tự động thu thập danh sách các quốc gia có trong API
+    uniqueDestinations() {
+      const dests = new Set();
+      this.allTours.forEach(t => {
+        if (t.quoc_gia && t.quoc_gia.ten_quoc_gia) {
+          dests.add(t.quoc_gia.ten_quoc_gia);
+        } else if (t.lich_trinhs && t.lich_trinhs.length > 0) {
+          t.lich_trinhs.forEach(lt => {
+            if (lt.diem_den && lt.diem_den.quoc_gia) {
+              dests.add(lt.diem_den.quoc_gia);
+            }
+          });
+        }
+      });
+
+      let arr = Array.from(dests);
+      // Fallback nếu API không cung cấp sẵn quốc gia
+      if (arr.length === 0) {
+        return ['Thái Lan', 'Nhật Bản', 'Hàn Quốc', 'Trung Quốc', 'Singapore', 'Đài Loan', 'Châu Âu', 'Mỹ', 'Úc'];
+      }
+      return arr;
     },
 
     filteredAndSortedTours() {
@@ -261,12 +356,12 @@ export default {
     }
   },
   mounted() {
-    this.fetchInternationalTours();
-    this.fetchArticles(); // Gọi API lấy bài viết
+    this.fetchInternationalTours(); 
+    this.fetchArticles(); 
   },
   watch: {
     filterSearch() { this.applyFilters(); },
-    filterDestinations: { handler() { this.applyFilters(); }, deep: true },
+    filterDestinations: { handler() { this.applyFilters(); }, deep: true }, // Theo dõi thay đổi của mảng filterDestinations
     filterDuration() { this.applyFilters(); },
     priceRanges: { handler() { this.applyFilters(); }, deep: true },
     sortBy() { this.currentPage = 1; }
@@ -277,7 +372,7 @@ export default {
       try {
         const response = await axios.get(apiUrl('client/tour/get-data'));
         if (response.data.status) {
-          this.allTours = response.data.data.filter(tour => tour.id_quoc_gia > 1 && tour.so_nguoi_toi_da > 0);
+          this.allTours = response.data.data.filter(tour => tour.id_quoc_gia !== 1 && tour.so_nguoi_toi_da > 0);
           this.applyFilters();
         }
       } catch (error) {
@@ -287,13 +382,11 @@ export default {
       }
     },
 
-    // Hàm gọi API bài viết và lọc theo ID
     async fetchArticles() {
       try {
         const response = await axios.get(apiUrl('client/trang-chu/get-data'));
         if (response.data.status) {
           const tatCaBaiViet = response.data.data.baiViets || [];
-          // Chỉ giữ lại những bài viết có ID nằm trong mảng danhSachIdBaiViet
           this.baiVietNoiBat = tatCaBaiViet.filter(bai => this.danhSachIdBaiViet.includes(bai.id));
         }
       } catch (error) {
@@ -303,18 +396,45 @@ export default {
 
     applyFilters() {
       let results = this.allTours.slice();
-      if (this.filterSearch) results = results.filter(t => t.ten_tour.toLowerCase().includes(this.filterSearch.toLowerCase()));
-      if (this.filterDestinations.length > 0) {
-        results = results.filter(t =>t.quoc_gia && this.filterDestinations.includes(t.quoc_gia.ten_quoc_gia));
+
+      // 1. Tìm kiếm theo tên tour
+      if (this.filterSearch) {
+        results = results.filter(t => t.ten_tour.toLowerCase().includes(this.filterSearch.toLowerCase()));
       }
+
+      // 2. Lọc theo Quốc Gia (Đã được sửa lại)
+      if (this.filterDestinations.length > 0) {
+        results = results.filter(t => {
+          // Check quốc gia trong bảng tour
+          if (t.quoc_gia && t.quoc_gia.ten_quoc_gia && this.filterDestinations.includes(t.quoc_gia.ten_quoc_gia)) return true;
+          
+          // Check quốc gia trong tên tour 
+          if (this.filterDestinations.some(dest => t.ten_tour.includes(dest))) return true;
+
+          // Check quốc gia trong điểm đến của lịch trình
+          if (t.lich_trinhs && t.lich_trinhs.length > 0) {
+            return t.lich_trinhs.some(lt => {
+              if (lt.diem_den && lt.diem_den.quoc_gia) {
+                return this.filterDestinations.includes(lt.diem_den.quoc_gia);
+              }
+              return false;
+            });
+          }
+          return false;
+        });
+      }
+
+      // 3. Lọc thời gian
       if (this.filterDuration) {
         results = results.filter(t => {
           const days = this.calculateDays(t.ngay_bat_dau, t.ngay_ket_thuc);
-          if (this.filterDuration === '1-3') return days >= 1 && days <= 3;
+          if (this.filterDuration === '1-3') return days <= 3;
           if (this.filterDuration === '4-5') return days >= 4 && days <= 5;
           if (this.filterDuration === '6+') return days >= 6;
         });
       }
+
+      // 4. Lọc mức giá
       if (this.priceRanges.length > 0) {
         results = results.filter(t => {
           const price = parseFloat(t.gia);
@@ -325,13 +445,14 @@ export default {
           });
         });
       }
+
       this.filteredTours = results;
       this.currentPage = 1;
     },
 
     resetFilters() {
       this.filterSearch = '';
-      this.filterDestinations = [];
+      this.filterDestinations = []; // Reset biến quốc gia
       this.filterDuration = '';
       this.priceRanges = [];
       this.sortBy = 'newest';
@@ -349,15 +470,37 @@ export default {
       return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
     },
 
-    viewDetail(id) { this.$router.push(`/client/chi-tiet-tour/${id}`); }
+    viewDetail(id) { this.$router.push(`/client/chi-tiet-tour/${id}`); },
+
+    getStarClass(rating, index) {
+      const val = rating ? parseFloat(rating) : 5; 
+      if (val >= index) {
+        return 'fa-solid fa-star'; 
+      } else if (val >= index - 0.5) {
+        return 'fa-solid fa-star-half-alt'; 
+      } else {
+        return 'fa-regular fa-star text-secondary opacity-50'; 
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-.tour-card:hover {
-  transform: translateY(-5px) !important;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tour-grid-item, .tour-list-item {
+  opacity: 0;
+  animation: fadeInUp 0.5s ease-out forwards;
 }
 
 .form-check-input:checked {
@@ -365,20 +508,94 @@ export default {
   border-color: #125633;
 }
 
-/* QUAN TRỌNG: CSS GIÚP THANH BỘ LỌC CỐ ĐỊNH VÀ CÓ THỂ CUỘN NẾU MÀN HÌNH NHỎ */
 .sidebar-sticky {
   position: sticky;
   top: 20px;
   z-index: 10;
 }
+.sidebar-sticky::-webkit-scrollbar { width: 4px; }
+.sidebar-sticky::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
 
-/* Làm đẹp thanh cuộn của sidebar */
-.sidebar-sticky::-webkit-scrollbar {
-  width: 4px;
+.view-toggle-btn {
+  color: #6c757d;
+  background-color: transparent;
+  transition: all 0.2s ease;
+}
+.view-toggle-btn:hover:not(.active) {
+  background-color: #e9ecef;
+  color: #343a40;
+}
+.view-toggle-btn.active {
+  background-color: #1b6b43 !important;
+  color: white !important;
 }
 
-.sidebar-sticky::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 4px;
+.glass-badge {
+  background: rgba(158, 247, 244, 0.65); 
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.tour-card-custom {
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+}
+.tour-card-custom:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 35px rgba(27, 107, 67, 0.12) !important;
+  border-color: rgba(27, 107, 67, 0.2) !important;
+}
+
+.tour-image-custom {
+  transition: transform 0.6s ease;
+}
+.tour-card-custom:hover .tour-image-custom {
+  transform: scale(1.08); 
+}
+
+.tour-image-container-list { width: 100%; }
+@media (min-width: 768px) {
+  .tour-image-container-list { width: 320px;  }
+}
+
+.tour-title-custom {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.3s ease;
+}
+.tour-card-custom:hover .tour-title-custom {
+  color: #125633 !important; 
+}
+
+.btn-book-custom {
+  transition: all 0.3s ease;
+}
+.btn-book-custom:hover {
+  background-color: #155535 !important;
+  transform: scale(1.05); 
+  box-shadow: 0 4px 10px rgba(21, 85, 53, 0.3);
+}
+
+.custom-pagination .page-item.active .page-link {
+  background-color: #1b6b43;
+  border-color: #1b6b43;
+  color: white;
+  box-shadow: 0 4px 8px rgba(27, 107, 67, 0.3);
+}
+.custom-pagination .page-link {
+  color: #1b6b43;
+  border: none;
+  margin: 0 4px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+.custom-pagination .page-link:hover {
+  background-color: #e6f2ec;
+  transform: translateY(-2px);
 }
 </style>

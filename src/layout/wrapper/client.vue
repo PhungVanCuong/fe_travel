@@ -40,6 +40,7 @@ export default {
 @import "../../assets/css/semi-dark.css";
 @import "../../assets/css/header-colors.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 
 .client-layout {
     font-size: 14px;
