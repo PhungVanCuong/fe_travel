@@ -185,11 +185,11 @@ const STATS = [
 
 const TEAM_MEMBERS = [
   {
-    name: "Aria Vasquez",
+    name: "Trần Xuân Vinh",
     role: "Nhà Sáng Lập & CEO",
-    img: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=600&h=700&fit=crop&auto=format&facepad=3",
+    img: "https://scontent.fdad3-6.fna.fbcdn.net/v/t39.30808-6/245305464_587145555761222_1968242494685415962_n.jpg?stp=dst-jpg_tt6&cstp=mx1080x1080&ctp=s1080x1080&_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=AuuXhCufSHcQ7kNvwEUPouT&_nc_oc=AdoOz_f-v7xVTRSeScAGVixycFwflkg6HJzvMNcfQJdsXRdOBdw6aj_o0YRWtsNlLcs&_nc_zt=23&_nc_ht=scontent.fdad3-6.fna&_nc_gid=uWUHn5CNpfQ_9fNfTbiQBA&_nc_ss=7b2a8&oh=00_Af-pef1EuEJ_d-uetBNpwEJtoXS02_Rau0RrSkW_YT74Kg&oe=6A2C71C9",
     bio: "Cựu nhiếp ảnh gia National Geographic. Aria đã đặt chân đến 94 quốc gia và dẫn đầu các chuyến thám hiểm trên khắp lục địa.",
-    expertise: ["Lên Kế Hoạch Thám Hiểm", "Động Vật Hoang Dã", "Văn Hóa"],
+    expertise: ["Lên Kế Hoạch Thám Hiểm", "Văn Hóa"],
     years: "14 Năm"
   },
   {
@@ -790,7 +790,7 @@ html {
 .member-role {
   font-size: 0.875rem;
   letter-spacing: 0.05em;
-  color: var(--mint);
+  color: #fff;
 }
 
 .member-years {
@@ -800,7 +800,7 @@ html {
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   background: var(--mint);
-  color: var(--text-main);
+  color: #fff;
   font-size: 0.75rem;
   font-weight: 700;
 }
