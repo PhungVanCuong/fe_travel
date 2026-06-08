@@ -27,6 +27,7 @@ import "../../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js";
 import "../../assets/js/index.js";
 import "../../assets/js/app.js";
 import "../../assets/js/pace.min.js";
+
 export default {
     name        :   "app",
     components  :   {
@@ -34,6 +35,7 @@ export default {
     }
 }
 </script>
+
 <style>
 @import "../../assets/plugins/simplebar/css/simplebar.css";
 @import "../../assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css";
@@ -48,5 +50,4 @@ export default {
 @import "../../assets/css/semi-dark.css";
 @import "../../assets/css/header-colors.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
-
 </style>

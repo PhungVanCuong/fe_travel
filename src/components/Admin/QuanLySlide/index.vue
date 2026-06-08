@@ -190,7 +190,6 @@
 
 <script>
 import axios from 'axios';
-// ĐÃ XÓA { backendUrl } ĐỂ TRÁNH LỖI CRASH TRANG
 import apiUrl from '../../../utils/api'; 
 
 export default {
@@ -203,9 +202,9 @@ export default {
             
             showModal: false,
             showDeleteModal: false,
-            modalMode: 'add', // 'add' or 'edit'
+            modalMode: 'add', 
             
-            uploadType: 'url', // 'url' or 'file'
+            uploadType: 'url', 
             selectedFile: null,
             selectedFileName: '',
             previewFileUrl: '',
@@ -222,9 +221,10 @@ export default {
         }
     },
     computed: {
+        // Fix: Hoạt động chuẩn xác giữa URL ngoài và File thư mục
         previewImageUrl() {
-            if (this.uploadType === 'file' && this.previewFileUrl) {
-                return this.previewFileUrl;
+            if (this.uploadType === 'file') {
+                return this.previewFileUrl || (this.formData.hinh_anh_url ? this.getImageUrl(this.formData.hinh_anh_url) : '');
             }
             if (this.uploadType === 'url' && this.formData.hinh_anh_url) {
                 return this.getImageUrl(this.formData.hinh_anh_url);
@@ -261,10 +261,21 @@ export default {
             });
         },
         
+        // HÀM QUAN TRỌNG: Tự động ghép đúng tên miền dù bạn test localhost hay Deploy web thật
         getImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/600x300?text=No+Image';
-            // Trả về trực tiếp URL (Nó sẽ tự hiểu là đường dẫn tuyệt đối hoặc tương đối tuỳ theo backend)
-            return url; 
+            
+            // Nếu là dạng link http/https từ bên ngoài, trả về luôn
+            if (url.startsWith('http') || url.startsWith('data:')) {
+                return url; 
+            }
+
+            // Nếu là dạng file (/uploads/slides/...), tự động bóc tách Domain Backend từ file apiUrl
+            const baseApiUrl = apiUrl(''); // Ví dụ: trả về http://localhost:8000/api/
+            // Cắt chữ /api/ ở đuôi để lấy domain gốc
+            const backendDomain = baseApiUrl.replace(/\/api\/?$/, ''); 
+
+            return backendDomain + (url.startsWith('/') ? '' : '/') + url;
         },
 
         handleFileUpload(event) {
@@ -293,6 +304,7 @@ export default {
                     hinh_anh_url: slide.hinh_anh || '', 
                     tinh_trang: slide.tinh_trang 
                 };
+                // Đoán xem ảnh cũ là URL ngoài hay File hệ thống để bật đúng Tab
                 if (slide.hinh_anh && slide.hinh_anh.startsWith('http')) {
                     this.uploadType = 'url';
                 } else {
@@ -321,7 +333,7 @@ export default {
 
             if (this.uploadType === 'file' && this.selectedFile) {
                 payload.append('hinh_anh_file', this.selectedFile);
-            } else {
+            } else if (this.uploadType === 'url') {
                 payload.append('hinh_anh_url', this.formData.hinh_anh_url);
             }
 

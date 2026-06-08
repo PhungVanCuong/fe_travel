@@ -1,20 +1,13 @@
-Đây là toàn bộ file `index_2.vue` đã được tích hợp hoàn chỉnh thư viện AOS và các hiệu ứng cuộn trang, bạn chỉ cần copy và dán đè lên file hiện tại của mình là mọi thứ sẽ hoạt động mượt mà:
-
-```vue
 <template>
   <div class="voyagr-home">
-    <!-- HERO SECTION -->
     <section style="position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;" @mouseenter="stopHeroSlide" @mouseleave="startHeroSlide">
       <div style="position:absolute;inset:0;">
-        <!-- Hiệu ứng chuyển slide -->
         <transition name="fade" mode="out-in">
           <img :key="activeSlide" :src="currentHeroImage" alt="Hero Background" style="width:100%;height:100%;object-fit:cover;filter: saturate(1.2); position:absolute; inset:0;" />
         </transition>
         
-        <!-- Gradient chỉ tập trung ở dưới cùng, phần trên hoàn toàn trong suốt để ảnh sáng -->
         <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(12,26,46,0.8) 0%, transparent 50%);"></div>
         
-        <!-- Gradient nối với màu nền của trang -->
         <div style="position:absolute;bottom:0;left:0;right:0;height:160px;background:linear-gradient(to top,#f8fafc,transparent);"></div>
       </div>
       <div style="position:absolute;inset:0;opacity:.05;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px);background-size:60px 60px;"></div>
@@ -22,7 +15,6 @@
       <div style="position:relative;z-index:10;max-width:1500px;margin:0 auto;padding:0 24px;width:100%;">
         <div class="hero-content">
           
-          <!-- ĐÃ SỬA: Đổi margin-bottom từ 24px xuống 8px để kéo dòng chữ sát xuống dưới -->
           <div style="display:inline-flex;align-items:center;gap:8px;margin-bottom:-55px;">
             <span class="booking-badge">
               <span class="pulse" style="width:6px;height:6px;border-radius:9999px;background:#8fdfb5;display:inline-block;"></span>
@@ -48,7 +40,6 @@
         </div>
       </div>
 
-      <!-- Nút điều hướng Slide Hero -->
       <button @click="prevHero" style="position:absolute;left:24px;top:50%;transform:translateY(-50%);z-index:20;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:black;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);" class="hover-lift">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
@@ -56,7 +47,6 @@
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      <!-- Dots chỉ thị Slide -->
       <div style="position:absolute;bottom:180px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:20;">
         <div v-for="(slide, index) in list_slide" :key="index" @click="activeSlide = index" 
              :style="{ height: '6px', width: index === activeSlide ? '32px' : '6px', borderRadius: '9999px', background: index === activeSlide ? '#8fdfb5' : 'rgba(255,255,255,.3)', cursor: 'pointer', transition: 'all .3s', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }">
@@ -64,7 +54,6 @@
       </div>
     </section>
 
-    <!-- DOMESTIC TOURS -->
     <section id="domestic" style="padding:80px 0;background:#f8fafc;overflow:hidden;">
       <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
         <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;">
@@ -82,12 +71,11 @@
           </div>
         </div>
         <div ref="domTrack" class="no-scrollbar track-container">
-          <!-- Domestic Tour Cards -->
           <div v-for="(value, index) in domesticTours" :key="index" 
                class="tour-poster hover-scale-img"
                data-aos="fade-up" 
                :data-aos-delay="index * 100">
-            <img :src="value.hinh_anh" :alt="value.ten_tour" class="tour-img" />
+            <img :src="getImageUrl(value.hinh_anh)" :alt="value.ten_tour" class="tour-img" />
             <div class="tour-overlay"></div>
             <span class="tour-badge badge-primary">Còn {{ value.so_nguoi_toi_da }} chỗ</span>
             
@@ -116,7 +104,6 @@
       </div>
     </section>
 
-    <!-- INTERNATIONAL TOURS -->
     <section id="international" style="padding:80px 0;background:#0c1a2e;overflow:hidden;">
       <div style="max-width:1280px;margin:0 auto;padding:0 24px;">
         <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;">
@@ -134,12 +121,11 @@
           </div>
         </div>
         <div ref="intlTrack" class="no-scrollbar track-container">
-          <!-- International Tour Cards -->
           <div v-for="(value, index) in internationalTours" :key="index" 
                class="tour-poster hover-scale-img"
                data-aos="fade-up" 
                :data-aos-delay="index * 100">
-            <img :src="value.hinh_anh" :alt="value.ten_tour" class="tour-img" />
+            <img :src="getImageUrl(value.hinh_anh)" :alt="value.ten_tour" class="tour-img" />
             <div class="tour-overlay"></div>
             <span class="tour-badge badge-primary">Còn {{ value.so_nguoi_toi_da }} chỗ</span>
             
@@ -168,7 +154,6 @@
       </div>
     </section>
 
-    <!-- BLOG SECTION -->
     <section id="blog" style="padding:80px 24px;background:#f8fafc;">
       <div style="max-width:1280px;margin:0 auto;">
         <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;">
@@ -188,7 +173,7 @@
                data-aos="zoom-in"
                :data-aos-delay="index * 150">
             <router-link :to="`/client/chi-tiet-bai-viet/${value.id}`" style="display:block; height:100%;">
-              <img :src="value.hinh_anh" alt="Blog" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
+              <img :src="getImageUrl(value.hinh_anh)" alt="Blog" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" />
               <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(12,26,46,.9) 0%,rgba(12,26,46,.3) 55%,transparent 100%);"></div>
               
               <div v-if="index === 0" style="position:absolute;bottom:0;left:0;right:0;padding:40px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;">
@@ -211,7 +196,6 @@
       </div>
     </section>
 
-    <!-- TESTIMONIALS -->
     <section id="reviews" style="padding:80px 24px;background:#0c1a2e;overflow:hidden;">
       <div style="max-width:1280px;margin:0 auto;" @mouseenter="stopAutoSlide" @mouseleave="startAutoSlide">
         <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px;flex-wrap:wrap;gap:16px;">
@@ -308,11 +292,19 @@ export default {
     }
   },
   computed: {
+    // ĐÃ FIX ẢNH HERO BACKGROUND: Cập nhật gọi hàm getImageUrl
     currentHeroImage() {
       if (this.list_slide && this.list_slide.length > 0) {
-        return this.list_slide[this.activeSlide].hinh_anh;
+        return this.getImageUrl(this.list_slide[this.activeSlide].hinh_anh);
       }
       return 'https://images.unsplash.com/photo-1609779340167-207589f3f94f?w=1920&q=90&auto=format&fit=crop';
+    },
+    // Trả về tiêu đề slide nếu có
+    currentHeroTitle() {
+      if (this.list_slide && this.list_slide.length > 0) {
+        return this.list_slide[this.activeSlide].tieu_de || 'Trải Nghiệm Cùng';
+      }
+      return 'Trải Nghiệm Cùng';
     },
     domesticTours() {
       return this.list_tour.filter(x => x.tinh_trang === 1 && x.so_nguoi_toi_da > 0 && x.id_quoc_gia == '1').slice(0, 6);
@@ -323,12 +315,12 @@ export default {
   },
   mounted() {
     this.loadData();
-    this.startAutoSlide(); // Hàm cho Testimonials cũ
+    this.startAutoSlide(); // Hàm cho Testimonials
     this.startHeroSlide(); // Bật chạy Slider Hero
     AOS.init({
-      duration: 800, // Thời gian chạy hiệu ứng (tính bằng mili giây)
+      duration: 800, 
       once: false,    
-      offset: 100    // Khoảng cách cuộn (pixel) trước khi kích hoạt hiệu ứng
+      offset: 100    
     });
   },
   beforeUnmount() {
@@ -336,6 +328,17 @@ export default {
     this.stopHeroSlide(); // Tắt Slider khi chuyển trang
   },
   methods: {
+    // THÊM HÀM XỬ LÝ URL ẢNH
+    getImageUrl(url) {
+        if (!url) return 'https://via.placeholder.com/600x300?text=No+Image';
+        if (url.startsWith('http') || url.startsWith('data:')) {
+            return url; 
+        }
+        const baseApiUrl = apiUrl('');
+        const backendDomain = baseApiUrl.replace(/\/api\/?$/, ''); 
+        return backendDomain + (url.startsWith('/') ? '' : '/') + url;
+    },
+
     startHeroSlide() {
       if (this.heroInterval) clearInterval(this.heroInterval);
       this.heroInterval = setInterval(() => {
@@ -362,7 +365,10 @@ export default {
         .then((res) => {
           this.list_tour = res.data.data.tours || [];
           this.list_bv = res.data.data.baiViets || [];
-          this.list_slide = res.data.data.slides || [];
+          
+          // Lọc ra slide đang bật (tinh_trang == 1)
+          let allSlides = res.data.data.slides || [];
+          this.list_slide = allSlides.filter(s => s.tinh_trang == 1);
           
           this.$nextTick(() => {
             AOS.refresh();
@@ -438,12 +444,10 @@ export default {
 .nav-arrow.dark { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12); }
 .nav-arrow.brand-color { background:#8fdfb5; border:none; box-shadow:0 6px 16px rgba(143,223,181,.35); }
 
-/* INCREASED TOUR CARD SIZE */
 .tour-poster { position: relative; flex-shrink: 0; width: 320px; height: 420px; border-radius: 28px; overflow: hidden; cursor: pointer; }
 .tour-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .tour-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,26,46,.95) 0%, rgba(12,26,46,.3) 50%, transparent 100%); }
 
-/* BADGES AND BUTTONS (Changed to #8fdfb5) */
 .tour-badge { position: absolute; top: 20px; left: 20px; font-size: .75rem; font-weight: 700; padding: 6px 14px; border-radius: 9999px; }
 .badge-primary { background: #8fdfb5; color: #125633; }
 .tour-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 24px; }
