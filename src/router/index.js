@@ -265,6 +265,18 @@ const routes = [
         beforeEnter: checkAdmin,
         name: "lien-he",
     },
+    {
+        path: "/admin/slide",
+        component: () => import("../components/Admin/QuanLySlide/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "slide",
+    },
+    {
+        path: "/admin/profile",
+        component: () => import("../components/Admin/Profile/index.vue"),
+        beforeEnter: checkAdmin,
+        name: "profile",
+    },
 
 
     // ===============================================

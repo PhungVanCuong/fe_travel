@@ -1,14 +1,13 @@
 <template>
-        <div class="overlay toggle-icon"></div>
-   		<footer class="page-footer">
-			<p class="mb-0">Copyright © 2025. All right reserved.</p>
-		</footer>
+    <div class="overlay toggle-icon"></div>
+    <footer class="page-footer" style="color: #666; font-size: 0.9rem;">
+        <p class="mb-0">Copyright © 2026. Ixtal Tour All right reserved.</p>
+    </footer>
 </template>
-<script>
-export default {
-    
+
+<style scoped>
+.page-footer {
+    padding: 10px;
+    background: #fff;
 }
-</script>
-<style>
-    
 </style>

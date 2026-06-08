@@ -1,24 +1,21 @@
 <template>
-  <a-layout style="min-height: 100vh">
-    
-    <!-- Thanh điều hướng bên trái (Đã bao gồm cả Logo, Avatar và nút thu gọn) -->
+  <a-layout style="min-height: 100vh; background: #fff;"> 
     <MenuRocker />
-    <a-layout>
-      <!-- Khu vực nội dung chính hiển thị các màn hình -->
-      <a-layout-content style="margin: 16px">
-        <div :style="{ padding: '24px', background: '#fff', minHeight: '360px' }">
+    <a-layout style="background: #fff; margin-left: 0;"> 
+      <a-layout-content>
+        <div :style="{ background: '#fff', minHeight: '100vh' }">
           <router-view></router-view>
         </div>
       </a-layout-content>
 
-      <a-layout-footer style="text-align: center">
+      <a-layout-footer style="text-align: center; background: #fff; padding: 20px;">
         <BotRocker />
       </a-layout-footer>
     </a-layout>
   </a-layout>
 </template>
-<script>
 
+<script>
 import BotRocker from "../components/Admin/BotRocker.vue";
 import MenuRocker from "../components/Admin/MenuRocker.vue";
 
@@ -33,7 +30,7 @@ import "../../assets/js/pace.min.js";
 export default {
     name        :   "app",
     components  :   {
-         MenuRocker, BotRocker
+        MenuRocker, BotRocker,
     }
 }
 </script>
@@ -51,4 +48,5 @@ export default {
 @import "../../assets/css/semi-dark.css";
 @import "../../assets/css/header-colors.css";
 @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+
 </style>

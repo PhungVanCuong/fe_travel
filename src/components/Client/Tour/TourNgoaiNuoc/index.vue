@@ -213,13 +213,17 @@
                 <div class="card bg-white rounded-4 overflow-hidden shadow-sm d-flex flex-column flex-md-row tour-card-custom tour-list-item"
                      @click="viewDetail(value.id)" :style="{ animationDelay: `${index * 0.05}s` }">
                   
-                  <div class="position-relative overflow-hidden tour-image-container-list flex-shrink-0">
-                    <img :src="value.hinh_anh" :alt="value.ten_tour"
-                      class="w-100 h-100 object-fit-cover tour-image-custom">
-                    
-                    <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
-                      Còn {{ value.so_nguoi_toi_da }} chỗ
-                    </span>
+                  <div class="position-relative overflow-hidden tour-image-container-list flex-shrink-0" 
+                      style="width: 320px; height: 320px;">
+                      
+                      <img :src="value.hinh_anh" 
+                          :alt="value.ten_tour"
+                          class="w-100 h-100 tour-image-custom"
+                          style="object-fit: cover; display: block;">
+                      
+                      <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
+                        Còn {{ value.so_nguoi_toi_da }} chỗ
+                      </span>
                   </div>
 
                   <div class="card-body p-4 d-flex flex-column flex-grow-1 min-w-0">
@@ -556,10 +560,16 @@ export default {
   transform: scale(1.08); 
 }
 
-.tour-image-container-list { width: 100%; }
-@media (min-width: 768px) {
-  .tour-image-container-list { width: 320px;  }
+.tour-image-container-list {
+  width: 320px !important;
+  height: 320px !important;
 }
+
+.tour-image-custom {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Quan trọng nhất để ảnh không méo */
+} 
 
 .tour-title-custom {
   display: -webkit-box;

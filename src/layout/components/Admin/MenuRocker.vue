@@ -2,16 +2,16 @@
   <a-layout-sider v-model:collapsed="trangThaiThuGonMenu" width="260px" class="glass-sidebar`">
     
     <div :style="{ display: 'flex', alignItems: 'center', justifyContent: trangThaiThuGonMenu ? 'center' : 'space-between', padding: '16px' }">
-  <!-- Thay thế h2 bằng thẻ img -->
-  <img 
-    v-if="!trangThaiThuGonMenu" 
-    src="../../../assets/images/Logo1.png" 
-    alt="Logo IxtalTour" 
-    style="height: 80px; width: auto; object-fit: contain;" 
-  />
-  
-  <MenuOutlined style="font-size: 20px; cursor: pointer; color: black;" @click="thayDoiTrangThaiMenu" />
-</div>
+      <!-- Thay thế h2 bằng thẻ img -->
+      <img 
+        v-if="!trangThaiThuGonMenu" 
+        src="../../../assets/images/Logo1.png" 
+        alt="Logo IxtalTour" 
+        style="height: 80px; width: auto; object-fit: contain;" 
+      />
+      
+      <MenuOutlined style="font-size: 20px; cursor: pointer; color: black;" @click="thayDoiTrangThaiMenu" />
+    </div>
 
     <a-menu
       v-model:selectedKeys="danhSachDuongDanDuocChon"
@@ -119,6 +119,14 @@
         Quản lý Liên hệ
       </a-menu-item>
 
+      <!-- 11. Quản lý Slide -->
+      <a-menu-item key="/admin/slide">
+        <template #icon>
+          <i class="fa-solid fa-images menu-icon"></i>
+        </template>
+        Quản lý Slide
+      </a-menu-item>
+
       <!-- Đường kẻ ngang phân cách -->
       <a-divider style="border-color: rgba(255, 255, 255, 0.2); margin: 10px 0;" />
 
@@ -136,6 +144,13 @@
         <a-menu-item key="chuc-nang-dang-xuat">Đăng xuất</a-menu-item>
         <a-menu-item key="chuc-nang-dang-xuat-tat-ca">Đăng xuất tất cả</a-menu-item>
       </a-sub-menu>
+
+      <a-menu-item key="/">
+        <template #icon>
+          <i class="fa-solid fa-home menu-icon"></i>
+        </template>
+        Quay lại trang chủ
+      </a-menu-item>
 
     </a-menu>
   </a-layout-sider>
@@ -216,47 +231,49 @@ const thucHienDangXuatTatCaTaiKhoan = () => {
 </script>
 
 <style scoped>
-/* 1. Ép Sidebar nhận màu sắc cố định */
+/* 1. Sidebar nền trắng */
 .ant-layout-sider {
-  background-color: #f4fdf8 !important;
+  background-color: #ffffff !important;
+  border-right: 1px solid #f0f0f0;
 }
 
-/* 2. Ép Menu và các thành phần con nhận màu nền này */
+/* 2. Menu nền trắng */
 :deep(.ant-menu),
 :deep(.ant-menu-root),
 :deep(.ant-menu-sub),
 :deep(.ant-menu-submenu-title),
 :deep(.ant-menu-item) {
-  background-color: #f4fdf8 !important;
+  background-color: #ffffff !important;
 }
 
-/* 3. Màu chữ hiển thị trên nền xanh (Dùng màu tối để dễ đọc) */
+/* 3. Chữ màu đen/xám tối */
 :deep(.ant-menu-item),
 :deep(.ant-menu-submenu-title) {
-  color: #000 !important; 
+  color: #333 !important; 
 }
 
-/* 4. Hiệu ứng khi di chuột (Hover) */
+/* 4. Hover hiệu ứng xanh nhạt */
 :deep(.ant-menu-item:hover),
 :deep(.ant-menu-submenu-title:hover) {
-  background-color: #7ccb9f !important; /* Màu xanh đậm hơn một chút khi hover */
+  background-color: #f0fdf4 !important; 
+  color: #1b6b43 !important;
 }
 
-/* 5. Hiệu ứng chọn mục (Selected) */
+/* 5. Item được chọn */
 :deep(.ant-menu-item-selected) {
-  background-color: #6bb78a !important;
-  color: #004d40 !important; 
+  background-color: #e6f7ee !important;
+  color: #1b6b43 !important; 
   font-weight: bold;
 }
 
-/* --- Tinh chỉnh icon và ảnh --- */
+/* 6. Icon màu xanh chủ đạo */
 .menu-icon {
   font-size: 1.2rem;
-  color: #004d40;
+  color: #1b6b43;
 }
 
-:deep(.ant-layout-sider-collapsed img) {
-  margin: 0 auto;
-  display: block;
+/* 7. Đường phân cách */
+:deep(.ant-divider) {
+  border-color: #f0f0f0 !important;
 }
 </style>
