@@ -32,18 +32,18 @@
         </a-sub-menu>
 
         <a-sub-menu key="danh-muc-tour-va-lich-trinh">
-          <template #icon><i class="fa-brands fa-servicestack menu-icon"></i></template>
+          <template #icon><i class="fa-solid fa-route menu-icon"></i></template>
           <template #title>Quản lý tour & lịch trình</template>
           <a-menu-item key="/admin/quan-ly-tour">Tour</a-menu-item>
           <a-menu-item key="/admin/lich-trinh">Lịch Trình</a-menu-item>
         </a-sub-menu>
 
         <a-sub-menu key="danh-muc-ve-va-hoa-don">
-          <template #icon><i class="fa-brands fa-servicestack menu-icon"></i></template>
+          <template #icon><i class="fa-solid fa-clipboard-list menu-icon"></i></template>
           <template #title>Quản lý Vé & Hoá đơn</template>
           <a-menu-item key="/admin/ve">Vé</a-menu-item>
           <a-menu-item key="/admin/hoa-don">Hoá Đơn</a-menu-item>
-          <a-menu-item key="/admin/quet-hoa-don">Quét Hoá Đơn</a-menu-item>
+          <a-menu-item key="/admin/quet-hoa-don">Quét Mã Vé</a-menu-item>
         </a-sub-menu>
 
         <a-menu-item key="/admin/quan-ly-phuong-tien">
