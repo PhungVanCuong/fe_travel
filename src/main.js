@@ -19,10 +19,15 @@ app.use(Toaster, {
     position: "top-right",
 });
 app.use(Antd);
+
 app.component("default-layout", Default);
 app.component("client-layout", Client);
 app.component("huong-dan-vien-layout", HuongDanVien);
 app.component("blank-layout", Blank);
 app.component('chat-widget', ChatWidget);
 
-app.mount("#app")
+// ĐÂY LÀ ĐOẠN QUAN TRỌNG NHẤT ĐỂ FIX LỖI:
+// Đợi Router tính toán xong Layout rồi mới vẽ ứng dụng lên màn hình
+router.isReady().then(() => {
+    app.mount("#app");
+});
