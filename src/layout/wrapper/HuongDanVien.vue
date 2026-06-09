@@ -1,19 +1,21 @@
 <template>
-    <div class="wrapper">
-		<div class="header-wrapper">
-            <TopRocker></TopRocker>
-            <MenuRocker></MenuRocker>
-		</div>
-		<div class="page-wrapper">
-			<div class="page-content">
-                <router-view> </router-view>
-            </div>
-		</div>
-        <BotRocker></BotRocker>
-	</div>
+  <a-layout style="min-height: 100vh; background: #fff;"> 
+    <MenuRocker />
+    <a-layout style="background: #fff; margin-left: 0;"> 
+      <a-layout-content>
+        <div :style="{ background: '#fff', minHeight: '100vh' }">
+          <router-view></router-view>
+        </div>
+      </a-layout-content>
+
+      <a-layout-footer style="text-align: center; background: #fff; padding: 20px;">
+        <BotRocker />
+      </a-layout-footer>
+    </a-layout>
+  </a-layout>
 </template>
+
 <script>
-import TopRocker from "../components/HuongDanVien/TopRocker.vue";
 import BotRocker from "../components/HuongDanVien/BotRocker.vue";
 import MenuRocker from "../components/HuongDanVien/MenuRocker.vue";
 import "../../assets/js/bootstrap.bundle.min.js";
