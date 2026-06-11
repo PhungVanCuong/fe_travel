@@ -5,6 +5,12 @@
     </footer>
 </template>
 
+<script>
+export default {
+    
+}
+</script>
+
 <style scoped>
 .page-footer {
     padding: 10px;

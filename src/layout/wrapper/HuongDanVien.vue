@@ -29,7 +29,7 @@ import "../../assets/js/pace.min.js";
 export default {
     name        :   "app",
     components  :   {
-        TopRocker, MenuRocker, BotRocker
+        MenuRocker, BotRocker
     }
 }
 </script>

@@ -1,502 +1,201 @@
 <template>
-	<div class="topbar d-flex align-items-center">
-		<nav class="navbar navbar-expand">
-			<div class="topbar-logo-header">
-				<div class="">
-					<img src="../../../assets/images/logo-icon.png" class="logo-icon" alt="logo icon" />
-				</div>
-				<div class="">
-					<h4 class="logo-text">Tour</h4>
-				</div>
-			</div>
-			<div class="mobile-toggle-menu"><i class="bx bx-menu"></i></div>
-			<div class="search-bar flex-grow-1">
-				<div class="position-relative search-bar-box">
-					<input type="text" class="form-control search-control" placeholder="Tìm Kiếm?" />
-					<span class="position-absolute top-50 search-show translate-middle-y"><i
-							class="bx bx-search"></i></span>
-					<span class="position-absolute top-50 search-close translate-middle-y"><i
-							class="bx bx-x"></i></span>
-				</div>
-			</div>
-			<div class="top-menu ms-auto">
-				<ul class="navbar-nav align-items-center">
-					<li class="nav-item mobile-search-icon">
-						<a class="nav-link" href="#"> <i class="bx bx-search"></i> </a>
-					</li>
-					<li class="nav-item dropdown dropdown-large">
-						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button"
-							data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="bx bx-category"></i>
-						</a>
-						<div class="dropdown-menu dropdown-menu-end">
-							<div class="row row-cols-3 g-3 p-3">
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-cosmic text-white">
-										<i class="bx bx-group"></i>
-									</div>
-									<div class="app-title">Teams</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-burning text-white">
-										<i class="bx bx-atom"></i>
-									</div>
-									<div class="app-title">Projects</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-lush text-white">
-										<i class="bx bx-shield"></i>
-									</div>
-									<div class="app-title">Tasks</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-kyoto text-dark">
-										<i class="bx bx-notification"></i>
-									</div>
-									<div class="app-title">Feeds</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-blues text-dark">
-										<i class="bx bx-file"></i>
-									</div>
-									<div class="app-title">Files</div>
-								</div>
-								<div class="col text-center">
-									<div class="app-box mx-auto bg-gradient-moonlit text-white">
-										<i class="bx bx-filter-alt"></i>
-									</div>
-									<div class="app-title">Alerts</div>
-								</div>
-							</div>
-						</div>
-					</li>
-					<li class="nav-item dropdown dropdown-large">
-						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
-							role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="alert-count">7</span>
-							<i class="bx bx-bell"></i>
-						</a>
-						<div class="dropdown-menu dropdown-menu-end">
-							<a href="javascript:;">
-								<div class="msg-header">
-									<p class="msg-header-title">Notifications</p>
-									<p class="msg-header-clear ms-auto">Marks all as read</p>
-								</div>
-							</a>
-							<div class="header-notifications-list">
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-primary text-primary">
-											<i class="bx bx-group"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												New Customers<span class="msg-time float-end">14 Sec ago</span>
-											</h6>
-											<p class="msg-info">5 new user registered</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-danger text-danger">
-											<i class="bx bx-cart-alt"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												New Orders
-												<span class="msg-time float-end">2 min ago</span>
-											</h6>
-											<p class="msg-info">You have recived new orders</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-success text-success">
-											<i class="bx bx-file"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												24 PDF File<span class="msg-time float-end">19 min ago</span>
-											</h6>
-											<p class="msg-info">The pdf files generated</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-warning text-warning">
-											<i class="bx bx-send"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Time Response
-												<span class="msg-time float-end">28 min ago</span>
-											</h6>
-											<p class="msg-info">5.1 min avarage time response</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-info text-info">
-											<i class="bx bx-home-circle"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												New Product Approved
-												<span class="msg-time float-end">2 hrs ago</span>
-											</h6>
-											<p class="msg-info">Your new product has approved</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-danger text-danger">
-											<i class="bx bx-message-detail"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												New Comments
-												<span class="msg-time float-end">4 hrs ago</span>
-											</h6>
-											<p class="msg-info">New customer comments recived</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-success text-success">
-											<i class="bx bx-check-square"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Your item is shipped
-												<span class="msg-time float-end">5 hrs ago</span>
-											</h6>
-											<p class="msg-info">Successfully shipped your item</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-primary text-primary">
-											<i class="bx bx-user-pin"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												New 24 authors<span class="msg-time float-end">1 day ago</span>
-											</h6>
-											<p class="msg-info">24 new authors joined last week</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="notify bg-light-warning text-warning">
-											<i class="bx bx-door-open"></i>
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Defense Alerts
-												<span class="msg-time float-end">2 weeks ago</span>
-											</h6>
-											<p class="msg-info">45% less alerts last 4 weeks</p>
-										</div>
-									</div>
-								</a>
-							</div>
-							<a href="javascript:;">
-								<div class="text-center msg-footer">View All Notifications</div>
-							</a>
-						</div>
-					</li>
-					<li class="nav-item dropdown dropdown-large">
-						<a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#"
-							role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="alert-count">8</span>
-							<i class="bx bx-comment"></i>
-						</a>
-						<div class="dropdown-menu dropdown-menu-end">
-							<a href="javascript:;">
-								<div class="msg-header">
-									<p class="msg-header-title">Messages</p>
-									<p class="msg-header-clear ms-auto">Marks all as read</p>
-								</div>
-							</a>
-							<div class="header-message-list">
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-1.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Daisy Anderson
-												<span class="msg-time float-end">5 sec ago</span>
-											</h6>
-											<p class="msg-info">The standard chunk of lorem</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-2.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Althea Cabardo
-												<span class="msg-time float-end">14 sec ago</span>
-											</h6>
-											<p class="msg-info">Many desktop publishing packages</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-3.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Oscar Garner
-												<span class="msg-time float-end">8 min ago</span>
-											</h6>
-											<p class="msg-info">Various versions have evolved over</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-4.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Katherine Pechon
-												<span class="msg-time float-end">15 min ago</span>
-											</h6>
-											<p class="msg-info">
-												Making this the first true generator
-											</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-5.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Amelia Doe
-												<span class="msg-time float-end">22 min ago</span>
-											</h6>
-											<p class="msg-info">
-												Duis aute irure dolor in reprehenderit
-											</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-6.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Cristina Jhons
-												<span class="msg-time float-end">2 hrs ago</span>
-											</h6>
-											<p class="msg-info">
-												The passage is attributed to an unknown
-											</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-7.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												James Caviness
-												<span class="msg-time float-end">4 hrs ago</span>
-											</h6>
-											<p class="msg-info">The point of using Lorem</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-8.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Peter Costanzo
-												<span class="msg-time float-end">6 hrs ago</span>
-											</h6>
-											<p class="msg-info">It was popularised in the 1960s</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-9.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												David Buckley
-												<span class="msg-time float-end">2 hrs ago</span>
-											</h6>
-											<p class="msg-info">Various versions have evolved over</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-10.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Thomas Wheeler
-												<span class="msg-time float-end">2 days ago</span>
-											</h6>
-											<p class="msg-info">If you are going to use a passage</p>
-										</div>
-									</div>
-								</a>
-								<a class="dropdown-item" href="javascript:;">
-									<div class="d-flex align-items-center">
-										<div class="user-online">
-											<img src="../../../assets/images/avatars/avatar-11.png" class="msg-avatar"
-												alt="user avatar" />
-										</div>
-										<div class="flex-grow-1">
-											<h6 class="msg-name">
-												Johnny Seitz
-												<span class="msg-time float-end">5 days ago</span>
-											</h6>
-											<p class="msg-info">All the Lorem Ipsum generators</p>
-										</div>
-									</div>
-								</a>
-							</div>
-							<a href="javascript:;">
-								<div class="text-center msg-footer">View All Messages</div>
-							</a>
-						</div>
-					</li>
-				</ul>
-			</div>
-			<div class="user-box dropdown">
-				<a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
-					role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<img src="https://www.shutterstock.com/image-vector/admin-icon-strategy-collection-thin-600nw-2307398667.jpg" class="user-img" alt="user avatar" />
-					<div class="user-info ps-3">
-						<p class="user-name mb-0">Admin</p>
-						<p class="designattion mb-0">Admin</p>
-					</div>
-				</a>
-				<ul class="dropdown-menu dropdown-menu-end">
-					<router-link to="/admin/profile">
-						<li>
-							<a class="dropdown-item" href="/admin/profile"><i
-									class="bx bx-user"></i><span>Profile</span></a>
-						</li>
-					</router-link>
-					<li>
-						<a class="dropdown-item" @click="dangXuat()"><i
-								class="bx bx-log-out-circle"></i><span>Logout</span></a>
-					</li>
-					<li>
-						<a class="dropdown-item" @click="dangXuatAll()"><i class="bx bx-log-out-circle"></i><span>Logout
-								All</span></a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-	</div>
+    <div class="topbar d-flex align-items-center custom-topbar">
+        <nav class="navbar navbar-expand w-100 px-3 justify-content-between">
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="mobile-toggle-menu d-lg-none">
+                    <i class="bx bx-menu" style="font-size: 1.5rem; color: #475569;"></i>
+                </div>
+                
+                <div class="d-none d-md-flex align-items-center text-muted" style="font-size: 1rem;">
+                    <i class="fa-solid fa-house me-2" style="color: #64748b;"></i>
+                    <i class="fa-solid fa-chevron-right me-2" style="font-size: 0.75rem; color: #94a3b8;"></i>
+                    <span style="font-weight: 600; color: #334155;">{{ pageTitle }}</span>
+                </div>
+            </div>
+
+            <div class="top-menu ms-auto d-flex align-items-center gap-3">
+                <ul class="navbar-nav align-items-center">
+                    
+                    <li class="nav-item me-3">
+                        <a class="nav-link position-relative" href="javascript:;">
+                            <i class="fa-solid fa-bell text-muted" style="font-size: 1.1rem;"></i>
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown dropdown-large">
+                        <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            
+                            <div class="user-info text-end pe-2 d-none d-md-block">
+                                <p class="mb-0 text-muted" style="font-size: 0.85rem;">Xin chào, <span class="fw-bold" style="color: #0f172a;">{{ adminName }}</span></p>
+                            </div>
+                            
+                            <img src="https://www.shutterstock.com/image-vector/admin-icon-strategy-collection-thin-600nw-2307398667.jpg" 
+                                 class="user-img shadow-sm" alt="user avatar" 
+                                 style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0;" />
+                        </a>
+                        
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px; min-width: 200px; padding: 8px 0; margin-top: 10px;">
+                            <router-link to="/admin/profile" style="text-decoration: none;">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg">
+                                        <i class="fa-solid fa-user me-3 text-primary"></i>
+                                        <span style="font-weight: 500; color: #334155;">Thông tin cá nhân</span>
+                                    </a>
+                                </li>
+                            </router-link>
+                            
+                            <li><hr class="dropdown-divider my-1"></li>
+                            
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg text-danger" href="javascript:;" @click="dangXuat()">
+                                    <i class="fa-solid fa-right-from-bracket me-3"></i>
+                                    <span style="font-weight: 500;">Đăng xuất</span>
+                                </a>
+                            </li>
+                            
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg text-danger" href="javascript:;" @click="dangXuatAll()">
+                                    <i class="fa-solid fa-power-off me-3"></i>
+                                    <span style="font-weight: 500;">Đăng xuất tất cả</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
+    </div>
 </template>
+
 <script>
 import axios from "axios";
 import apiUrl from "../../../utils/api";
+
 export default {
-	methods: {
-		dangXuat() {
-			axios
-				.post(
-					apiUrl("admin/dang-xuat"),
-					{},
-					{
-						headers: {
-							Authorization: "Bearer " + localStorage.getItem("key_admin"),
-						},
-					}
-				)
-				.then((res) => {
-					if (res.data.status) {
-						localStorage.removeItem("key_admin");
-						localStorage.removeItem("ho_va_ten");
-						this.$router.push("/admin/dang-nhap");
-						this.$toast.success(res.data.message);
-					} else {
-						this.$toast.error(res.data.message);
-					}
-				})
-				.catch((res) => {
-					const list = Object.values(res.response.data.errors);
-					list.forEach((v, i) => {
-						this.$toast.error(v[0]);
-					});
-				});
-		},
-		dangXuatAll() {
-			axios
-				.post(
-					apiUrl("admin/dang-xuat-all"),
-					{},
-					{
-						headers: {
-							Authorization: "Bearer " + localStorage.getItem("key_admin"),
-						},
-					}
-				)
-				.then((res) => {
-					if (res.data.status) {
-						localStorage.removeItem("key_admin");
-						localStorage.removeItem("ho_va_ten");
-						this.$router.push("/admin/dang-nhap");
-						this.$toast.success(res.data.message);
-					} else {
-						this.$toast.error(res.data.message);
-					}
-				})
-				.catch((res) => {
-					const list = Object.values(res.response.data.errors);
-					list.forEach((v, i) => {
-						this.$toast.error(v[0]);
-					});
-				});
-		},
-	},
+    data() {
+        return {
+            adminName: "Admin Master",
+        }
+    },
+    computed: {
+        // HÀM THEO DÕI ĐƯỜNG DẪN (ROUTE) VÀ HIỂN THỊ TÊN TƯƠNG ỨNG
+        pageTitle() {
+            const path = this.$route.path;
+            
+            // Từ điển ánh xạ đường dẫn URL -> Tiêu đề hiển thị trên Topbar
+            const routeMap = {
+                '/admin/dashboard': 'Admin Dashboard',
+                '/admin/nhan-vien': 'Quản lý Nhân Viên',
+                '/admin/khach-hang': 'Quản lý Khách Hàng',
+                '/admin/huong-dan-vien': 'Quản lý Hướng Dẫn Viên',
+                '/admin/quan-ly-tour': 'Quản lý Tour',
+                '/admin/lich-trinh': 'Quản lý Lịch Trình',
+                '/admin/ve': 'Quản lý Vé',
+                '/admin/hoa-don': 'Quản lý Hoá Đơn',
+                '/admin/quet-hoa-don': 'Quét Mã Vé',
+                '/admin/quan-ly-phuong-tien': 'Quản lý Phương Tiện',
+                '/admin/quan-ly-hdv-va-phan-cong': 'Quản lý Hướng Dẫn Viên & Phân Công',
+                '/admin/phan-quyen': 'Phân Quyền',
+                '/admin/bai-viet': 'Quản lý Bài Viết',
+                '/admin/danh-gia': 'Quản lý Đánh Giá',
+                '/admin/thong-ke/doanh-thu': 'Thống Kê Doanh Thu',
+                '/admin/thong-ke/khach-hang-moi': 'Thống Kê Khách Hàng Mới',
+                '/admin/thong-ke/ve-ban-ra': 'Thống Kê Vé Bán Ra',
+                '/admin/thong-ke/chi-tieu-khach-hang': 'Thống Kê Chi Tiêu Khách Hàng',
+                '/admin/thong-ke/tour': 'Thống Kê Tour',
+                '/admin/lien-he': 'Quản lý Liên Hệ',
+                '/admin/slide': 'Quản lý Slide',
+                '/admin/profile': 'Thông tin cá nhân'
+            };
+            
+            return routeMap[path] || 'Admin Dashboard';
+        }
+    },
+    mounted() {
+        // Lấy tên Admin từ localStorage
+        const name = localStorage.getItem("ho_va_ten");
+        if (name) {
+            this.adminName = name;
+        }
+    },
+    methods: {
+        dangXuat() {
+            axios.post(apiUrl("admin/dang-xuat"), {}, {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("key_admin"),
+                    },
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        localStorage.removeItem("key_admin");
+                        localStorage.removeItem("ho_va_ten");
+                        this.$router.push("/admin/dang-nhap");
+                        this.$toast.success(res.data.message);
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch((res) => {
+                    if (res.response && res.response.data && res.response.data.errors) {
+                        const list = Object.values(res.response.data.errors);
+                        list.forEach((v) => {
+                            this.$toast.error(v[0]);
+                        });
+                    }
+                });
+        },
+        dangXuatAll() {
+            axios.post(apiUrl("admin/dang-xuat-all"), {}, {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem("key_admin"),
+                    },
+                })
+                .then((res) => {
+                    if (res.data.status) {
+                        localStorage.removeItem("key_admin");
+                        localStorage.removeItem("ho_va_ten");
+                        this.$router.push("/admin/dang-nhap");
+                        this.$toast.success(res.data.message);
+                    } else {
+                        this.$toast.error(res.data.message);
+                    }
+                })
+                .catch((res) => {
+                    if (res.response && res.response.data && res.response.data.errors) {
+                        const list = Object.values(res.response.data.errors);
+                        list.forEach((v) => {
+                            this.$toast.error(v[0]);
+                        });
+                    }
+                });
+        },
+    },
 };
 </script>
-<style></style>
+
+<style scoped>
+/* Màu nền Topbar và cấu hình hiển thị */
+.custom-topbar {
+    background-color: #f3fffd !important;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+    height: 65px;
+    position: relative;
+    z-index: 10; /* Đặt số nhỏ để bị Sidebar (Menu) đè lên */
+}
+
+.hover-bg {
+    transition: background-color 0.2s ease;
+}
+.hover-bg:hover {
+    background-color: #f8fafc !important;
+}
+
+.dropdown-menu {
+    border: 1px solid #f1f5f9 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+</style>

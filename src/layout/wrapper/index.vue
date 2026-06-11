@@ -2,6 +2,9 @@
   <a-layout style="min-height: 100vh; background: #fff;"> 
     <MenuRocker />
     <a-layout style="background: #fff; margin-left: 0;"> 
+      
+      <TopRocker />
+
       <a-layout-content>
         <div :style="{ background: '#fff', minHeight: '100vh' }">
           <router-view></router-view>
@@ -16,6 +19,8 @@
 </template>
 
 <script>
+// ĐÃ THÊM IMPORT TOPROCKER
+import TopRocker from "../components/Admin/TopRocker.vue";
 import BotRocker from "../components/Admin/BotRocker.vue";
 import MenuRocker from "../components/Admin/MenuRocker.vue";
 
@@ -31,7 +36,9 @@ import "../../assets/js/pace.min.js";
 export default {
     name        :   "app",
     components  :   {
-        MenuRocker, BotRocker,
+        TopRocker, // ĐÃ KHAI BÁO COMPONENT Ở ĐÂY
+        MenuRocker, 
+        BotRocker,
     }
 }
 </script>
