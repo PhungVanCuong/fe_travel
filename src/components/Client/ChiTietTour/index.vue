@@ -35,7 +35,8 @@
                             <div @click="toggleSingle(index)" class="d-flex align-items-center justify-content-between"
                                 style="cursor: pointer;">
                                 <div class="d-flex align-items-center">
-                                    <img v-if="index_mo !== index && !is_open_all" :src="item.hinh_anh || 'https://via.placeholder.com/80x60?text=No+Image'"
+                                    <img v-if="index_mo !== index && !is_open_all"
+                                        :src="item.hinh_anh || 'https://via.placeholder.com/80x60?text=No+Image'"
                                         style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;"
                                         class="me-3">
                                     <div>
@@ -49,7 +50,8 @@
 
                             <div v-if="index_mo === index || is_open_all"
                                 class="mt-3 animate__animated animate__fadeIn">
-                                <img :src="item.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'" class="img-fluid rounded-3 mb-3"
+                                <img :src="item.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'"
+                                    class="img-fluid rounded-3 mb-3"
                                     style="width: 100%; max-height: 300px; object-fit: cover;">
                                 <p class="fw-bold text-dark">{{ item.tieu_de_hoat_dong }}</p>
                                 <p class="text-secondary" style="white-space: pre-line;">{{ item.mo_ta }}</p>
@@ -91,25 +93,35 @@
                                     <li>Từ trẻ thứ 02 trở đi, áp dụng mức giá theo quy định của từng nhóm tuổi.</li>
                                     <li>Trẻ em ngủ chung giường với bố mẹ.</li>
                                 </ul>
-                                <p style="font-weight: 600; margin-bottom: 8px; margin-top: 15px;">2. Quy định theo độ tuổi:</p>
+                                <p style="font-weight: 600; margin-bottom: 8px; margin-top: 15px;">2. Quy định theo độ
+                                    tuổi:</p>
                                 <ul style="padding-left: 20px; line-height: 1.8;">
-                                    <li><span style="font-weight: 600;">Dưới 2 tuổi:</span> Giá theo website. Ngủ chung giường với bố mẹ.</li>
-                                    <li><span style="font-weight: 600;">Từ 2 - 10 tuổi:</span> Giá theo website. Bao gồm đầy đủ dịch vụ chương trình.</li>
-                                    <li><span style="font-weight: 600;">Từ 10 tuổi trở lên:</span> Tính 100% giá người lớn.</li>
+                                    <li><span style="font-weight: 600;">Dưới 2 tuổi:</span> Giá theo website. Ngủ chung
+                                        giường với bố mẹ.</li>
+                                    <li><span style="font-weight: 600;">Từ 2 - 10 tuổi:</span> Giá theo website. Bao gồm
+                                        đầy đủ dịch vụ chương trình.</li>
+                                    <li><span style="font-weight: 600;">Từ 10 tuổi trở lên:</span> Tính 100% giá người
+                                        lớn.</li>
                                 </ul>
                             </div>
                         </div>
 
                         <div style="margin-bottom: 25px;">
                             <h5 style="font-weight: 700; color: #dc3545; margin-bottom: 15px;">
-                                <i class="fa-solid fa-calendar-xmark" style="margin-right: 10px;"></i>Chính sách hủy & thay đổi
+                                <i class="fa-solid fa-calendar-xmark" style="margin-right: 10px;"></i>Chính sách hủy &
+                                thay đổi
                             </h5>
                             <div style="padding-left: 20px; color: #495057;">
-                                <div style="display: grid; grid-template-columns: 200px 1fr; gap: 10px; line-height: 2;">
-                                    <span>Trước khởi hành 90 ngày:</span> <span style="font-weight: 700;">5.000.000đ/khách</span>
-                                    <span>Từ 45 - 89 ngày:</span> <span style="font-weight: 700;">15.000.000đ/khách</span>
-                                    <span>Từ 30 - 44 ngày:</span> <span style="font-weight: 700;">50% tổng giá tour</span>
-                                    <span>Từ 15 - 19 ngày:</span> <span style="font-weight: 700;">100% tổng giá tour</span>
+                                <div
+                                    style="display: grid; grid-template-columns: 200px 1fr; gap: 10px; line-height: 2;">
+                                    <span>Trước khởi hành 90 ngày:</span> <span
+                                        style="font-weight: 700;">5.000.000đ/khách</span>
+                                    <span>Từ 45 - 89 ngày:</span> <span
+                                        style="font-weight: 700;">15.000.000đ/khách</span>
+                                    <span>Từ 30 - 44 ngày:</span> <span style="font-weight: 700;">50% tổng giá
+                                        tour</span>
+                                    <span>Từ 15 - 19 ngày:</span> <span style="font-weight: 700;">100% tổng giá
+                                        tour</span>
                                 </div>
                                 <p style="margin-top: 10px; font-style: italic; font-size: 0.9rem; color: #6c757d;">
                                     * Lễ, Tết không hoàn, hủy, đổi: mất 100% giá trị tour.
@@ -128,7 +140,8 @@
                             </ul>
                         </div>
 
-                        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 5px solid #0d6efd;">
+                        <div
+                            style="background-color: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 5px solid #0d6efd;">
                             <p style="margin-bottom: 0; color: #6c757d; font-size: 0.95rem;">
                                 <i class="fa-solid fa-circle-info" style="margin-right: 8px;"></i>
                                 HDV sẽ liên lạc khoảng 2 ngày trước khởi hành để sắp xếp giờ đón.
@@ -138,17 +151,22 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- CỘT PHẢI (GRID ẢNH VÀ ĐẶT TOUR) -->
             <div class="col-lg-5">
-                
+
                 <!-- GRID ẢNH BÊN PHẢI -->
                 <div class="row">
-                    <div v-for="(img, index) in list_hinh_anh" :key="index" class="col-lg-6 mb-3 position-relative" @click="show_modal_anh = true" style="cursor: pointer;">
-                        <img :src="img.url" class="img-fluid rounded shadow-sm hover-zoom" style="width: 100%; height: 150px; object-fit: cover;">
+                    <div v-for="(img, index) in list_hinh_anh" :key="index" class="col-lg-6 mb-3 position-relative"
+                        @click="show_modal_anh = true" style="cursor: pointer;">
+                        <img :src="img.url" class="img-fluid rounded shadow-sm hover-zoom"
+                            style="width: 100%; height: 150px; object-fit: cover;">
                         <!-- Lớp filter mờ khi là ảnh "Xem thêm" -->
-                        <div v-if="img.is_more" class="position-absolute top-0 start-0 w-100 h-100 rounded d-flex align-items-center justify-content-center hover-overlay" style="background: rgba(0,0,0,0.6); margin-left: 12px; width: calc(100% - 24px) !important; transition: all 0.3s;">
-                            <span class="text-white fw-bold fs-5"><i class="fa-solid fa-images me-1"></i> Khám phá thêm</span>
+                        <div v-if="img.is_more"
+                            class="position-absolute top-0 start-0 w-100 h-100 rounded d-flex align-items-center justify-content-center hover-overlay"
+                            style="background: rgba(0,0,0,0.6); margin-left: 12px; width: calc(100% - 24px) !important; transition: all 0.3s;">
+                            <span class="text-white fw-bold fs-5"><i class="fa-solid fa-images me-1"></i> Khám phá
+                                thêm</span>
                         </div>
                     </div>
                 </div>
@@ -188,7 +206,8 @@
                                 placeholder="Ví dụ: &#10;Nguyễn Văn A, 0922222222, 27/05/1990 &#10;Trần Thị B, 0911111111, 10/02/1995"></textarea>
                             <div class="form-text text-muted">
                                 <i class="fa-solid fa-circle-info me-1"></i>
-                                Vui lòng nhập mỗi người một dòng theo định dạng: <b>Họ tên, Số điện thoại, Ngày sinh</b>.
+                                Vui lòng nhập mỗi người một dòng theo định dạng: <b>Họ tên, Số điện thoại, Ngày
+                                    sinh</b>.
                             </div>
                         </div>
 
@@ -216,10 +235,22 @@
         <!-- ĐÁNH GIÁ -->
         <div class="row mt-5">
             <div class="col-lg-12 mt-4">
-                <h3 class="fw-bold mb-4">Đánh giá từ khách hàng</h3>
+                <h3 class="fw-bold mb-3">Đánh giá từ khách hàng ({{ ds_danh_gia.length }})</h3>
 
-                <div v-if="ds_danh_gia.length > 0" class="list-danh-gia">
-                    <div v-for="(v, k) in ds_danh_gia" :key="k" class="card border-0 shadow-sm mb-3 p-3"
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <button @click="filterStar = 'all'"
+                        :class="['btn btn-sm px-3 rounded-pill fw-bold', filterStar === 'all' ? 'btn-secondary text-white' : 'btn-outline-secondary']">
+                        Tất cả ({{ ds_danh_gia.length }})
+                    </button>
+
+                    <button v-for="star in [5, 4, 3, 2, 1]" :key="star" @click="filterStar = star"
+                        :class="['btn btn-sm px-3 rounded-pill fw-bold d-flex align-items-center gap-1', filterStar === star ? 'btn-warning text-dark' : 'btn-outline-warning']">
+                        {{ star }} <i class="fa-solid fa-star small"></i> ({{ countStars(star) }})
+                    </button>
+                </div>
+
+                <div v-if="filteredDanhGia.length > 0" class="list-danh-gia">
+                    <div v-for="(v, k) in filteredDanhGia" :key="k" class="card border-0 shadow-sm mb-3 p-3"
                         style="border-radius: 15px;">
                         <div class="d-flex align-items-start">
                             <img :src="v.avatar || 'https://via.placeholder.com/50'" class="rounded-circle me-3"
@@ -248,10 +279,13 @@
 
                 <div v-else class="text-center p-5 border border-dashed rounded-4 bg-light">
                     <i class="fa-solid fa-comments text-muted fs-1 mb-3"></i>
-                    <p class="text-muted">Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!</p>
+                    <p class="text-muted">
+                        {{ filterStar === 'all' ? 'Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!' : 'Không có đánh giá ' + filterStar + ' sao nào.' }}
+                    </p>
                 </div>
             </div>
-            
+
+
             <!-- TOUR GỢI Ý -->
             <div class="col-lg-12 mt-5">
                 <h3 class="fw-bold mb-4">Các tour khác bạn có thể thích</h3>
@@ -259,7 +293,8 @@
                     <template v-for="(value, index) in list_tour_khac.slice(0, 3)" :key="index">
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100 shadow-sm border-0 tour-card"
-                                style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease;" @click="$router.push('/client/chi-tiet-tour/' + value.id)">
+                                style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease;"
+                                @click="$router.push('/client/chi-tiet-tour/' + value.id)">
 
                                 <div class="position-relative">
                                     <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
@@ -311,7 +346,8 @@
         </div>
 
         <!-- MODAL XEM TẤT CẢ ẢNH (LIGHTBOX) -->
-        <div v-if="show_modal_anh" class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.8); z-index: 1050;">
+        <div v-if="show_modal_anh" class="modal fade show d-block" tabindex="-1"
+            style="background: rgba(0,0,0,0.8); z-index: 1050;">
             <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
                 <div class="modal-content border-0">
                     <div class="modal-header">
@@ -321,7 +357,8 @@
                     <div class="modal-body p-4 bg-light">
                         <div class="row g-3">
                             <div class="col-12 col-md-6" v-for="(img, idx) in all_images" :key="idx">
-                                <img :src="img" class="img-fluid rounded shadow-sm w-100" style="height: 250px; object-fit: cover;">
+                                <img :src="img" class="img-fluid rounded shadow-sm w-100"
+                                    style="height: 250px; object-fit: cover;">
                             </div>
                         </div>
                     </div>
@@ -353,8 +390,10 @@ export default {
                 so_luong_nguoi: 1,
                 ghi_chu_danh_sach_nguoi_di: '',
                 phuong_thuc_thanh_toan: 'Chuyển khoản'
-            }
+            },
+            filterStar: 'all',
         }
+        
     },
     watch: {
         '$route.params.id_tour': function (newId) {
@@ -368,7 +407,23 @@ export default {
         this.LoadTour();
         this.layDanhSachDanhGia();
     },
+    computed: {
+        filteredDanhGia() {
+            if (this.filterStar === 'all') {
+                return this.ds_danh_gia;
+            }
+            return this.ds_danh_gia.filter(item => item.sao_danh_gia === this.filterStar);
+        }
+    },
     methods: {
+        countStars(star) {
+            return this.ds_danh_gia.filter(item => item.sao_danh_gia === star).length;
+        },
+        formatDate(dateString) {
+            if (!dateString) return "...";
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('vi-VN').format(date);
+        },
         layDanhSachDanhGia() {
             const id_tour = this.id;
             axios.get(apiUrl('client/danh-gia/get-danh-gia/' + id_tour))
@@ -402,7 +457,7 @@ export default {
 
                         // --- LOGIC XỬ LÝ ẢNH MỚI (Lọc Trùng + Random) ---
                         let uniqueImages = [];
-                        
+
                         // 1. Nạp ảnh gốc của Tour vào đầu tiên
                         if (this.chi_tiet_tour.hinh_anh) {
                             uniqueImages.push(this.chi_tiet_tour.hinh_anh);
@@ -423,11 +478,11 @@ export default {
                             'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
                             'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
                             'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
-                            'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80', 
-                            'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80', 
-                            'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80', 
-                            'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80', 
-                            'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80', 
+                            'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
+                            'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80',
+                            'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+                            'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
+                            'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80',
                             'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80'
                         ];
 
@@ -495,8 +550,8 @@ export default {
             };
 
             axios.post(apiUrl("client/dat-tour/thanh-toan"), payload, {
-                    headers: { Authorization: "Bearer " + token }
-                })
+                headers: { Authorization: "Bearer " + token }
+            })
                 .then((res) => {
                     if (res.data.status) {
                         this.$toast.success(res.data.message);
@@ -539,7 +594,7 @@ button:hover {
 
 .tour-card:hover {
     transform: translateY(-5px) !important;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
 .list-danh-gia .card {
@@ -563,14 +618,17 @@ button:hover {
 .hover-zoom {
     transition: transform 0.4s ease;
 }
+
 .col-lg-6.position-relative:hover .hover-zoom {
     transform: scale(1.05);
 }
+
 .col-lg-6.position-relative {
     overflow: hidden;
     border-radius: 5px;
 }
+
 .hover-overlay:hover {
-    background: rgba(0,0,0,0.7) !important;
+    background: rgba(0, 0, 0, 0.7) !important;
 }
 </style>
