@@ -6,7 +6,7 @@
         v-if="!trangThaiThuGonMenu" 
         src="../../../assets/images/Logo1.png" 
         alt="Logo IxtalTour" 
-        style="height: 80px; width: auto; object-fit: contain;" 
+        style="height: 50px; width: auto; object-fit: contain; justify-content: center; margin-left: 10px;" 
       />
       <MenuOutlined style="font-size: 20px; cursor: pointer; color: black;" @click="thayDoiTrangThaiMenu" />
     </div>
@@ -18,7 +18,6 @@
         mode="inline"
         @click="xuLyChuyenTrang"
       >
-        <!-- Menu chính của Hướng dẫn viên -->
         <a-menu-item key="/huong-dan-vien/lich-trinh">
           <template #icon><i class="bx bx-calendar menu-icon"></i></template>
           Lịch Trình Công Việc
@@ -34,21 +33,7 @@
           Quản Lý Khách Hàng
         </a-menu-item>
 
-        <a-divider style="border-color: rgba(0, 0, 0, 0.06); margin: 10px 0;" />
-
-        <!-- Quản lý tài khoản cá nhân & Đăng xuất -->
-        <a-sub-menu key="danh-muc-tai-khoan-ca-nhan">
-          <template #icon>
-            <img 
-              src="https://www.shutterstock.com/image-vector/admin-icon-strategy-collection-thin-600nw-2307398667.jpg" 
-              style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;" 
-            />
-          </template>
-          <template #title>Hướng dẫn viên</template>
-          <a-menu-item key="/huong-dan-vien/profile">Thông tin cá nhân</a-menu-item>
-          <a-menu-item key="chuc-nang-dang-xuat">Đăng xuất</a-menu-item>
-          <a-menu-item key="chuc-nang-dang-xuat-tat-ca">Đăng xuất tất cả</a-menu-item>
-        </a-sub-menu>
+        <a-divider style="border-color: rgba(0, 0, 0, 0.06); margin: 15px 0;" />
 
         <a-menu-item key="/">
           <template #icon><i class="fa-solid fa-home menu-icon"></i></template>
@@ -64,86 +49,53 @@
 import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { MenuOutlined } from '@ant-design/icons-vue';
-import { message } from 'ant-design-vue';
-import axios from 'axios';
-import apiUrl from '../../../utils/api'; 
 
 const trangThaiThuGonMenu = ref(false);
 const danhSachDuongDanDuocChon = ref([]);
-const duongDanHienTai = useRoute();
-const boDinhTuyen = useRouter();
+const route = useRoute();
+const router = useRouter();
 
+// Xử lý thu phóng menu
 const thayDoiTrangThaiMenu = () => {
   trangThaiThuGonMenu.value = !trangThaiThuGonMenu.value;
 };
 
+// Theo dõi đường dẫn (route) để in đậm thẻ menu đang đứng
 watch(
-  () => duongDanHienTai.path,
+  () => route.path,
   (duongDanMoi) => {
     danhSachDuongDanDuocChon.value = [duongDanMoi];
   },
   { immediate: true }
 );
 
-const xuLyChuyenTrang = (thongTinMenu) => {
-  const khoaCuaMenu = thongTinMenu.key;
-
-  if (khoaCuaMenu === 'chuc-nang-dang-xuat') {
-    thucHienDangXuat();
-  } 
-  else if (khoaCuaMenu === 'chuc-nang-dang-xuat-tat-ca') {
-    thucHienDangXuatTatCaTaiKhoan();
-  } 
-  else if (typeof khoaCuaMenu === 'string' && khoaCuaMenu.startsWith('/')) {
-    boDinhTuyen.push(khoaCuaMenu);
+// Xử lý chuyển trang
+const xuLyChuyenTrang = (menuInfo) => {
+  const khoaCuaMenu = menuInfo.key;
+  if (typeof khoaCuaMenu === 'string' && khoaCuaMenu.startsWith('/')) {
+    router.push(khoaCuaMenu);
   }
-};
-
-const thucHienDangXuat = () => {
-  // Thay đổi đường dẫn API và biến local storage cho phù hợp với vai trò Hướng dẫn viên
-  axios.post(apiUrl("huong-dan-vien/dang-xuat"), {}, {
-    headers: { Authorization: "Bearer " + localStorage.getItem("key_huong_dan_vien") }
-  }).then((ketQuaTraVe) => {
-    if (ketQuaTraVe.data.status) {
-      localStorage.removeItem("key_huong_dan_vien");
-      localStorage.removeItem("ho_va_ten");
-      boDinhTuyen.push("/huong-dan-vien/dang-nhap");
-      message.success(ketQuaTraVe.data.message);
-    } else {
-      message.error(ketQuaTraVe.data.message);
-    }
-  }).catch((loiPhatSinh) => console.log(loiPhatSinh));
-};
-
-const thucHienDangXuatTatCaTaiKhoan = () => {
-  axios.post(apiUrl("huong-dan-vien/dang-xuat-all"), {}, {
-    headers: { Authorization: "Bearer " + localStorage.getItem("key_huong_dan_vien") }
-  }).then((ketQuaTraVe) => {
-    if (ketQuaTraVe.data.status) {
-      localStorage.removeItem("key_huong_dan_vien");
-      localStorage.removeItem("ho_va_ten");
-      boDinhTuyen.push("/huong-dan-vien/dang-nhap");
-      message.success(ketQuaTraVe.data.message);
-    } else {
-      message.error(ketQuaTraVe.data.message);
-    }
-  }).catch((loiPhatSinh) => console.log(loiPhatSinh));
 };
 </script>
 
 <style scoped>
-/* KHÓA CHIỀU CAO SIDEBAR & CỐ ĐỊNH TRÊN MÀN HÌNH */
+/* =========================================================
+   KHÓA CHIỀU CAO SIDEBAR & ÉP NẰM TRÊN TOPBAR + FOOTER
+   ========================================================= */
 .custom-sidebar {
   height: 100vh !important;
   position: sticky !important;
   top: 0 !important;
   left: 0 !important;
   background-color: #f4fdf8 !important;
-  border-right: 1px solid #f0f0f0;
-  box-shadow: none !important;
+  border-right: 1px solid #e2e8f0;
+  
+  /* Bóng đổ nhẹ bên phải và z-index cực cao để đè mọi thứ, kể cả Footer */
+  box-shadow: 2px 0 10px rgba(0,0,0,0.05) !important;
+  z-index: 1000 !important; 
 }
 
-/* CẤU TRÚC CUỘN ĐỘC LẬP */
+/* CẤU TRÚC CUỘN ĐỘC LẬP BÊN TRONG */
 :deep(.ant-layout-sider-children) {
   display: flex !important;
   flex-direction: column !important;
@@ -157,7 +109,9 @@ const thucHienDangXuatTatCaTaiKhoan = () => {
   padding-bottom: 80px !important;
 }
 
-/* MÀU SẮC MENU */
+/* =========================================================
+   MÀU SẮC MENU TỔNG THỂ
+   ========================================================= */
 :deep(.ant-menu),
 :deep(.ant-menu-root),
 :deep(.ant-menu-sub),
@@ -175,7 +129,7 @@ const thucHienDangXuatTatCaTaiKhoan = () => {
 /* MÀU XANH KHI DI CHUỘT (Hover) */
 :deep(.ant-menu-item:hover),
 :deep(.ant-menu-submenu-title:hover) {
-  background-color: #e6f9ef !important;
+  background-color: #e6f9ef !important; 
   color: #1b6b43 !important;           
 }
 
@@ -186,24 +140,24 @@ const thucHienDangXuatTatCaTaiKhoan = () => {
   font-weight: bold;
 }
 
-/* ĐẢM BẢO ICON CÙNG MÀU XANH */
+/* ĐẢM BẢO ICON CÙNG MÀU XANH VỚI THEME */
 .menu-icon {
   font-size: 1.2rem;
   color: #1b6b43; 
   margin-right: 10px;
 }
 
-/* Khi item được chọn, icon cũng đổi màu thành trắng */
+/* Khi item được chọn, icon tự động đổi sang màu trắng */
 :deep(.ant-menu-item-selected .menu-icon) {
   color: #ffffff !important;
 }
 
-/* Đường phân cách */
+/* Đường phân cách (Divider) */
 :deep(.ant-divider) {
   border-color: #f0f0f0 !important;
 }
 
-/* TÙY CHỈNH THANH CUỘN */
+/* TÙY CHỈNH THANH CUỘN (SCROLLBAR) */
 .menu-scroll-area::-webkit-scrollbar {
   width: 5px;
 }

@@ -19,11 +19,9 @@
 </template>
 
 <script>
-// ĐÃ THÊM IMPORT TOPROCKER
 import TopRocker from "../components/Admin/TopRocker.vue";
 import BotRocker from "../components/Admin/BotRocker.vue";
 import MenuRocker from "../components/Admin/MenuRocker.vue";
-
 import "../../assets/js/bootstrap.bundle.min.js";
 import "../../assets/js/jquery.min.js";
 import "../../assets/plugins/simplebar/js/simplebar.min.js";
@@ -36,7 +34,7 @@ import "../../assets/js/pace.min.js";
 export default {
     name        :   "app",
     components  :   {
-        TopRocker, // ĐÃ KHAI BÁO COMPONENT Ở ĐÂY
+        TopRocker,
         MenuRocker, 
         BotRocker,
     }

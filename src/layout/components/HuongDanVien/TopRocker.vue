@@ -1,68 +1,73 @@
 <template>
-    <header>
-        <div class="topbar d-flex align-items-center">
-            <nav class="navbar navbar-expand">
-                <div class="topbar-logo-header">
-                    <div class="">
-                        <router-link class="logo-text" to="/huong-dan-vien/profile">Hướng Dẫn Viên</router-link>
-                    </div>
+    <div class="topbar d-flex align-items-center custom-topbar">
+        <nav class="navbar navbar-expand w-100 px-3 justify-content-between">
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="mobile-toggle-menu d-lg-none">
+                    <i class="bx bx-menu" style="font-size: 1.5rem; color: #475569;"></i>
                 </div>
-                <div class="mobile-toggle-menu"><i class='bx bx-menu'></i></div>
                 
-                <div class="top-menu ms-auto">
-                    <ul class="navbar-nav align-items-center">
-                        <li class="nav-item dropdown dropdown-large">
-                            <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> 
-                                <span class="alert-count">0</span>
-                                <i class='bx bx-bell'></i>
+                <div class="d-none d-md-flex align-items-center text-muted" style="font-size: 1rem;">
+                    <i class="fa-solid fa-house me-2" style="color: #64748b;"></i>
+                    <i class="fa-solid fa-chevron-right me-2" style="font-size: 0.75rem; color: #94a3b8;"></i>
+                    <span style="font-weight: 600; color: #334155;">{{ pageTitle }}</span>
+                </div>
+            </div>
+
+            <div class="top-menu ms-auto d-flex align-items-center gap-3">
+                <ul class="navbar-nav align-items-center">
+                    
+                    <li class="nav-item me-3">
+                        <a class="nav-link position-relative" href="javascript:;">
+                            <i class="fa-solid fa-bell text-muted" style="font-size: 1.1rem;"></i>
                             </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="javascript:;">
-                                    <div class="msg-header">
-                                        <p class="msg-header-title">Thông báo</p>
-                                    </div>
-                                </a>
-                                <div class="header-notifications-list">
-                                </div>
+                    </li>
+
+                    <li class="nav-item dropdown dropdown-large">
+                        <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            
+                            <div class="user-info text-end pe-2 d-none d-md-block">
+                                <p class="mb-0 text-muted" style="font-size: 0.85rem;">Xin chào, <span class="fw-bold" style="color: #0f172a;">{{ userProfile.ho_va_ten || 'Hướng Dẫn Viên' }}</span></p>
                             </div>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="user-box dropdown">
-                    <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <!-- ĐÃ SỬA LẠI THÀNH USERPROFILE.AVATAR ĐỂ LẤY ĐÚNG ẢNH -->
-                        <img :src="userProfile.avatar || 'https://ui-avatars.com/api/?name=' + userProfile.ho_va_ten + '&background=random'" class="user-img" alt="user avatar">
-                        <div class="user-info ps-3">
-                            <p class="user-name mb-0">{{ userProfile.ho_va_ten || 'Đang tải...' }}</p>
-                            <small class="text-muted">{{ userProfile.email || 'HDV IXTAL TOUR' }}</small>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li>
-                            <router-link class="dropdown-item" to="/huong-dan-vien/profile">
-                                <i class="bx bx-user"></i><span>Thông tin cá nhân</span>
+                            
+                            <img :src="userProfile.avatar || 'https://ui-avatars.com/api/?name=' + (userProfile.ho_va_ten || 'HDV') + '&background=random'" 
+                                 class="user-img shadow-sm" alt="user avatar" 
+                                 style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid #e2e8f0;" />
+                        </a>
+                        
+                        <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 12px; min-width: 200px; padding: 8px 0; margin-top: 10px;">
+                            <router-link to="/huong-dan-vien/profile" style="text-decoration: none;">
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg">
+                                        <i class="fa-solid fa-user me-3 text-primary"></i>
+                                        <span style="font-weight: 500; color: #334155;">Thông tin cá nhân</span>
+                                    </a>
+                                </li>
                             </router-link>
-                        </li>
-                        <li>
-                            <div class="dropdown-divider mb-0"></div>
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="javascript:;" @click="dangXuat()">
-                                <i class='bx bx-log-out'></i><span>Đăng xuất</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item text-danger" href="javascript:;" @click="dangXuatAll()">
-                                <i class='bx bx-power-off'></i><span>Đăng xuất tất cả thiết bị</span>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </div>
-    </header>
+                            
+                            <li><hr class="dropdown-divider my-1"></li>
+                            
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg text-danger" href="javascript:;" @click="dangXuat()">
+                                    <i class="fa-solid fa-right-from-bracket me-3"></i>
+                                    <span style="font-weight: 500;">Đăng xuất</span>
+                                </a>
+                            </li>
+                            
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center py-2 px-3 hover-bg text-danger" href="javascript:;" @click="dangXuatAll()">
+                                    <i class="fa-solid fa-power-off me-3"></i>
+                                    <span style="font-weight: 500;">Đăng xuất tất cả</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </nav>
+    </div>
 </template>
 
 <script>
@@ -76,13 +81,29 @@ export default {
             userProfile: {
                 ho_va_ten: '',
                 email: '',
-                avatar: '' // Đổi thành avatar
+                avatar: ''
             }
+        }
+    },
+    computed: {
+        // HÀM THEO DÕI ĐƯỜNG DẪN (ROUTE) VÀ HIỂN THỊ TÊN TƯƠNG ỨNG GIỐNG ADMIN
+        pageTitle() {
+            const path = this.$route.path;
+            
+            // Từ điển ánh xạ đường dẫn URL -> Tiêu đề hiển thị trên Topbar
+            const routeMap = {
+                '/huong-dan-vien/dashboard': 'Bảng điều khiển',
+                '/huong-dan-vien/lich-trinh': 'Lịch Trình Công Việc',
+                '/huong-dan-vien/quan-ly-tour': 'Quản Lý Tour Dẫn',
+                '/huong-dan-vien/quan-ly-khach-hang': 'Quản Lý Khách Hàng',
+                '/huong-dan-vien/profile': 'Thông tin cá nhân'
+            };
+            
+            return routeMap[path] || 'Trang Hướng Dẫn Viên';
         }
     },
     mounted() {
         this.loadUserProfile();
-        // Lắng nghe sự kiện khi Profile cập nhật thì tải lại avatar ngay lập tức
         window.addEventListener('profile-updated', this.loadUserProfile);
     },
     beforeUnmount() {
@@ -100,6 +121,8 @@ export default {
                 .then(res => {
                     if (res.data.status) {
                         this.userProfile = res.data.data;
+                        // Lưu tên vào localstorage để các màn hình khác có thể dùng
+                        localStorage.setItem("ho_va_ten", this.userProfile.ho_va_ten);
                     }
                 })
                 .catch((err) => {
@@ -116,6 +139,7 @@ export default {
                 .then(res => {
                     if (res.data.status) {
                         localStorage.removeItem('key_hdv');
+                        localStorage.removeItem('ho_va_ten');
                         this.$toast.success(res.data.message);
                         this.$router.push('/huong-dan-vien/dang-nhap');
                     } else {
@@ -133,6 +157,7 @@ export default {
                     .then(res => {
                         if (res.data.status) {
                             localStorage.removeItem('key_hdv');
+                            localStorage.removeItem('ho_va_ten');
                             this.$toast.success(res.data.message);
                             this.$router.push('/huong-dan-vien/dang-nhap');
                         }
@@ -150,8 +175,31 @@ export default {
     }
 }
 </script>
+
 <style scoped>
+/* Màu nền Topbar và cấu hình hiển thị */
+.custom-topbar {
+    background-color: #f3fffd !important;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02) !important;
+    height: 65px;
+    position: relative;
+    z-index: 10;
+}
+
+.hover-bg {
+    transition: background-color 0.2s ease;
+}
+.hover-bg:hover {
+    background-color: #f8fafc !important;
+}
+
+.dropdown-menu {
+    border: 1px solid #f1f5f9 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+
 .text-danger i {
-    color: #dc3545 !important;
+    color: #dc2626 !important;
 }
 </style>

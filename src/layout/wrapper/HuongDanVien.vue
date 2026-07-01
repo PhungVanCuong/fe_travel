@@ -2,6 +2,9 @@
   <a-layout style="min-height: 100vh; background: #fff;"> 
     <MenuRocker />
     <a-layout style="background: #fff; margin-left: 0;"> 
+      
+      <TopRocker />
+
       <a-layout-content>
         <div :style="{ background: '#fff', minHeight: '100vh' }">
           <router-view></router-view>
@@ -16,6 +19,7 @@
 </template>
 
 <script>
+import TopRocker from "../components/HuongDanVien/TopRocker.vue";
 import BotRocker from "../components/HuongDanVien/BotRocker.vue";
 import MenuRocker from "../components/HuongDanVien/MenuRocker.vue";
 import "../../assets/js/bootstrap.bundle.min.js";
@@ -26,13 +30,17 @@ import "../../assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js";
 import "../../assets/js/index.js";
 import "../../assets/js/app.js";
 import "../../assets/js/pace.min.js";
+
 export default {
     name        :   "app",
     components  :   {
-        MenuRocker, BotRocker
+        TopRocker,
+        MenuRocker, 
+        BotRocker
     }
 }
 </script>
+
 <style>
 @import "../../assets/plugins/simplebar/css/simplebar.css";
 @import "../../assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css";
