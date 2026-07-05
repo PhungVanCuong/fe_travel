@@ -5,17 +5,16 @@
     <div class="bao-dang-ky container">
       <div class="row justify-content-center">
         <!-- Đã thu hẹp cột lại (col-lg-6 col-xl-5) để form 1 cột không bị quá to/bè ra -->
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5 mx-auto">
-          
-          <div class="vung-logo text-center mb-4">
-            <div class="bieu-tuong-logo mb-3">
-              <img src="https://i.pinimg.com/564x/48/e5/9e/48e59ef6ef580dad0e44420cf79f1f7a.jpg" alt="logo" class="rounded-circle shadow-sm">
-            </div>
-            <h2 class="tieu-de-logo">IXTAL TOUR</h2>
-          </div>
-
+        <div class="col-12 col-md-8 col-lg-5 col-xl-4 mx-auto">
           <div class="the-dang-ky">
             <div class="noi-dung-the">
+              <!-- Phần Logo & Tiêu đề -->
+              <div class="vung-logo text-center mb-2">
+                <div class="bieu-tuong-logo mb-2">
+                  <img src="../../../assets/images/Logo.png" alt="logo">
+                </div>
+                <h2 class="tieu-de-logo">IxtalTour</h2>
+              </div>
               <h3 class="tieu-de-the">TẠO TÀI KHOẢN</h3>
               <p class="text-center text-muted mb-4 small">Đăng ký thành viên để nhận ngay nhiều ưu đãi hấp dẫn từ hệ thống.</p>
 
@@ -208,33 +207,12 @@ export default {
 }
 
 /* Phần Logo */
-.vung-logo {
-  animation: truotXuong 0.6s ease-out;
-}
-
-.bieu-tuong-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  width: 90px;
-  height: 90px;
-}
-
-.bieu-tuong-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.tieu-de-logo {
-  font-size: 24px;
-  font-weight: 800;
-  color: #1b7d6b;
-  letter-spacing: 2px;
-  margin: 0;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
+/* LOGO & TIÊU ĐỀ */
+.vung-logo { animation: truotXuong 0.5s ease-out; }
+.bieu-tuong-logo { display: flex; justify-content: center; align-items: center; margin: 0 auto; width: 65px; height: 65px; border-radius: 16px; }
+.bieu-tuong-logo img { width: 90%; height: 90%; object-fit: contain; }
+.tieu-de-logo { font-size: 22px; font-weight: 800; color: #1b7d6b; margin: 0; }
+.tieu-de-the { font-size: 25px; font-weight: 800; color: #1b7d6b; text-align: center; margin: 0 0 5px 0; }
 
 /* Card Đăng Ký */
 .the-dang-ky {

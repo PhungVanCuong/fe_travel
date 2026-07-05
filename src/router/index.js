@@ -10,7 +10,7 @@ const routes = [
     {
         path: "/client",
         component: () => import("../components/Client/DangNhap/index.vue"),
-        meta: { layout: "blank" },
+        meta: { layout: "client" },
     },
     {
         path: "/client/",
@@ -25,29 +25,28 @@ const routes = [
     {
         path: "/client/dang-nhap",
         component: () => import("../components/Client/DangNhap/index.vue"),
-        meta: { layout: "blank" },
+        meta: { layout: "MasterClient" },
     },
     {
         path: "/client/dang-ky",
         component: () => import("../components/Client/DangKy/index.vue"),
-        meta: { layout: "blank" },
+        meta: { layout: "MasterClient" },
     },
     {
         path: "/client/xac-nhan-dang-ky",
         component: () => import("../components/Client/XacNhanDangKy/index.vue"),
-        meta: { layout: "blank" },
+        meta: { layout: "MasterClient" },
     },
     {
         path: "/client/quen-mat-khau",
         component: () => import("../components/Client/QuenMatKhau/index.vue"),
-        meta: { layout: "blank" },
+        meta: { layout: "MasterClient" },
     },
     {
         path: "/client/lay-lai-mat-khau",
         component: () => import("../components/Client/LayLaiMatKhau/index.vue"),
-        meta: { layout: "blank" },
+        meta: { layout: "MasterClient" },
     },
-
     {
         path: "/tim-kiem-tour",
         component: () => import("../components/Client/TimKiemTour/index.vue"),

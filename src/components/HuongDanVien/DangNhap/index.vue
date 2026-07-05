@@ -4,26 +4,22 @@
 
     <div class="bao-dang-nhap container">
       <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5 mx-auto">
+        <div class="col-12 col-md-8 col-lg-6 col-xl-4 mx-auto">
           
-          <div class="vung-logo text-center mb-4">
-            <div class="bieu-tuong-logo mb-3">
-              <img src="https://i.pinimg.com/564x/48/e5/9e/48e59ef6ef580dad0e44420cf79f1f7a.jpg" alt="logo" class="rounded-circle shadow-sm">
-            </div>
-            <h2 class="tieu-de-logo">IXTAL TOUR</h2>
-          </div>
+          
 
           <div class="the-dang-nhap">
             <div class="noi-dung-the">
               <!-- CỤM TIÊU ĐỀ MỚI ĐÃ ĐƯỢC NÂNG CẤP KHÁC BIỆT -->
-              <div class="text-center mb-4">
-                <span class="badge-vai-tro shadow-sm">
-                  <i class="fa-solid fa-id-badge me-1"></i> CỔNG HƯỚNG DẪN VIÊN
-                </span>
-                <h3 class="tieu-de-the mt-2 mb-1">ĐĂNG NHẬP</h3>
-                <p class="text-muted small mb-0">Chào mừng trở lại! Hãy đăng nhập để tiếp tục</p>
+              <!-- Phần Logo & Tiêu đề -->
+              <div class="vung-logo text-center mb-2">
+                <div class="bieu-tuong-logo mb-2">
+                  <img src="../../../assets/images/Logo.png" alt="logo">
+                </div>
+                <h2 class="tieu-de-logo">IxtalTour</h2>
               </div>
-
+              <h3 class="tieu-de-the mt-3">Cổng Hướng Dẫn Viên</h3>
+              <p class="text-center text-muted mb-4 small">Đăng nhập để quản lý Hướng dẫn viên của bạn</p>
               <form @submit.prevent="dangNhap" class="bieu-mau-dang-nhap">
                 <div class="d-flex flex-column gap-3">
                   
@@ -68,9 +64,17 @@
               </form>
 
               <p class="duong-dan-dang-ky mt-4">
-                Chưa phải là thành viên?
+                Chưa có tài khoản?
                 <router-link to="/huong-dan-vien/dang-ky">Đăng ký ngay</router-link>
               </p>
+
+              <!-- Box Đối Tác -->
+              <div class="text-center mt-4">
+                <router-link to="/client/dang-nhap" class="fw-bold ms-1 text-decoration-none link-doi-tac" style="font-size: 13px;">
+                  <i class="fa-solid fa-user"></i>
+                  Đăng nhập Khách hàng
+                </router-link>
+              </div>
               
             </div>
           </div>
@@ -156,10 +160,12 @@ export default {
 .khung-dang-nhap { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; padding: 50px 0; }
 .nen-dang-nhap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><g opacity="0.08" fill="none" stroke="currentColor"><circle cx="100" cy="100" r="80"/><path d="M300 200 L400 150 L500 200 L450 300 Z"/><path d="M900 400 L1000 350 L1050 400 L1000 450 Z"/></g></svg>'); background-repeat: repeat; background-size: 400px 400px; opacity: 0.5; pointer-events: none; }
 .bao-dang-nhap { position: relative; z-index: 1; }
-.vung-logo { animation: truotXuong 0.6s ease-out; }
-.bieu-tuong-logo { display: flex; justify-content: center; align-items: center; margin: 0 auto; width: 90px; height: 90px; }
-.bieu-tuong-logo img { width: 100%; height: 100%; object-fit: cover; }
-.tieu-de-logo { font-size: 26px; font-weight: 800; color: #1b7d6b; letter-spacing: 2px; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+/* LOGO & TIÊU ĐỀ */
+.vung-logo { animation: truotXuong 0.5s ease-out; }
+.bieu-tuong-logo { display: flex; justify-content: center; align-items: center; margin: 0 auto; width: 65px; height: 65px; border-radius: 16px; }
+.bieu-tuong-logo img { width: 90%; height: 90%; object-fit: contain; }
+.tieu-de-logo { font-size: 22px; font-weight: 800; color: #1b7d6b; margin: 0; }
+.tieu-de-the { font-size: 25px; font-weight: 800; color: #1b7d6b; text-align: center; margin: 0 0 5px 0; }
 .the-dang-nhap { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); overflow: hidden; animation: truotLen 0.6s ease-out; border: 1px solid rgba(255,255,255,0.8); }
 .noi-dung-the { padding: 40px 35px; }
 .badge-vai-tro { display: inline-flex;  align-items: center;  background: #e6f9ef; color: #1b7d6b;  font-size: 18px;  font-weight: 800;  padding: 6px 16px;  border-radius: 30px;  letter-spacing: 1px;  border: 1px solid #bbf7d0;  text-transform: uppercase;}
@@ -181,6 +187,8 @@ export default {
 .duong-dan-dang-ky { text-align: center; font-size: 14.5px; color: #6c757d; margin: 0; }
 .duong-dan-dang-ky a { color: #1b7d6b; text-decoration: none; font-weight: 700; transition: color 0.3s ease; }
 .duong-dan-dang-ky a:hover { text-decoration: underline; color: #156254; }
+.link-doi-tac { color: #1b7d6b; transition: color 0.2s ease; }
+.link-doi-tac:hover { color: #115c4d; text-decoration: underline !important; }
 @keyframes truotXuong { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes truotLen { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 576px) { .noi-dung-the { padding: 30px 20px; } .tieu-de-logo { font-size: 22px; } .tieu-de-the { font-size: 22px; } .o-nhap-lieu { padding: 12px 16px 12px 40px; font-size: 14px; } }

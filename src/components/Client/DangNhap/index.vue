@@ -4,84 +4,110 @@
 
     <div class="bao-dang-nhap container">
       <div class="row justify-content-center">
-        <div class="col-12 col-md-8 col-lg-6 col-xl-5 mx-auto">
+        <div class="col-12 px-3">
           
-          <div class="vung-logo text-center mb-4">
-            <div class="bieu-tuong-logo mb-3">
-              <img src="https://i.pinimg.com/564x/48/e5/9e/48e59ef6ef580dad0e44420cf79f1f7a.jpg" alt="logo" class="rounded-circle shadow-sm">
+          <!-- Bọc form lại để khống chế max-width, giúp form thon gọn và đẹp hơn -->
+          <div class="the-dang-nhap shadow-lg mx-auto">
+            
+            <!-- Phần Logo & Tiêu đề -->
+            <div class="vung-logo text-center mb-2">
+              <div class="bieu-tuong-logo mb-2">
+                <img src="../../../assets/images/Logo.png" alt="logo">
+              </div>
+              <h2 class="tieu-de-logo">IxtalTour</h2>
             </div>
-            <h2 class="tieu-de-logo">IXTAL TOUR</h2>
-          </div>
+            
+            <h3 class="tieu-de-the mt-3">Đăng Nhập</h3>
+            <p class="text-center text-muted mb-4 small">Chào mừng trở lại! Hãy đăng nhập để tiếp tục</p>
 
-          <div class="the-dang-nhap">
-            <div class="noi-dung-the">
-              <h3 class="tieu-de-the">ĐĂNG NHẬP</h3>
-              <p class="text-center text-muted mb-4 small">Chào mừng trở lại! Hãy đăng nhập để tiếp tục</p>
-
-              <form @submit.prevent="dangNhap" class="bieu-mau-dang-nhap">
-                <div class="d-flex flex-column gap-3">
-                  
-                  <div class="nhom-nhap-lieu">
-                    <div class="bao-o-nhap">
-                      <span class="bieu-tuong-o-nhap">
-                        <i class="fa-solid fa-user"></i>
-                      </span>
-                      <input v-model="user.email" type="text" class="o-nhap-lieu" placeholder="Email đăng nhập" required />
-                    </div>
+            <!-- Biểu mẫu đăng nhập -->
+            <form @submit.prevent="dangNhap" class="bieu-mau-dang-nhap">
+              <div class="d-flex flex-column gap-3 mb-4">
+                
+                <!-- Email -->
+                <div class="nhom-nhap-lieu">
+                  <label class="nhan-nhap-lieu"><i class="fa-solid fa-envelope text-secondary me-2"></i>Email</label>
+                  <div class="bao-o-nhap">
+                    <input v-model="user.email" type="email" class="o-nhap-lieu" placeholder="example@email.com" required />
                   </div>
-
-                  <div class="nhom-nhap-lieu">
-                    <div class="bao-o-nhap">
-                      <span class="bieu-tuong-o-nhap">
-                        <i class="fa-solid fa-lock"></i>
-                      </span>
-                      <input v-model="user.password" :type="hien_mat_khau ? 'text' : 'password'" class="o-nhap-lieu" placeholder="Mật khẩu" required />
-                      <span class="an-hien-mat-khau" @click="hien_mat_khau = !hien_mat_khau">
-                        <i :class="hien_mat_khau ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
-                      </span>
-                    </div>
-                  </div>
-
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mt-3 mb-4">
-                  <label class="nhan-ghi-nho d-flex align-items-center m-0 cursor-pointer">
-                    <input type="checkbox" v-model="rememberMe" class="form-check-input o-tich-ghi-nho m-0 me-2" />
-                    <span class="text-muted small fw-medium">Ghi nhớ đăng nhập</span>
-                  </label>
-                  <router-link to="/client/quen-mat-khau" class="duong-dan-quen-mk fw-bold">
-                    Quên mật khẩu?
-                  </router-link>
+                <!-- Mật khẩu -->
+                <div class="nhom-nhap-lieu">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <label class="nhan-nhap-lieu mb-0"><i class="fa-solid fa-lock text-secondary me-2"></i>Mật khẩu</label>
+                    <!-- Ghi nhớ đăng nhập chuyển lên gọn gàng -->
+                    <label class="nhan-ghi-nho d-flex align-items-center m-0 cursor-pointer">
+                      <input type="checkbox" v-model="rememberMe" class="form-check-input m-0 me-1" style="width: 14px; height: 14px;" />
+                      <span class="text-muted" style="font-size: 12px;">Ghi nhớ</span>
+                    </label>
+                  </div>
+                  <div class="bao-o-nhap position-relative">
+                    <input v-model="user.password" :type="hien_mat_khau ? 'text' : 'password'" class="o-nhap-lieu pe-5" placeholder="••••••" required />
+                    <span class="an-hien-mat-khau" @click="hien_mat_khau = !hien_mat_khau">
+                      <i :class="hien_mat_khau ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash'"></i>
+                    </span>
+                  </div>
                 </div>
 
-                <button type="submit" class="nut-dang-nhap w-100 d-flex justify-content-center align-items-center gap-2" :disabled="isLoading">
-                  <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status"></span>
-                  <span v-else>ĐĂNG NHẬP NGAY</span>
-                  <i class="fa-solid fa-arrow-right-to-bracket" v-if="!isLoading"></i>
-                </button>
-              </form>
-
-              <div class="vach-ngan">
-                <span class="text-muted px-2 bg-white">HOẶC TIẾP TỤC VỚI</span>
               </div>
 
-              <div class="dang-nhap-mxh d-flex flex-column gap-3">
-                <button type="button" class="nut-mxh nut-google w-100" @click="googleLogin">
-                  <i class="fa-brands fa-google fs-5"></i>
-                  <span>Đăng nhập với Google</span>
-                </button>
-                <button type="button" class="nut-mxh nut-facebook w-100">
-                  <i class="fa-brands fa-facebook-f fs-5"></i>
-                  <span>Đăng nhập với Facebook</span>
-                </button>
-              </div>
+              <!-- Nút đăng nhập chính -->
+              <button type="submit" class="nut-dang-nhap w-100 d-flex justify-content-center align-items-center gap-2 shadow-sm" :disabled="isLoading">
+                <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status"></span>
+                <template v-else>
+                  <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                  <span>Đăng Nhập</span>
+                </template>
+              </button>
+            </form>
 
-              <p class="duong-dan-dang-ky mt-4">
-                Chưa có tài khoản?
-                <router-link to="/client/dang-ky">Đăng ký ngay</router-link>
-              </p>
+            <!-- Các liên kết phụ -->
+            <div class="text-center mt-4">
+              <router-link to="/client/quen-mat-khau" class="duong-dan-chinh fw-bold">
+                <i class="fa-solid fa-key me-1"></i> Quên mật khẩu?
+              </router-link>
+            </div>
+
+            <div class="vach-ngan my-3">
+              <span class="px-3 bg-white text-muted small">hoặc</span>
+            </div>
+
+            <div class="text-center mb-4">
+              <router-link to="/client/dang-ky" class="duong-dan-chinh fw-bold">
+                <i class="fa-solid fa-user-plus me-1"></i> Tạo tài khoản mới
+              </router-link>
+            </div>
+
+            <!-- Đăng nhập mạng xã hội -->
+            <p class="text-center text-muted mb-3" style="font-size: 13px;">Hoặc đăng nhập với</p>
+            
+            <div class="dang-nhap-mxh d-flex flex-column gap-3 mx-auto">
+              <!-- Nút Google (Thiết kế mới) -->
+              <button type="button" class="nut-mxh nut-google shadow-sm" @click="googleLogin">
+                <div class="icon-tron">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18">
+                </div>
+                <span class="text-mxh">Đăng nhập với Google</span>
+              </button>
               
+              <!-- Nút Facebook (Thiết kế mới) -->
+              <button type="button" class="nut-mxh nut-facebook shadow-sm">
+                <div class="icon-tron">
+                  <i class="fa-brands fa-facebook-f text-primary fs-5"></i>
+                </div>
+                <span class="text-mxh">Đăng nhập với Facebook</span>
+              </button>
             </div>
+
+            <!-- Box Đối Tác -->
+            <div class="text-center mt-4">
+              <span class="text-muted" style="font-size: 13px;">Bạn là đối tác?</span>
+              <router-link to="/huong-dan-vien/dang-nhap" class="fw-bold ms-1 text-decoration-none link-doi-tac" style="font-size: 13px;">
+                Đăng nhập Hướng dẫn viên
+              </router-link>
+            </div>
+            
           </div>
 
         </div>
@@ -103,14 +129,13 @@ export default {
       },
       hien_mat_khau: false,
       isLoading: false,
-      rememberMe: false,
       googleClientLoaded: false,
+      rememberMe: false,
     };
   },
   mounted() {
     this.initGoogleScript();
 
-    // Khi trang tải lên, kiểm tra xem trước đó đã có lưu tài khoản KHÁCH HÀNG chưa
     const savedEmail = localStorage.getItem("saved_email_client");
     const savedPassword = localStorage.getItem("saved_password_client");
     
@@ -144,26 +169,14 @@ export default {
       this.googleClientLoaded = true;
       if (window.google && window.google.accounts && window.google.accounts.id) {
         const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
-        console.log('Google Sign-In init', {
-          clientId,
-          origin: window.location.origin,
-          href: window.location.href,
-        });
-        if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID') {
-          this.$toast.warning('Vui lòng cấu hình VITE_GOOGLE_CLIENT_ID trong .env với Web OAuth Client ID hợp lệ.');
-          return;
-        }
-
+        if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID') return;
         try {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: (response) => this.handleGoogleCredentialResponse(response),
             ux_mode: 'popup',
           });
-        } catch (error) {
-          console.error('Google Sign-In initialize error:', error);
-          this.$toast.error('Không khởi tạo được Google Sign-In. Kiểm tra client ID và origin.');
-        }
+        } catch (error) {}
       }
     },
     googleLogin() {
@@ -174,10 +187,7 @@ export default {
       window.google.accounts.id.prompt();
     },
     handleGoogleCredentialResponse(response) {
-      if (!response || !response.credential) {
-        this.$toast.error('Đăng nhập Google không thành công.');
-        return;
-      }
+      if (!response || !response.credential) return;
 
       this.isLoading = true;
       axios.post(apiUrl('client/dang-nhap-google'), { credential: response.credential })
@@ -190,12 +200,7 @@ export default {
             this.$toast.error(res.data.message);
           }
         })
-        .catch(() => {
-          this.$toast.error('Hệ thống đang bận. Vui lòng thử lại sau.');
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
+        .finally(() => { this.isLoading = false; });
     },
     dangNhap() {
       if(!this.user.email || !this.user.password) {
@@ -208,10 +213,9 @@ export default {
       axios.post(apiUrl("client/dang-nhap"), this.user)
         .then((res) => {
             if (res.data.status) {
-                // Lưu token tên là key_client
                 localStorage.setItem("key_client", res.data.token);
                 
-                // XỬ LÝ LƯU TÀI KHOẢN KHÁCH HÀNG VÀO MÁY TÍNH
+                // Xử lý ghi nhớ đăng nhập
                 if (this.rememberMe) {
                   localStorage.setItem("saved_email_client", this.user.email);
                   localStorage.setItem("saved_password_client", this.user.password);
@@ -239,55 +243,147 @@ export default {
 
 <style scoped>
 * { box-sizing: border-box; }
-.khung-dang-nhap { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; padding: 50px 0; }
-.nen-dang-nhap { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><g opacity="0.08" fill="none" stroke="currentColor"><circle cx="100" cy="100" r="80"/><path d="M300 200 L400 150 L500 200 L450 300 Z"/><path d="M900 400 L1000 350 L1050 400 L1000 450 Z"/></g></svg>'); background-repeat: repeat; background-size: 400px 400px; opacity: 0.5; pointer-events: none; }
+.khung-dang-nhap { 
+  min-height: 100vh; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  position: relative; 
+  background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%); 
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+  padding: 40px 0; 
+}
+.nen-dang-nhap { 
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><g opacity="0.06" fill="none" stroke="currentColor"><circle cx="100" cy="100" r="80"/><path d="M300 200 L400 150 L500 200 L450 300 Z"/><path d="M900 400 L1000 350 L1050 400 L1000 450 Z"/></g></svg>'); 
+  background-repeat: repeat; background-size: 400px 400px; opacity: 0.5; pointer-events: none; 
+}
 .bao-dang-nhap { position: relative; z-index: 1; }
 
-.vung-logo { animation: truotXuong 0.6s ease-out; }
-.bieu-tuong-logo { display: flex; justify-content: center; align-items: center; margin: 0 auto; width: 90px; height: 90px; }
-.bieu-tuong-logo img { width: 100%; height: 100%; object-fit: cover; }
-.tieu-de-logo { font-size: 26px; font-weight: 800; color: #1b7d6b; letter-spacing: 2px; margin: 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+/* THIẾT KẾ CARD THON GỌN Y HỆT ẢNH */
+.the-dang-nhap { 
+  background: #ffffff; 
+  border-radius: 20px; 
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.06); 
+  animation: truotLen 0.5s ease-out; 
+  border: 1px solid rgba(255,255,255,0.8); 
+  max-width: 420px; /* Khống chế chiều ngang form cho thon gọn */
+  width: 100%;
+  padding: 35px 30px;
+}
+/* LOGO & TIÊU ĐỀ */
+.vung-logo { animation: truotXuong 0.5s ease-out; }
+.bieu-tuong-logo { display: flex; justify-content: center; align-items: center; margin: 0 auto; width: 65px; height: 65px; border-radius: 16px; }
+.bieu-tuong-logo img { width: 90%; height: 90%; object-fit: contain; }
+.tieu-de-logo { font-size: 22px; font-weight: 800; color: #1b7d6b; margin: 0; }
+.tieu-de-the { font-size: 25px; font-weight: 800; color: #1b7d6b; text-align: center; margin: 0 0 5px 0; }
+/* INPUT & LABEL THEO STYLE ẢNH */
+.nhan-nhap-lieu {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4b5563;
+  margin-bottom: 8px;
+}
+.o-nhap-lieu { 
+  width: 100%; 
+  border: 1px solid transparent; 
+  border-radius: 12px; 
+  padding: 12px 16px; 
+  font-size: 14.5px; 
+  background: #eef2f6; /* Màu nền xanh nhạt giống ảnh */
+  color: #1f2937;
+  transition: all 0.2s ease; 
+}
+.o-nhap-lieu:focus { 
+  outline: none; 
+  background: #ffffff;
+  border-color: #1b7d6b; 
+  box-shadow: 0 0 0 4px rgba(27, 125, 107, 0.1); 
+}
+.o-nhap-lieu::placeholder { color: #9ca3af; font-weight: 400; }
 
-.the-dang-nhap { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); overflow: hidden; animation: truotLen 0.6s ease-out; border: 1px solid rgba(255,255,255,0.8); }
-.noi-dung-the { padding: 40px 35px; }
-
-.tieu-de-the { font-size: 26px; font-weight: 900; color: #1b7d6b; text-align: center; margin: 0 0 5px 0; letter-spacing: 1px; }
-
-.bao-o-nhap { position: relative; display: flex; align-items: center; }
-.bieu-tuong-o-nhap { position: absolute; left: 18px; color: #a0a5aa; font-size: 16px; display: flex; align-items: center; z-index: 5; }
-.o-nhap-lieu { width: 100%; border: 1.5px solid #e1e5eb; border-radius: 12px; padding: 14px 16px 14px 48px; font-size: 14.5px; font-family: inherit; transition: all 0.3s ease; background: #fcfcfd; color: #333; }
-.o-nhap-lieu:focus { outline: none; border-color: #1b7d6b; background: #ffffff; box-shadow: 0 0 0 4px rgba(27, 125, 107, 0.15); }
-.o-nhap-lieu::placeholder { color: #adb5bd; font-weight: 400; }
-.an-hien-mat-khau { position: absolute; right: 18px; color: #a0a5aa; cursor: pointer; font-size: 16px; display: flex; align-items: center; transition: color 0.3s ease; z-index: 5; }
+.an-hien-mat-khau { 
+  position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+  color: #9ca3af; cursor: pointer; font-size: 16px; 
+  display: flex; align-items: center; transition: color 0.2s ease; 
+}
 .an-hien-mat-khau:hover { color: #1b7d6b; }
 
-.form-check-input { width: 1.2em; height: 1.2em; cursor: pointer; }
-.form-check-input:checked { background-color: #1b7d6b; border-color: #1b7d6b; }
-.cursor-pointer { cursor: pointer; }
+/* NÚT ĐĂNG NHẬP CHÍNH */
+.nut-dang-nhap { 
+  background: linear-gradient(135deg, #1b7d6b 0%, #229983 100%); 
+  color: #ffffff; 
+  border: none; 
+  border-radius: 12px; 
+  padding: 14px 20px; 
+  font-size: 16px; 
+  font-weight: 700; 
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+}
+.nut-dang-nhap:hover:not(:disabled) { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 20px rgba(27, 125, 107, 0.25); 
+}
 
-.duong-dan-quen-mk { font-size: 13.5px; color: #1b7d6b; text-decoration: none; transition: color 0.3s ease; }
-.duong-dan-quen-mk:hover { color: #156254; text-decoration: underline; }
+/* CÁC LINK (QUÊN MK, TẠO TK) */
+.duong-dan-chinh { font-size: 14.5px; color: #1b7d6b; text-decoration: none; transition: color 0.2s ease; }
+.duong-dan-chinh:hover { color: #1b7d6b; text-decoration: underline; }
 
-.nut-dang-nhap { background: linear-gradient(135deg, #1b7d6b 0%, #229983 100%); color: #ffffff; border: none; border-radius: 12px; padding: 15px 24px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px; }
-.nut-dang-nhap:hover:not(:disabled) { background: linear-gradient(135deg, #156254 0%, #1b7d6b 100%); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(27, 125, 107, 0.3); }
+/* VẠCH NGĂN HOẶC */
+.vach-ngan { position: relative; text-align: center; }
+.vach-ngan::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #e5e7eb; z-index: 1; }
+.vach-ngan span { position: relative; z-index: 2; color: #9ca3af; }
 
-/* Vạch ngăn cách */
-.vach-ngan { position: relative; text-align: center; margin: 25px 0; }
-.vach-ngan::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #e0e3e6; z-index: 1; }
-.vach-ngan span { position: relative; z-index: 2; font-size: 12px; font-weight: 600; color: #adb5bd; }
+/* NÚT MẠNG XÃ HỘI MỚI (Ngắn lại, bo tròn vòng, icon trong ô trắng) */
+.dang-nhap-mxh {
+  max-width: 280px; /* Khống chế chiều ngang nút MXH ngắn lại */
+}
+.nut-mxh { 
+  display: flex; 
+  align-items: center; 
+  border: none; 
+  border-radius: 30px; /* Bo tròn hoàn toàn */
+  padding: 4px; /* Padding nhỏ để tạo viền bọc icon */
+  cursor: pointer; 
+  transition: all 0.2s ease; 
+}
+.icon-tron {
+  width: 34px; height: 34px;
+  background: #ffffff;
+  border-radius: 50%;
+  display: flex; justify-content: center; align-items: center;
+}
+.text-mxh {
+  flex: 1;
+  text-align: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #ffffff;
+  padding-right: 18px; /* Cân bằng với icon bên trái */
+}
 
-/* Mạng Xã Hội */
-.nut-mxh { display: flex; align-items: center; justify-content: center; gap: 12px; border: 1.5px solid #e1e5eb; border-radius: 12px; padding: 12px 16px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; background: white; color: #565a5e; }
-.nut-google { color: #db4437; }
-.nut-google:hover { border-color: #db4437; background: #fffcfc; color: #db4437; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(219, 68, 55, 0.1); }
-.nut-facebook { color: #1877f2; }
-.nut-facebook:hover { border-color: #1877f2; background: #f0f7ff; color: #1877f2; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(24, 119, 242, 0.1); }
+/* Style riêng Google */
+.nut-google { background: #3b82f6; }
+.nut-google:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3); }
 
-.duong-dan-dang-ky { text-align: center; font-size: 14.5px; color: #6c757d; margin: 0; }
-.duong-dan-dang-ky a { color: #1b7d6b; text-decoration: none; font-weight: 700; transition: color 0.3s ease; }
-.duong-dan-dang-ky a:hover { text-decoration: underline; color: #156254; }
+/* Style riêng Facebook */
+.nut-facebook { background: #1877f2; }
+.nut-facebook:hover { background: #145dbf; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(24, 119, 242, 0.3); }
 
-@keyframes truotXuong { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes truotLen { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@media (max-width: 576px) { .noi-dung-the { padding: 30px 20px; } .tieu-de-logo { font-size: 22px; } .tieu-de-the { font-size: 22px; } .o-nhap-lieu { padding: 12px 16px 12px 40px; font-size: 14px; } }
+/* BOX ĐỐI TÁC DƯỚI CÙNG */
+.link-doi-tac { color: #1b7d6b; transition: color 0.2s ease; }
+.link-doi-tac:hover { color: #115c4d; text-decoration: underline !important; }
+
+/* ANIMATIONS */
+@keyframes truotXuong { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes truotLen { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* RESPONSIVE */
+@media (max-width: 576px) { 
+  .the-dang-nhap { padding: 30px 20px; } 
+  .tieu-de-the { font-size: 22px; } 
+  .o-nhap-lieu { padding: 12px 14px; font-size: 14px; } 
+}
 </style>
