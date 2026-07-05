@@ -66,7 +66,7 @@
               </div>
 
               <div class="dang-nhap-mxh d-flex flex-column gap-3">
-                <button type="button" class="nut-mxh nut-google w-100">
+                <button type="button" class="nut-mxh nut-google w-100" @click="googleLogin">
                   <i class="fa-brands fa-google fs-5"></i>
                   <span>Đăng nhập với Google</span>
                 </button>
@@ -103,10 +103,13 @@ export default {
       },
       hien_mat_khau: false,
       isLoading: false,
-      rememberMe: false
+      rememberMe: false,
+      googleClientLoaded: false,
     };
   },
   mounted() {
+    this.initGoogleScript();
+
     // Khi trang tải lên, kiểm tra xem trước đó đã có lưu tài khoản KHÁCH HÀNG chưa
     const savedEmail = localStorage.getItem("saved_email_client");
     const savedPassword = localStorage.getItem("saved_password_client");
@@ -118,6 +121,82 @@ export default {
     }
   },
   methods: {
+    initGoogleScript() {
+      const existingScript = document.getElementById('google-client-script');
+      if (existingScript) {
+        if (window.google && window.google.accounts && window.google.accounts.id) {
+          this.onGoogleScriptLoaded();
+        } else {
+          existingScript.addEventListener('load', () => this.onGoogleScriptLoaded());
+        }
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.id = 'google-client-script';
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => this.onGoogleScriptLoaded();
+      document.head.appendChild(script);
+    },
+    onGoogleScriptLoaded() {
+      this.googleClientLoaded = true;
+      if (window.google && window.google.accounts && window.google.accounts.id) {
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+        console.log('Google Sign-In init', {
+          clientId,
+          origin: window.location.origin,
+          href: window.location.href,
+        });
+        if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID') {
+          this.$toast.warning('Vui lòng cấu hình VITE_GOOGLE_CLIENT_ID trong .env với Web OAuth Client ID hợp lệ.');
+          return;
+        }
+
+        try {
+          window.google.accounts.id.initialize({
+            client_id: clientId,
+            callback: (response) => this.handleGoogleCredentialResponse(response),
+            ux_mode: 'popup',
+          });
+        } catch (error) {
+          console.error('Google Sign-In initialize error:', error);
+          this.$toast.error('Không khởi tạo được Google Sign-In. Kiểm tra client ID và origin.');
+        }
+      }
+    },
+    googleLogin() {
+      if (!this.googleClientLoaded || !window.google || !window.google.accounts || !window.google.accounts.id) {
+        this.$toast.warning('Vui lòng chờ tải Google Sign-In.');
+        return;
+      }
+      window.google.accounts.id.prompt();
+    },
+    handleGoogleCredentialResponse(response) {
+      if (!response || !response.credential) {
+        this.$toast.error('Đăng nhập Google không thành công.');
+        return;
+      }
+
+      this.isLoading = true;
+      axios.post(apiUrl('client/dang-nhap-google'), { credential: response.credential })
+        .then((res) => {
+          if (res.data.status) {
+            localStorage.setItem('key_client', res.data.token);
+            this.$router.push('/');
+            this.$toast.success(res.data.message);
+          } else {
+            this.$toast.error(res.data.message);
+          }
+        })
+        .catch(() => {
+          this.$toast.error('Hệ thống đang bận. Vui lòng thử lại sau.');
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
     dangNhap() {
       if(!this.user.email || !this.user.password) {
         this.$toast.warning("Vui lòng nhập đầy đủ thông tin!");
