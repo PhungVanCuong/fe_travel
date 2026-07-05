@@ -5,7 +5,6 @@ import Default from './layout/wrapper/index.vue'
 import Client from './layout/wrapper/client.vue'
 import HuongDanVien from './layout/wrapper/HuongDanVien.vue'
 import Blank from './layout/wrapper/master_blank.vue'
-import MasterClient from './layout/wrapper/master_client.vue'
 import { Toaster } from "@meforma/vue-toaster";
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/reset.css';
@@ -25,10 +24,8 @@ app.component("default-layout", Default);
 app.component("client-layout", Client);
 app.component("huong-dan-vien-layout", HuongDanVien);
 app.component("blank-layout", Blank);
-app.component("master-client-layout", MasterClient);
 app.component('chat-widget', ChatWidget);
 
-// ĐÂY LÀ ĐOẠN QUAN TRỌNG NHẤT ĐỂ FIX LỖI:
 // Đợi Router tính toán xong Layout rồi mới vẽ ứng dụng lên màn hình
 router.isReady().then(() => {
     app.mount("#app");

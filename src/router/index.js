@@ -25,27 +25,27 @@ const routes = [
     {
         path: "/client/dang-nhap",
         component: () => import("../components/Client/DangNhap/index.vue"),
-        meta: { layout: "MasterClient" },
+        meta: { layout: "blank" },
     },
     {
         path: "/client/dang-ky",
         component: () => import("../components/Client/DangKy/index.vue"),
-        meta: { layout: "MasterClient" },
+        meta: { layout: "blank" },
     },
     {
         path: "/client/xac-nhan-dang-ky",
         component: () => import("../components/Client/XacNhanDangKy/index.vue"),
-        meta: { layout: "MasterClient" },
+        meta: { layout: "blank" },
     },
     {
         path: "/client/quen-mat-khau",
         component: () => import("../components/Client/QuenMatKhau/index.vue"),
-        meta: { layout: "MasterClient" },
+        meta: { layout: "blank" },
     },
     {
         path: "/client/lay-lai-mat-khau",
         component: () => import("../components/Client/LayLaiMatKhau/index.vue"),
-        meta: { layout: "MasterClient" },
+        meta: { layout: "blank" },
     },
     {
         path: "/tim-kiem-tour",
