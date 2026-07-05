@@ -13,7 +13,45 @@
 
         <div class="collapse navbar-collapse d-lg-flex justify-content-between" id="menuChinh">
           
-          <div class="vung-tim-kiem d-none d-lg-block position-relative" ref="searchContainer">
+          
+
+          <ul class="navbar-nav mx-auto align-items-center gap-1">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle px-3 btn-hover-effect fw-semibold text-dark" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-earth-americas text-primary me-1"></i> Tour
+              </a>
+              <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-2">
+                <li><router-link class="dropdown-item py-2 hover-glow fw-medium" to="/client/tour/tour-trong-nuoc">Trong Nước</router-link></li>
+                <li><router-link class="dropdown-item py-2 hover-glow fw-medium" to="/client/tour/tour-ngoai-nuoc">Nước Ngoài</router-link></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <router-link to="/client/huong-dan-vien" class="nav-link px-3 btn-hover-effect fw-semibold text-dark">
+                <i class="fa-solid fa-users text-success me-1"></i> Hướng Dẫn Viên
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/client/bai-viet" class="nav-link px-3 btn-hover-effect fw-semibold text-dark">
+                <i class="fa-solid fa-newspaper text-warning me-1"></i> Blog
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link to="/client/lien-he" class="nav-link px-3 btn-hover-effect fw-semibold text-dark">
+                <i class="fa-solid fa-headset text-info me-1"></i> Liên Hệ
+              </router-link>
+            </li>
+          </ul>
+
+          <div class="d-flex align-items-center ms-lg-2 gap-3 nhom-bieu-tuong">
+            
+            <router-link to="/client/lich-su-dat-tour" class="nav-link position-relative btn-hover-effect p-2 rounded-3 d-flex align-items-center">
+              <i class="fa-solid fa-file-invoice fs-5 text-primary"></i>
+              <span class="fw-bold text-dark ms-2 d-none d-xl-inline">Hóa đơn</span>
+              <span class="cham-thong-bao" v-if="isLoggedIn"></span>
+            </router-link>
+
+            <!-- Nút tìm kiếm tour -->
+            <div class="vung-tim-kiem d-none d-lg-block position-relative" ref="searchContainer">
             <div class="input-group search-box-premium shadow-sm">
               <input type="text" class="form-control vung-nhap-lieu border-0 ps-4 text-dark shadow-none"
                 v-model="tuKhoaTimKiem" 
@@ -52,41 +90,6 @@
                 </li>
             </ul>
           </div>
-
-          <ul class="navbar-nav mx-auto align-items-center gap-1">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle px-3 btn-hover-effect fw-semibold text-dark" href="#" role="button" data-bs-toggle="dropdown">
-                <i class="fa-solid fa-earth-americas text-primary me-1"></i> Tour
-              </a>
-              <ul class="dropdown-menu shadow-lg border-0 rounded-3 mt-2">
-                <li><router-link class="dropdown-item py-2 hover-glow fw-medium" to="/client/tour/tour-trong-nuoc">Trong Nước</router-link></li>
-                <li><router-link class="dropdown-item py-2 hover-glow fw-medium" to="/client/tour/tour-ngoai-nuoc">Nước Ngoài</router-link></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <router-link to="/client/huong-dan-vien" class="nav-link px-3 btn-hover-effect fw-semibold text-dark">
-                <i class="fa-solid fa-users text-success me-1"></i> Hướng Dẫn Viên
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/client/bai-viet" class="nav-link px-3 btn-hover-effect fw-semibold text-dark">
-                <i class="fa-solid fa-newspaper text-warning me-1"></i> Blog
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/client/lien-he" class="nav-link px-3 btn-hover-effect fw-semibold text-dark">
-                <i class="fa-solid fa-headset text-info me-1"></i> Liên Hệ
-              </router-link>
-            </li>
-          </ul>
-
-          <div class="d-flex align-items-center ms-lg-2 gap-3 nhom-bieu-tuong">
-            
-            <router-link to="/client/lich-su-dat-tour" class="nav-link position-relative btn-hover-effect p-2 rounded-3 d-flex align-items-center">
-              <i class="fa-solid fa-file-invoice fs-5 text-primary"></i>
-              <span class="fw-bold text-dark ms-2 d-none d-xl-inline">Hóa đơn</span>
-              <span class="cham-thong-bao" v-if="isLoggedIn"></span>
-            </router-link>
 
             <template v-if="!isLoggedIn">
               <div class="dropdown">
@@ -336,7 +339,7 @@ export default {
 
 /* ================= THANH TÌM KIẾM (Đẹp & Ngắn gọn) ================= */
 .vung-tim-kiem { 
-    width: 280px; /* Làm ngắn lại */
+    width: 275px; /* Làm ngắn lại */
     transition: all 0.3s ease;
 }
 .search-box-premium {
