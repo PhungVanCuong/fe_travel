@@ -422,7 +422,7 @@ export default {
 .btn-hover-effect {
     position: relative;
     transition: all 0.3s ease;
-    border-radius: 8px;
+    border-radius: 999px;
     z-index: 1;
 }
 .btn-hover-effect::before {
@@ -430,7 +430,7 @@ export default {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(15, 23, 42, 0.06); 
-    border-radius: 8px;
+    border-radius: 999px;
     z-index: -1;
     opacity: 0;
     transform: scale(0.85);

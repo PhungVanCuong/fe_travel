@@ -13,8 +13,8 @@ export default function (to, from, next) {
         .then((res) => {
             if (res.data.status) {
                 localStorage.setItem("ho_va_ten", res.data.ho_ten);
-                localStorage.setItem("email_kh", res.data.email);
-                localStorage.setItem("check_kh", res.data.status);
+                localStorage.setItem("email_hdv", res.data.email);
+                localStorage.setItem("check_hdv", res.data.status);
                 next();
             } else {
                 toaster.error(res.data.message);
