@@ -6,10 +6,8 @@
       <div class="row justify-content-center">
         <div class="col-12 px-3">
           
-          <!-- Bọc form lại để khống chế max-width, giúp form thon gọn và đẹp hơn -->
           <div class="the-dang-nhap shadow-lg mx-auto">
             
-            <!-- Phần Logo & Tiêu đề -->
             <div class="vung-logo text-center mb-2">
               <div class="bieu-tuong-logo mb-2">
                 <img src="../../../assets/images/Logo.png" alt="logo">
@@ -20,11 +18,9 @@
             <h3 class="tieu-de-the mt-3">Đăng Nhập</h3>
             <p class="text-center text-muted mb-4 small">Chào mừng trở lại! Hãy đăng nhập để tiếp tục</p>
 
-            <!-- Biểu mẫu đăng nhập -->
             <form @submit.prevent="dangNhap" class="bieu-mau-dang-nhap">
               <div class="d-flex flex-column gap-3 mb-4">
                 
-                <!-- Email -->
                 <div class="nhom-nhap-lieu">
                   <label class="nhan-nhap-lieu"><i class="fa-solid fa-envelope text-secondary me-2"></i>Email</label>
                   <div class="bao-o-nhap">
@@ -32,11 +28,9 @@
                   </div>
                 </div>
 
-                <!-- Mật khẩu -->
                 <div class="nhom-nhap-lieu">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <label class="nhan-nhap-lieu mb-0"><i class="fa-solid fa-lock text-secondary me-2"></i>Mật khẩu</label>
-                    <!-- Ghi nhớ đăng nhập chuyển lên gọn gàng -->
                     <label class="nhan-ghi-nho d-flex align-items-center m-0 cursor-pointer">
                       <input type="checkbox" v-model="rememberMe" class="form-check-input m-0 me-1" style="width: 14px; height: 14px;" />
                       <span class="text-muted" style="font-size: 12px;">Ghi nhớ</span>
@@ -52,7 +46,6 @@
 
               </div>
 
-              <!-- Nút đăng nhập chính -->
               <button type="submit" class="nut-dang-nhap w-100 d-flex justify-content-center align-items-center gap-2 shadow-sm" :disabled="isLoading">
                 <span v-if="isLoading" class="spinner-border spinner-border-sm" role="status"></span>
                 <template v-else>
@@ -62,7 +55,6 @@
               </button>
             </form>
 
-            <!-- Các liên kết phụ -->
             <div class="text-center mt-4">
               <router-link to="/client/quen-mat-khau" class="duong-dan-chinh fw-bold">
                 <i class="fa-solid fa-key me-1"></i> Quên mật khẩu?
@@ -79,20 +71,12 @@
               </router-link>
             </div>
 
-            <!-- Đăng nhập mạng xã hội -->
             <p class="text-center text-muted mb-3" style="font-size: 13px;">Hoặc đăng nhập với</p>
             
             <div class="dang-nhap-mxh d-flex flex-column gap-3 mx-auto">
-              <!-- Nút Google (Thiết kế mới) -->
-              <button type="button" class="nut-mxh nut-google shadow-sm" @click="googleLogin">
-                <div class="icon-tron">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" width="18">
-                </div>
-                <span class="text-mxh">Đăng nhập với Google</span>
-              </button>
+              <div id="google-signin-button" class="w-100 d-flex justify-content-center"></div>
               
-              <!-- Nút Facebook (Thiết kế mới) -->
-              <button type="button" class="nut-mxh nut-facebook shadow-sm">
+              <button type="button" class="nut-mxh nut-facebook shadow-sm" @click="facebookLogin">
                 <div class="icon-tron">
                   <i class="fa-brands fa-facebook-f text-primary fs-5"></i>
                 </div>
@@ -100,7 +84,6 @@
               </button>
             </div>
 
-            <!-- Box Đối Tác -->
             <div class="text-center mt-4">
               <span class="text-muted" style="font-size: 13px;">Bạn là đối tác?</span>
               <router-link to="/huong-dan-vien/dang-nhap" class="fw-bold ms-1 text-decoration-none link-doi-tac" style="font-size: 13px;">
@@ -130,11 +113,13 @@ export default {
       hien_mat_khau: false,
       isLoading: false,
       googleClientLoaded: false,
+      fbLoaded: false,
       rememberMe: false,
     };
   },
   mounted() {
     this.initGoogleScript();
+    this.initFacebookScript();
 
     const savedEmail = localStorage.getItem("saved_email_client");
     const savedPassword = localStorage.getItem("saved_password_client");
@@ -165,27 +150,156 @@ export default {
       script.onload = () => this.onGoogleScriptLoaded();
       document.head.appendChild(script);
     },
+    initFacebookScript() {
+      // Avoid injecting multiple times
+      if (document.getElementById('facebook-jssdk')) return;
+
+      // Create root element required by FB SDK
+      if (!document.getElementById('fb-root')) {
+        const fbRoot = document.createElement('div');
+        fbRoot.id = 'fb-root';
+        document.body.appendChild(fbRoot);
+      }
+
+      const script = document.createElement('script');
+      script.id = 'facebook-jssdk';
+      script.src = 'https://connect.facebook.net/en_US/sdk.js';
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        try {
+          const appId = import.meta.env.VITE_FACEBOOK_APP_ID || '';
+          if (!appId) {
+            console.warn('VITE_FACEBOOK_APP_ID not set');
+            return;
+          }
+          window.FB.init({
+            appId: appId,
+            cookie: true,
+            xfbml: false,
+            version: 'v16.0',
+          });
+          this.fbLoaded = true;
+        } catch (e) {
+          console.error('FB init error', e);
+        }
+      };
+      document.head.appendChild(script);
+    },
+
+    facebookLogin() {
+      if (!this.fbLoaded || !window.FB) {
+        this.$toast.warning('Vui lòng chờ tải Facebook SDK.');
+        return;
+      }
+
+      this.isLoading = true;
+      // Request email and public_profile
+      window.FB.login((response) => {
+        if (response && response.authResponse && response.authResponse.accessToken) {
+          const accessToken = response.authResponse.accessToken;
+          // Send token to backend for verification / sign-in
+          axios.post(apiUrl('client/dang-nhap-facebook'), { access_token: accessToken })
+            .then((res) => {
+              if (res.data.status) {
+                localStorage.setItem('key_client', res.data.token);
+                this.$router.push('/');
+                this.$toast.success(res.data.message);
+              } else {
+                this.$toast.error(res.data.message || 'Đăng nhập Facebook thất bại.');
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              this.$toast.error('Lỗi khi đăng nhập bằng Facebook.');
+            })
+            .finally(() => { this.isLoading = false; });
+        } else {
+          // If FB SDK login fails (common when app is in development or scopes invalid),
+          // fallback to opening the OAuth dialog in a popup which shows FB's full consent page.
+          this.isLoading = false;
+          this.$toast.info('Chuyển sang OAuth popup Facebook...');
+          const appId = import.meta.env.VITE_FACEBOOK_APP_ID || '';
+          if (!appId) {
+            this.$toast.error('Chưa cấu hình VITE_FACEBOOK_APP_ID.');
+            return;
+          }
+          const redirectUri = `${window.location.origin}/facebook-callback.html`;
+          const scope = encodeURIComponent('email,public_profile');
+          const authUrl = `https://www.facebook.com/v16.0/dialog/oauth?client_id=${appId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=${scope}&auth_type=rerequest`;
+
+          const popup = window.open(authUrl, 'fb_oauth', 'width=520,height=700');
+
+          const onMessage = (e) => {
+            if (e.origin !== window.location.origin) return;
+            if (!e.data || e.data.type !== 'fb-auth') return;
+            window.removeEventListener('message', onMessage);
+            const token = e.data.access_token || null;
+            if (!token) {
+              this.$toast.error('Không lấy được access token từ Facebook.');
+              return;
+            }
+            this.isLoading = true;
+            axios.post(apiUrl('client/dang-nhap-facebook'), { access_token: token })
+              .then((res) => {
+                if (res.data.status) {
+                  localStorage.setItem('key_client', res.data.token);
+                  this.$router.push('/');
+                  this.$toast.success(res.data.message);
+                } else {
+                  this.$toast.error(res.data.message || 'Đăng nhập Facebook thất bại.');
+                }
+              })
+              .catch((err) => {
+                console.error(err);
+                this.$toast.error('Lỗi khi đăng nhập bằng Facebook.');
+              })
+              .finally(() => { this.isLoading = false; });
+          };
+
+          window.addEventListener('message', onMessage);
+        }
+      }, { scope: 'email,public_profile', return_scopes: true });
+    },
+    
     onGoogleScriptLoaded() {
       this.googleClientLoaded = true;
       if (window.google && window.google.accounts && window.google.accounts.id) {
-        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+        
+        // NHỚ THAY 'ID_CUA_BAN_THAY_VAO_DAY' BẰNG DÃY SỐ ID TRÊN GOOGLE CLOUD NẾU ĐẨY LÊN MẠNG (DEPLOY) BỊ LỖI K ĐỌC ĐƯỢC FILE .ENV
+        const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || 'ID_CUA_BAN_THAY_VAO_DAY';
+        
         if (!clientId || clientId === 'YOUR_GOOGLE_CLIENT_ID') return;
+        
         try {
           window.google.accounts.id.initialize({
             client_id: clientId,
             callback: (response) => this.handleGoogleCredentialResponse(response),
-            ux_mode: 'popup',
           });
-        } catch (error) {}
+
+          // Chờ giao diện render xong để vẽ nút Google
+          this.$nextTick(() => {
+            const btnContainer = document.getElementById("google-signin-button");
+            if (btnContainer) {
+              window.google.accounts.id.renderButton(
+                btnContainer,
+                { 
+                  theme: "filled_blue", 
+                  size: "large",        
+                  shape: "pill",        
+                  width: "280",         
+                  text: "signin_with",  
+                  logo_alignment: "left"
+                }
+              );
+            }
+          });
+        } catch (error) {
+          console.error("Lỗi Google SDK:", error);
+        }
       }
     },
-    googleLogin() {
-      if (!this.googleClientLoaded || !window.google || !window.google.accounts || !window.google.accounts.id) {
-        this.$toast.warning('Vui lòng chờ tải Google Sign-In.');
-        return;
-      }
-      window.google.accounts.id.prompt();
-    },
+    
     handleGoogleCredentialResponse(response) {
       if (!response || !response.credential) return;
 
@@ -202,6 +316,7 @@ export default {
         })
         .finally(() => { this.isLoading = false; });
     },
+    
     dangNhap() {
       if(!this.user.email || !this.user.password) {
         this.$toast.warning("Vui lòng nhập đầy đủ thông tin!");
@@ -363,10 +478,6 @@ export default {
   color: #ffffff;
   padding-right: 18px; /* Cân bằng với icon bên trái */
 }
-
-/* Style riêng Google */
-.nut-google { background: #3b82f6; }
-.nut-google:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3); }
 
 /* Style riêng Facebook */
 .nut-facebook { background: #1877f2; }
