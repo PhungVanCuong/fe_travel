@@ -10,15 +10,35 @@
         </div>
 
         <div class="row">
-            <!-- CỘT TRÁI (NỘI DUNG TOUR) -->
             <div class="col-lg-7">
                 <img style="width: 100%; height: 320px; border-radius: 15px; object-fit: cover;"
                     :src="chi_tiet_tour.hinh_anh" alt="" class="mb-4 shadow-sm">
 
-                <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;" ref="tourDescription">
                     <div class="card-body">
                         <h3 class="fw-bold mb-3">Mô tả tour</h3>
-                        <div class="text-secondary">{{ chi_tiet_tour.mo_ta }}</div>
+                        
+                        <!-- Bao bọc nội dung để xử lý thu gọn/mở rộng bằng max-height -->
+                        <div class="position-relative" style="transition: max-height 0.5s ease; overflow: hidden;" 
+                             :style="{ maxHeight: is_expanded_mo_ta ? '5000px' : '260px' }">
+                             
+                            <div class="text-secondary mo-ta-html" 
+                                v-html="(chi_tiet_tour.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
+                            </div>
+                            
+                            <!-- Lớp phủ tạo hiệu ứng mờ dần ở dưới cùng khi nội dung bị thu gọn -->
+                            <div v-if="!is_expanded_mo_ta" class="fade-overlay"></div>
+                        </div>
+
+                        <!-- Nút Xem thêm / Thu gọn -->
+                        <div class="text-center mt-3">
+                            <button @click="toggleMoTa" 
+                                class="btn btn-sm rounded-pill px-4 fw-bold shadow-sm" 
+                                style="color: #198754; border: 2px solid #198754; background: white; transition: 0.3s;">
+                                {{ is_expanded_mo_ta ? 'Thu gọn' : 'Đọc thêm' }}
+                                <i :class="is_expanded_mo_ta ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid ms-1"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -40,7 +60,7 @@
                                         style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;"
                                         class="me-3">
                                     <div>
-                                        <p class="text-primary mb-0 fw-bold">Ngày {{ index + 1 }}</p>
+                                        <p class="text-primary mb-0 fw-bold">{{ item.thoi_gian }}</p>
                                         <h6 class="mb-0 fw-bold">{{ item.ten_diem_den }}</h6>
                                     </div>
                                 </div>
@@ -53,8 +73,9 @@
                                 <img :src="item.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'"
                                     class="img-fluid rounded-3 mb-3"
                                     style="width: 100%; max-height: 300px; object-fit: cover;">
-                                <p class="fw-bold text-dark">{{ item.tieu_de_hoat_dong }}</p>
-                                <p class="text-secondary" style="white-space: pre-line;">{{ item.mo_ta }}</p>
+                                
+                                <div class="text-secondary mo-ta-html" v-html="(item.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')"></div>
+
                                 <div v-if="item.loai_phuong_tien" class="mt-2">
                                     <span class="badge bg-light text-dark border">
                                         <i class="fa-solid fa-bus me-1"></i> {{ item.loai_phuong_tien }}
@@ -152,16 +173,13 @@
                 </div>
             </div>
 
-            <!-- CỘT PHẢI (GRID ẢNH VÀ ĐẶT TOUR) -->
             <div class="col-lg-5">
 
-                <!-- GRID ẢNH BÊN PHẢI -->
                 <div class="row">
                     <div v-for="(img, index) in list_hinh_anh" :key="index" class="col-lg-6 mb-3 position-relative"
                         @click="show_modal_anh = true" style="cursor: pointer;">
                         <img :src="img.url" class="img-fluid rounded shadow-sm hover-zoom"
                             style="width: 100%; height: 150px; object-fit: cover;">
-                        <!-- Lớp filter mờ khi là ảnh "Xem thêm" -->
                         <div v-if="img.is_more"
                             class="position-absolute top-0 start-0 w-100 h-100 rounded d-flex align-items-center justify-content-center hover-overlay"
                             style="background: rgba(0,0,0,0.6); margin-left: 12px; width: calc(100% - 24px) !important; transition: all 0.3s;">
@@ -232,7 +250,6 @@
             </div>
         </div>
 
-        <!-- ĐÁNH GIÁ -->
         <div class="row mt-5">
             <div class="col-lg-12 mt-4">
                 <h3 class="fw-bold mb-3">Đánh giá từ khách hàng ({{ ds_danh_gia.length }})</h3>
@@ -286,7 +303,6 @@
             </div>
 
 
-            <!-- TOUR GỢI Ý -->
             <div class="col-lg-12 mt-5">
                 <h3 class="fw-bold mb-4">Các tour khác bạn có thể thích</h3>
                 <div class="row">
@@ -318,9 +334,9 @@
                                         <span>{{ value.diem_don }}</span>
                                     </div>
 
-                                    <p class="text-muted mb-3"
-                                        style="font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                                        {{ value.mo_ta }}
+                                    <p class="text-muted mb-3 mo-ta-html"
+                                        style="font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" 
+                                        v-html="(value.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
                                     </p>
 
                                     <div
@@ -345,7 +361,6 @@
             </div>
         </div>
 
-        <!-- MODAL XEM TẤT CẢ ẢNH (LIGHTBOX) -->
         <div v-if="show_modal_anh" class="modal fade show d-block" tabindex="-1"
             style="background: rgba(0,0,0,0.8); z-index: 1050;">
             <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
@@ -392,6 +407,8 @@ export default {
                 phuong_thuc_thanh_toan: 'Chuyển khoản'
             },
             filterStar: 'all',
+            is_expanded_mo_ta: false, // Biến trạng thái Mở/Đóng mô tả
+            open_scroll_y: 0,
         }
         
     },
@@ -406,7 +423,13 @@ export default {
     mounted() {
         this.LoadTour();
         this.layDanhSachDanhGia();
+        window.addEventListener('scroll', this.handleScrollMoTa);
+
     },
+    unmounted() {
+    
+    window.removeEventListener('scroll', this.handleScrollMoTa);
+},
     computed: {
         filteredDanhGia() {
             if (this.filterStar === 'all') {
@@ -416,6 +439,27 @@ export default {
         }
     },
     methods: {
+        toggleMoTa() {
+        this.is_expanded_mo_ta = !this.is_expanded_mo_ta;
+        if (this.is_expanded_mo_ta) {
+            // Khi mở, lưu lại tọa độ chuột hiện tại
+            this.open_scroll_y = window.scrollY;
+        } else {
+            // Tùy chọn: Khi bấm Thu gọn, tự động cuộn mượt lên đầu ô mô tả
+            if (this.$refs.tourDescription) {
+                const y = this.$refs.tourDescription.getBoundingClientRect().top + window.scrollY - 100;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+            }
+        }
+    },
+    handleScrollMoTa() {
+        if (this.is_expanded_mo_ta) {
+            // Nếu cuộn đi xa hơn 600px so với lúc mở (cả lên và xuống), tự động đóng lại
+            if (Math.abs(window.scrollY - this.open_scroll_y) > 600) {
+                this.is_expanded_mo_ta = false;
+            }
+        }
+    },
         countStars(star) {
             return this.ds_danh_gia.filter(item => item.sao_danh_gia === star).length;
         },
@@ -446,73 +490,84 @@ export default {
         },
 
         LoadTour() {
-            var payload = { id: this.id };
-            axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
-                headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
-            })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.chi_tiet_tour = res.data.data;
-                        this.list_tour_khac = res.data.tour_khac.slice(0, 4);
+    var payload = { id: this.id };
+    axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
+        headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
+    })
+    .then((res) => {
+        if (res.data.status) {
+            this.chi_tiet_tour = res.data.data;
+            
+            // Fix ảnh mờ cho danh sách Tour Gợi Ý (nếu có dính đuôi size)
+            this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
+                if (tour.hinh_anh) {
+                    tour.hinh_anh = tour.hinh_anh.replace(/-\d+x\d+/g, '');
+                }
+                return tour;
+            });
 
-                        // --- LOGIC XỬ LÝ ẢNH MỚI (Lọc Trùng + Random) ---
-                        let uniqueImages = [];
+            // --- LOGIC XỬ LÝ ẢNH MỚI (Lọc Trùng + Random) ---
+            let uniqueImages = [];
 
-                        // 1. Nạp ảnh gốc của Tour vào đầu tiên
-                        if (this.chi_tiet_tour.hinh_anh) {
-                            uniqueImages.push(this.chi_tiet_tour.hinh_anh);
+            // 1. Nạp ảnh gốc của Tour vào đầu tiên và loại bỏ đuôi size (như -450x265)
+            if (this.chi_tiet_tour.hinh_anh) {
+                this.chi_tiet_tour.hinh_anh = this.chi_tiet_tour.hinh_anh.replace(/-\d+x\d+/g, '');
+                uniqueImages.push(this.chi_tiet_tour.hinh_anh);
+            }
+
+            // 2. Lấy ảnh từ Lịch Trình, loại bỏ đuôi size (như -120x76) và bỏ qua ảnh trùng
+            if (this.chi_tiet_tour.lich_trinh) {
+                this.chi_tiet_tour.lich_trinh.forEach(item => {
+                    if (item.hinh_anh) {
+                        item.hinh_anh = item.hinh_anh.replace(/-\d+x\d+/g, ''); // Cập nhật lại URL ảnh nét
+                        if (!uniqueImages.includes(item.hinh_anh)) {
+                            uniqueImages.push(item.hinh_anh);
                         }
-
-                        // 2. Lấy ảnh từ Lịch Trình, bỏ qua nếu bị trùng với ảnh đã có
-                        if (this.chi_tiet_tour.lich_trinh) {
-                            this.chi_tiet_tour.lich_trinh.forEach(item => {
-                                if (item.hinh_anh && !uniqueImages.includes(item.hinh_anh)) {
-                                    uniqueImages.push(item.hinh_anh);
-                                }
-                            });
-                        }
-
-                        // Danh sách ảnh dự phòng chất lượng cao
-                        let defaultImages = [
-                            'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80',
-                            'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
-                            'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
-                            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
-                            'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
-                            'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80',
-                            'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
-                            'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
-                            'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80',
-                            'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80'
-                        ];
-
-                        // Hàm trộn mảng (Shuffle) ngẫu nhiên để các Tour không bị trùng ảnh nền
-                        defaultImages = defaultImages.sort(() => 0.5 - Math.random());
-
-                        // Lưu toàn bộ ảnh để bung ra Modal
-                        this.all_images = [...uniqueImages];
-
-                        let finalImages = [];
-                        // 3. Chuẩn bị đúng 4 slot cho Grid
-                        for (let i = 0; i < 4; i++) {
-                            if (uniqueImages[i]) {
-                                finalImages.push({ url: uniqueImages[i], is_more: false });
-                            } else {
-                                // Nếu kho ảnh của tour không đủ 4 tấm, mượn ảnh Random bù vào
-                                finalImages.push({ url: defaultImages[i], is_more: false });
-                                this.all_images.push(defaultImages[i]); // Nhét luôn vào modal
-                            }
-                        }
-
-                        // 4. Nếu tổng số ảnh >= 4, ô số 4 sẽ hiển thị Lớp phủ (Overlay) "Khám phá thêm"
-                        if (uniqueImages.length >= 4) {
-                            finalImages[3].is_more = true;
-                        }
-
-                        this.list_hinh_anh = finalImages;
                     }
                 });
-        },
+            }
+
+            // Danh sách ảnh dự phòng chất lượng cao
+            let defaultImages = [
+                'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80',
+                'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
+                'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+                'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
+                'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
+                'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80',
+                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
+                'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
+                'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80',
+                'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80'
+            ];
+
+            // Hàm trộn mảng (Shuffle) ngẫu nhiên để các Tour không bị trùng ảnh nền
+            defaultImages = defaultImages.sort(() => 0.5 - Math.random());
+
+            // Lưu toàn bộ ảnh để bung ra Modal
+            this.all_images = [...uniqueImages];
+
+            let finalImages = [];
+            // 3. Chuẩn bị đúng 4 slot cho Grid
+            for (let i = 0; i < 4; i++) {
+                if (uniqueImages[i]) {
+                    finalImages.push({ url: uniqueImages[i], is_more: false });
+                } else {
+                    // Nếu kho ảnh của tour không đủ 4 tấm, mượn ảnh Random bù vào
+                    finalImages.push({ url: defaultImages[i], is_more: false });
+                    this.all_images.push(defaultImages[i]); // Nhét luôn vào modal
+                }
+            }
+
+            // 4. Nếu tổng số ảnh >= 4, ô số 4 sẽ hiển thị Lớp phủ (Overlay) "Khám phá thêm"
+            if (uniqueImages.length >= 4) {
+                finalImages[3].is_more = true;
+            }
+
+            this.list_hinh_anh = finalImages;
+        }
+    });
+},
         toggleOpenAll() {
             this.is_open_all = !this.is_open_all;
             if (this.is_open_all) {
@@ -581,6 +636,15 @@ export default {
 </script>
 
 <style scoped>
+.fade-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
+    pointer-events: none; /* Để người dùng vẫn có thể copy chữ bên dưới lớp mờ */
+}
 .sticky-card {
     top: 100px !important;
     transition: all 0.3s ease;
@@ -630,5 +694,11 @@ button:hover {
 
 .hover-overlay:hover {
     background: rgba(0, 0, 0, 0.7) !important;
+}
+
+/* Các custom style trước đó (nếu bạn cần có thể giữ lại đoạn :deep dưới đây để css bullet point) */
+:deep(.mo-ta-html ul) {
+    padding-left: 20px;
+    margin-bottom: 15px;
 }
 </style>
