@@ -12,31 +12,31 @@
         <div class="row">
             <div class="col-lg-7">
                 <img style="width: 100%; height: 320px; border-radius: 15px; object-fit: cover;"
-                    :src="mang_hinh_anh[0]" alt="" class="mb-4 shadow-sm">
+                    :src="getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh))" alt="Ảnh tour" class="mb-4 shadow-sm">
 
                 <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;" ref="tourDescription">
                     <div class="card-body">
                         <h3 class="fw-bold mb-3">Mô tả tour</h3>
-                        
+
                         <!-- Bao bọc nội dung để xử lý thu gọn/mở rộng bằng max-height -->
-                        <div class="position-relative" style="transition: max-height 0.5s ease; overflow: hidden;" 
-                             :style="{ maxHeight: is_expanded_mo_ta ? '5000px' : '260px' }">
-                             
-                            <div class="text-secondary mo-ta-html" 
+                        <div class="position-relative" style="transition: max-height 0.5s ease; overflow: hidden;"
+                            :style="{ maxHeight: is_expanded_mo_ta ? '5000px' : '260px' }">
+
+                            <div class="text-secondary mo-ta-html"
                                 v-html="(chi_tiet_tour.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
                             </div>
-                            
+
                             <!-- Lớp phủ tạo hiệu ứng mờ dần ở dưới cùng khi nội dung bị thu gọn -->
                             <div v-if="!is_expanded_mo_ta" class="fade-overlay"></div>
                         </div>
 
                         <!-- Nút Xem thêm / Thu gọn -->
                         <div class="text-center mt-3">
-                            <button @click="toggleMoTa" 
-                                class="btn btn-sm rounded-pill px-4 fw-bold shadow-sm" 
+                            <button @click="toggleMoTa" class="btn btn-sm rounded-pill px-4 fw-bold shadow-sm"
                                 style="color: #198754; border: 2px solid #198754; background: white; transition: 0.3s;">
                                 {{ is_expanded_mo_ta ? 'Thu gọn' : 'Đọc thêm' }}
-                                <i :class="is_expanded_mo_ta ? 'fa-chevron-up' : 'fa-chevron-down'" class="fa-solid ms-1"></i>
+                                <i :class="is_expanded_mo_ta ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                    class="fa-solid ms-1"></i>
                             </button>
                         </div>
                     </div>
@@ -73,8 +73,10 @@
                                 <img :src="item.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'"
                                     class="img-fluid rounded-3 mb-3"
                                     style="width: 100%; max-height: 300px; object-fit: cover;">
-                                
-                                <div class="text-secondary mo-ta-html" v-html="(item.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')"></div>
+
+                                <div class="text-secondary mo-ta-html"
+                                    v-html="(item.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
+                                </div>
 
                                 <div v-if="item.loai_phuong_tien" class="mt-2">
                                     <span class="badge bg-light text-dark border">
@@ -174,7 +176,6 @@
             </div>
 
             <div class="col-lg-5">
-
                 <div class="row">
                     <div v-for="(img, index) in list_hinh_anh" :key="index" class="col-lg-6 mb-3 position-relative"
                         @click="show_modal_anh = true" style="cursor: pointer;">
@@ -204,22 +205,33 @@
                             </span>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Số lượng khách:</label>
-                            <div class="input-group" style="width: 140px;">
-                                <button class="btn btn-outline-secondary"
-                                    @click="dat_tour.so_luong_nguoi > 1 ? dat_tour.so_luong_nguoi-- : 1">-</button>
-                                <input type="number" class="form-control text-center" v-model="dat_tour.so_luong_nguoi"
-                                    readonly>
-                                <button class="btn btn-outline-secondary" @click="dat_tour.so_luong_nguoi++">+</button>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold mb-2 text-dark">Số lượng khách:</label>
+                            <div class="d-flex align-items-center">
+                                <div class="input-group custom-qty-group shadow-sm">
+                                    <button class="btn btn-qty" type="button" @click="giamSoLuong">
+                                        <i class="fa-solid fa-minus"></i>
+                                    </button>
+                                    <input type="number" 
+                                        class="form-control text-center fw-bold input-qty" 
+                                        v-model.number="dat_tour.so_luong_nguoi"
+                                        @blur="validateSoLuong">
+                                    <button class="btn btn-qty" type="button" @click="tangSoLuong">
+                                        <i class="fa-solid fa-plus"></i>
+                                    </button>
+                                </div>
+                                
+                                <span class="ms-3 text-muted fw-medium" v-if="chi_tiet_tour.so_nguoi_toi_da" style="font-size: 0.9rem;">
+                                    (Còn trống <strong class="text-danger">{{ chi_tiet_tour.so_nguoi_toi_da }}</strong> chỗ)
+                                </span>
                             </div>
-                            <small class="text-muted" v-if="chi_tiet_tour.so_nguoi_toi_da">
-                                (Còn trống {{ chi_tiet_tour.so_nguoi_toi_da }} chỗ)
-                            </small>
                         </div>
 
                         <div class="mb-3">
-                            <label class="fw-bold mb-1">Thông tin người đi cùng</label>
+                            <label class="fw-bold mb-1">
+                                Thông tin người đi cùng 
+                                <span v-if="dat_tour.so_luong_nguoi >= 2" class="text-danger">* (Bắt buộc)</span>
+                            </label>
                             <textarea class="form-control" rows="4" v-model="dat_tour.ghi_chu_danh_sach_nguoi_di"
                                 placeholder="Ví dụ: &#10;Nguyễn Văn A, 0922222222, 27/05/1990 &#10;Trần Thị B, 0911111111, 10/02/1995"></textarea>
                             <div class="form-text text-muted">
@@ -240,10 +252,17 @@
                             </div>
                         </div>
 
-                        <button class="btn w-100 fw-bold py-3 text-white shadow-sm"
-                            style="background-color: #8fdfb5; border-radius: 10px; border: none; transition: 0.3s;"
+                        <button class="btn w-100 fw-bold py-3 text-white shadow-sm" :disabled="is_loading" :style="{
+                            background: is_loading ? '#ccc' : 'linear-gradient(135deg, #8fdfb5, #5bb883)',
+                            borderRadius: '10px',
+                            border: 'none',
+                            transition: '0.3s',
+                            cursor: is_loading ? 'not-allowed' : 'pointer'
+                        }"
+                            @mouseover="!is_loading && ($event.target.style.background = 'linear-gradient(135deg, #78c9a0, #4da374)')"
+                            @mouseleave="!is_loading && ($event.target.style.background = 'linear-gradient(135deg, #8fdfb5, #5bb883)')"
                             @click="thucHienDatTour()">
-                            XÁC NHẬN ĐẶT TOUR
+                            {{ is_loading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN ĐẶT TOUR' }}
                         </button>
                     </div>
                 </div>
@@ -313,7 +332,8 @@
                                 @click="$router.push('/client/chi-tiet-tour/' + value.id)">
 
                                 <div class="position-relative">
-                                    <img :src="value.hinh_anh" class="card-img-top" :alt="value.ten_tour"
+                                    <img :src="getImageUrl(getFirstImage(value.hinh_anh))" class="card-img-top"
+                                        :alt="value.ten_tour"
                                         style="height: 200px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
 
                                     <div class="position-absolute text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
@@ -335,7 +355,7 @@
                                     </div>
 
                                     <p class="text-muted mb-3 mo-ta-html"
-                                        style="font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;" 
+                                        style="font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"
                                         v-html="(value.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
                                     </p>
 
@@ -409,9 +429,9 @@ export default {
             filterStar: 'all',
             is_expanded_mo_ta: false, // Biến trạng thái Mở/Đóng mô tả
             open_scroll_y: 0,
-            mang_hinh_anh: [],
+            is_loading: false,
         }
-        
+
     },
     watch: {
         '$route.params.id_tour': function (newId) {
@@ -428,9 +448,9 @@ export default {
 
     },
     unmounted() {
-    
-    window.removeEventListener('scroll', this.handleScrollMoTa);
-},
+
+        window.removeEventListener('scroll', this.handleScrollMoTa);
+    },
     computed: {
         filteredDanhGia() {
             if (this.filterStar === 'all') {
@@ -440,27 +460,79 @@ export default {
         }
     },
     methods: {
+        giamSoLuong() {
+            if (this.dat_tour.so_luong_nguoi > 1) {
+                this.dat_tour.so_luong_nguoi--;
+            }
+        },
+        tangSoLuong() {
+            if (this.dat_tour.so_luong_nguoi < this.chi_tiet_tour.so_nguoi_toi_da) {
+                this.dat_tour.so_luong_nguoi++;
+            } else {
+                this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
+            }
+        },
+        validateSoLuong() {
+            // Ép kiểu về số nguyên
+            let val = parseInt(this.dat_tour.so_luong_nguoi);
+            
+            // Nếu nhập bậy (chữ) hoặc nhỏ hơn 1 -> Gán bằng 1
+            if (isNaN(val) || val < 1) {
+                this.dat_tour.so_luong_nguoi = 1;
+            } 
+            // Nếu nhập lớn hơn số chỗ trống -> Gán bằng mức tối đa
+            else if (val > this.chi_tiet_tour.so_nguoi_toi_da) {
+                this.dat_tour.so_luong_nguoi = this.chi_tiet_tour.so_nguoi_toi_da;
+                this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
+            } 
+            // Nếu hợp lệ
+            else {
+                this.dat_tour.so_luong_nguoi = val;
+            }
+        },
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         toggleMoTa() {
-        this.is_expanded_mo_ta = !this.is_expanded_mo_ta;
-        if (this.is_expanded_mo_ta) {
-            // Khi mở, lưu lại tọa độ chuột hiện tại
-            this.open_scroll_y = window.scrollY;
-        } else {
-            // Tùy chọn: Khi bấm Thu gọn, tự động cuộn mượt lên đầu ô mô tả
-            if (this.$refs.tourDescription) {
-                const y = this.$refs.tourDescription.getBoundingClientRect().top + window.scrollY - 100;
-                window.scrollTo({ top: y, behavior: 'smooth' });
+            this.is_expanded_mo_ta = !this.is_expanded_mo_ta;
+            if (this.is_expanded_mo_ta) {
+                // Khi mở, lưu lại tọa độ chuột hiện tại
+                this.open_scroll_y = window.scrollY;
+            } else {
+                // Tùy chọn: Khi bấm Thu gọn, tự động cuộn mượt lên đầu ô mô tả
+                if (this.$refs.tourDescription) {
+                    const y = this.$refs.tourDescription.getBoundingClientRect().top + window.scrollY - 100;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                }
             }
-        }
-    },
-    handleScrollMoTa() {
-        if (this.is_expanded_mo_ta) {
-            // Nếu cuộn đi xa hơn 600px so với lúc mở (cả lên và xuống), tự động đóng lại
-            if (Math.abs(window.scrollY - this.open_scroll_y) > 600) {
-                this.is_expanded_mo_ta = false;
+        },
+        handleScrollMoTa() {
+            if (this.is_expanded_mo_ta) {
+                // Nếu cuộn đi xa hơn 600px so với lúc mở (cả lên và xuống), tự động đóng lại
+                if (Math.abs(window.scrollY - this.open_scroll_y) > 600) {
+                    this.is_expanded_mo_ta = false;
+                }
             }
-        }
-    },
+        },
         countStars(star) {
             return this.ds_danh_gia.filter(item => item.sao_danh_gia === star).length;
         },
@@ -490,139 +562,85 @@ export default {
             return `${day}/${month}/${year}`;
         },
 
-    LoadTour() {
-        var payload = { id: this.id };
-        axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
-            headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
-        })
-        .then((res) => {
-            if (res.data.status) {
-                this.chi_tiet_tour = res.data.data;
-                
-                // === BẮT ĐẦU ĐOẠN CẦN THAY THẾ ===
-                
-                // Fix lỗi hiển thị ảnh cho danh sách Tour Gợi Ý (Bóc tách JSON an toàn)
-                this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
-                    if (tour.hinh_anh) {
-                        let imgTourKhac = tour.hinh_anh;
-                        if (typeof imgTourKhac === 'string') {
-                            if (imgTourKhac.startsWith('[')) {
-                                try {
-                                    let parsed = JSON.parse(imgTourKhac);
-                                    imgTourKhac = Array.isArray(parsed) ? parsed[0] : imgTourKhac;
-                                } catch (e) {
-                                    // Fallback nếu chuỗi JSON bị lỗi
-                                    imgTourKhac = imgTourKhac.replace(/[\[\]"]/g, '').split(',')[0];
-                                }
+        LoadTour() {
+            var payload = { id: this.id };
+            axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
+                headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
+            })
+                .then((res) => {
+                    if (res.data.status) {
+                        this.chi_tiet_tour = res.data.data;
+
+                        // 1. Ép kiểu ảnh cho danh sách Tour Gợi Ý
+                        this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
+                            if (typeof tour.hinh_anh === 'string') {
+                                try { tour.hinh_anh = JSON.parse(tour.hinh_anh); }
+                                catch (e) { tour.hinh_anh = [tour.hinh_anh]; }
                             }
-                            // Loại bỏ đuôi size sau khi đã có link ảnh chuẩn
-                            tour.hinh_anh = typeof imgTourKhac === 'string' 
-                                ? imgTourKhac.replace(/-\d+x\d+/g, '').trim() 
-                                : '';
+                            return tour;
+                        });
+
+                        // 2. Ép kiểu ảnh của Tour hiện tại
+                        if (typeof this.chi_tiet_tour.hinh_anh === 'string') {
+                            try {
+                                this.chi_tiet_tour.hinh_anh = JSON.parse(this.chi_tiet_tour.hinh_anh);
+                            } catch (e) {
+                                this.chi_tiet_tour.hinh_anh = [this.chi_tiet_tour.hinh_anh];
+                            }
                         }
+                        if (!Array.isArray(this.chi_tiet_tour.hinh_anh)) {
+                            this.chi_tiet_tour.hinh_anh = [];
+                        }
+
+                        // 3. Gom TẤT CẢ các ảnh vào 1 mảng chung để làm Thư viện (Đã lọc trùng & xóa đuôi size)
+                        let uniqueImages = [];
+
+                        // - Lấy ảnh từ Tour
+                        this.chi_tiet_tour.hinh_anh.forEach(img => {
+                            let cleanImg = this.getImageUrl(img);
+                            if (cleanImg && !uniqueImages.includes(cleanImg)) uniqueImages.push(cleanImg);
+                        });
+
+                        // - Lấy ảnh từ Lịch Trình đưa vào kho chung
+                        if (this.chi_tiet_tour.lich_trinh && Array.isArray(this.chi_tiet_tour.lich_trinh)) {
+                            this.chi_tiet_tour.lich_trinh.forEach(item => {
+                                let cleanImg = this.getImageUrl(this.getFirstImage(item.hinh_anh));
+                                if (cleanImg && !uniqueImages.includes(cleanImg)) uniqueImages.push(cleanImg);
+                            });
+                        }
+
+                        // 4. Chia ảnh để đổ ra giao diện
+                        this.all_images = uniqueImages.length > 0 ? [...uniqueImages] : ['https://via.placeholder.com/800x400'];
+
+                        let defaultImages = [
+                            'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80',
+                            'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
+                            'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+                            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
+                            'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
+                            'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80'
+                        ].sort(() => 0.5 - Math.random());
+
+                        let finalImages = [];
+                        let secondaryImages = uniqueImages.slice(1); // Lấy từ ảnh số 2 trở đi cho cột bên phải
+
+                        for (let i = 0; i < 4; i++) {
+                            if (secondaryImages[i]) {
+                                finalImages.push({ url: secondaryImages[i], is_more: false });
+                            } else {
+                                finalImages.push({ url: defaultImages[i], is_more: false });
+                                this.all_images.push(defaultImages[i]);
+                            }
+                        }
+
+                        if (secondaryImages.length > 4) {
+                            finalImages[3].is_more = true;
+                        }
+
+                        this.list_hinh_anh = finalImages;
                     }
-                    return tour;
                 });
-
-                // --- 1. XỬ LÝ ẢNH TOUR GỐC (Ảnh 1, Ảnh 2, Ảnh 3...) ---
-                let uniqueImages = [];
-                let rawImages = [];
-
-                if (this.chi_tiet_tour.hinh_anh) {
-                    if (typeof this.chi_tiet_tour.hinh_anh === 'string') {
-                        try {
-                            rawImages = JSON.parse(this.chi_tiet_tour.hinh_anh);
-                        } catch (e) {
-                            rawImages = this.chi_tiet_tour.hinh_anh.replace(/[\[\]"]/g, '').split(',');
-                        }
-                    } else if (Array.isArray(this.chi_tiet_tour.hinh_anh)) {
-                        rawImages = this.chi_tiet_tour.hinh_anh;
-                    }
-                }
-
-                // Nạp mảng ảnh Tour vào kho chung và loại bỏ đuôi size mờ
-                if (Array.isArray(rawImages)) {
-                    rawImages.forEach(img => {
-                        if (img && typeof img === 'string') {
-                            let cleanImg = img.replace(/-\d+x\d+/g, '').trim();
-                            if (cleanImg && !uniqueImages.includes(cleanImg)) {
-                                uniqueImages.push(cleanImg);
-                            }
-                        }
-                    });
-                }
-
-                // --- 2. XỬ LÝ ẢNH LỊCH TRÌNH ---
-                if (this.chi_tiet_tour.lich_trinh && Array.isArray(this.chi_tiet_tour.lich_trinh)) {
-                    this.chi_tiet_tour.lich_trinh.forEach(item => {
-                        if (item.hinh_anh) {
-                            let imgStr = item.hinh_anh;
-                            if (typeof imgStr === 'string') {
-                                if (imgStr.startsWith('[')) {
-                                    try {
-                                        let parsed = JSON.parse(imgStr);
-                                        imgStr = Array.isArray(parsed) ? parsed[0] : imgStr;
-                                    } catch (e) {
-                                        imgStr = imgStr.replace(/[\[\]"]/g, '').split(',')[0];
-                                    }
-                                } else if (imgStr.includes(',')) {
-                                    imgStr = imgStr.split(',')[0];
-                                }
-                                
-                                if (typeof imgStr === 'string') {
-                                    item.hinh_anh = imgStr.replace(/-\d+x\d+/g, '').trim();
-                                    
-                                    // Bơm thêm ảnh lịch trình vào kho chung
-                                    if (item.hinh_anh && !uniqueImages.includes(item.hinh_anh)) {
-                                        uniqueImages.push(item.hinh_anh);
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-
-                // --- 3. ĐỔ DỮ LIỆU RA GIAO DIỆN ---
-                
-                // Cập nhật biến mang_hinh_anh để tấm [0] làm ảnh to bên col-lg-7
-                this.mang_hinh_anh = uniqueImages.length > 0 ? uniqueImages : ['https://via.placeholder.com/800x400'];
-                
-                // Lưu toàn bộ ảnh kho để bung ra Modal
-                this.all_images = [...this.mang_hinh_anh];
-
-                // Danh sách ảnh dự phòng chất lượng cao nếu Tour thiếu ảnh
-                let defaultImages = [
-                    'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80',
-                    'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
-                    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
-                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
-                    'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
-                    'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80'
-                ].sort(() => 0.5 - Math.random());
-
-                let finalImages = [];
-                // Lấy từ ảnh số 2 (index 1) trở đi để đổ vào 4 ô vuông nhỏ bên col-lg-5
-                let secondaryImages = this.mang_hinh_anh.slice(1); 
-
-                for (let i = 0; i < 4; i++) {
-                    if (secondaryImages[i]) {
-                        finalImages.push({ url: secondaryImages[i], is_more: false });
-                    } else {
-                        // Nếu tổng số ảnh Tour + Lịch trình vẫn chưa đủ lấp 4 ô, dùng ảnh Random
-                        finalImages.push({ url: defaultImages[i], is_more: false });
-                        this.all_images.push(defaultImages[i]); 
-                    }
-                }
-
-                // Nếu số lượng ảnh nhỏ phía sau > 4 tấm, bật Overlay "Khám phá thêm"
-                if (secondaryImages.length > 4) {
-                    finalImages[3].is_more = true;
-                }
-
-                this.list_hinh_anh = finalImages;
-            }
-        });
-    },
+        },
         toggleOpenAll() {
             this.is_open_all = !this.is_open_all;
             if (this.is_open_all) {
@@ -641,16 +659,29 @@ export default {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         thucHienDatTour() {
+            // 1. Chặn click đúp: Đang xử lý thì ngưng luôn
+            if (this.is_loading) return;
+
             const token = localStorage.getItem('key_client');
             if (!token) {
                 this.$toast.error("Vui lòng đăng nhập để thực hiện đặt tour.");
                 this.$router.push('/client/dang-nhap');
                 return;
             }
+            
             if (this.dat_tour.so_luong_nguoi > this.chi_tiet_tour.so_nguoi_toi_da) {
                 this.$toast.warning("Rất tiếc, tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
                 return;
             }
+
+            // 2. LOGIC KIỂM TRA: Bắt buộc nhập thông tin nếu đi từ 2 người trở lên
+            if (this.dat_tour.so_luong_nguoi >= 2 && this.dat_tour.ghi_chu_danh_sach_nguoi_di.trim() === '') {
+                this.$toast.warning("Vui lòng điền thông tin người đi cùng khi đặt từ 2 vé trở lên!");
+                return;
+            }
+
+            // 3. Khóa nút bấm lại (hiện ĐANG XỬ LÝ...)
+            this.is_loading = true;
 
             var payload = {
                 "id_tour": this.id,
@@ -662,30 +693,38 @@ export default {
             axios.post(apiUrl("client/dat-tour/thanh-toan"), payload, {
                 headers: { Authorization: "Bearer " + token }
             })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.$toast.success(res.data.message);
-                        this.chi_tiet_tour.so_nguoi_toi_da -= this.dat_tour.so_luong_nguoi;
-                        const maHoaDon = res.data.data.hoa_don.ma_hoa_don;
-                        if (maHoaDon) {
-                            this.$router.push('/client/thanh-toan/' + maHoaDon);
-                        } else {
-                            this.dat_tour.so_luong_nguoi = 1;
-                            this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
-                        }
+            .then((res) => {
+                if (res.data.status) {
+                    this.$toast.success(res.data.message);
+                    this.chi_tiet_tour.so_nguoi_toi_da -= this.dat_tour.so_luong_nguoi;
+                    const maHoaDon = res.data.data.hoa_don.ma_hoa_don;
+                    
+                    if (maHoaDon) {
+                        this.$router.push('/client/thanh-toan/' + maHoaDon);
+                        // CHÚ Ý: Không mở khóa is_loading ở đây, giữ cho nút bị mờ luôn trong lúc đợi chuyển trang!
                     } else {
-                        this.$toast.error(res.data.message);
+                        this.dat_tour.so_luong_nguoi = 1;
+                        this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
+                        // Nếu không chuyển trang, mở khóa nút sau 2 giây
+                        setTimeout(() => { this.is_loading = false; }, 2000);
                     }
-                })
-                .catch((err) => {
-                    if (err.response && err.response.status === 401) {
-                        this.$toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
-                        this.$router.push('/client/dang-nhap');
-                    } else {
-                        this.$toast.error("Hệ thống đang bận, vui lòng thử lại sau.");
-                    }
-                });
-        },
+                } else {
+                    this.$toast.error(res.data.message);
+                    // Mở khóa nút sau 2 giây nếu có lỗi logic (hết vé, sai dữ liệu...)
+                    setTimeout(() => { this.is_loading = false; }, 2000);
+                }
+            })
+            .catch((err) => {
+                if (err.response && err.response.status === 401) {
+                    this.$toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
+                    this.$router.push('/client/dang-nhap');
+                } else {
+                    this.$toast.error("Hệ thống đang bận, vui lòng thử lại sau.");
+                }
+                // Mở khóa nút sau 2 giây nếu lỗi API/mạng
+                setTimeout(() => { this.is_loading = false; }, 2000);
+            });
+        }
     }
 }
 </script>
@@ -698,8 +737,10 @@ export default {
     width: 100%;
     height: 80px;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
-    pointer-events: none; /* Để người dùng vẫn có thể copy chữ bên dưới lớp mờ */
+    pointer-events: none;
+    /* Để người dùng vẫn có thể copy chữ bên dưới lớp mờ */
 }
+
 .sticky-card {
     top: 100px !important;
     transition: all 0.3s ease;
@@ -755,5 +796,59 @@ button:hover {
 :deep(.mo-ta-html ul) {
     padding-left: 20px;
     margin-bottom: 15px;
+}
+/* ================= KHỐI SỐ LƯỢNG KHÁCH ================= */
+.custom-qty-group {
+    width: 150px; /* Tăng chiều rộng tổng thể */
+    height: 45px; /* Tăng chiều cao để dễ bấm */
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+.btn-qty {
+    background: transparent;
+    border: none;
+    color: #125633;
+    font-size: 1rem;
+    width: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-qty:hover {
+    background: #8fdfb5;
+    color: white;
+}
+
+.btn-qty:active {
+    background: #6dca96;
+    transform: scale(0.95);
+}
+
+.input-qty {
+    border: none !important;
+    background: transparent !important;
+    padding: 0;
+    font-size: 1.2rem;
+    color: #212529;
+}
+
+.input-qty:focus {
+    box-shadow: none !important;
+}
+
+/* Ẩn mũi tên mặc định của input number trên Chrome, Safari, Edge */
+.input-qty::-webkit-outer-spin-button,
+.input-qty::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Ẩn mũi tên trên Firefox */
+.input-qty[type=number] {
+    -moz-appearance: textfield;
 }
 </style>
