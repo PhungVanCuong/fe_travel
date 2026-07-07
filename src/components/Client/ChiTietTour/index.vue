@@ -318,9 +318,7 @@
                 <div v-else class="text-center p-5 border border-dashed rounded-4 bg-light">
                     <i class="fa-solid fa-comments text-muted fs-1 mb-3"></i>
                     <p class="text-muted">
-                        {{ filterStar === 'all'
-                            ? 'Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!' : 'Không có đánh giá '
-                            + filterStar + ' sao nào.' }}
+                        {{ filterStar === 'all' ? 'Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!' : 'Không có đánh giá '+ filterStar + ' sao nào.' }}
                     </p>
                 </div>
             </div>
