@@ -785,29 +785,42 @@ export default {
         },
 
         saveTour() {
-            const url = this.isEdit ? 'admin/tour/update' : 'admin/tour/add-data';
+    const url = this.isEdit ? 'admin/tour/update' : 'admin/tour/add-data';
 
-            axios.post(apiUrl(url), this.form, {
-                headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
-            })
-                .then((res) => {
-                    if (res.data.status) {
-                        this.$toast.success(res.data.message);
-                        this.showFormModal = false;
-                        this.getTour();
-                    } else {
-                        this.$toast.error(res.data.message);
-                    }
-                })
-                .catch((error) => {
-                    if (error.response && error.response.data && error.response.data.errors) {
-                        const list = Object.values(error.response.data.errors);
-                        list.forEach((v) => { this.$toast.error(v[0]); });
-                    } else {
-                        this.$toast.error('Lỗi hệ thống');
-                    }
-                });
-        },
+    // 1. Tạo một bản sao của form để xử lý dữ liệu, tránh làm ảnh hưởng giao diện hiện tại
+    let payload = { ...this.form };
+
+    // 2. Chuyển đổi chuỗi hình ảnh thành mảng (Array)
+    if (typeof payload.hinh_anh === 'string' && payload.hinh_anh.trim() !== '') {
+        // Cắt chuỗi bằng dấu phẩy và xóa các khoảng trắng thừa ở mỗi link
+        payload.hinh_anh = payload.hinh_anh.split(',').map(link => link.trim());
+    } else if (payload.hinh_anh === '') {
+        // Nếu người dùng không nhập gì, gửi lên mảng rỗng thay vì chuỗi rỗng
+        payload.hinh_anh = [];
+    }
+
+    // 3. Gửi 'payload' đi thay vì 'this.form'
+    axios.post(apiUrl(url), payload, {
+        headers: { Authorization: "Bearer " + localStorage.getItem('key_admin') }
+    })
+        .then((res) => {
+            if (res.data.status) {
+                this.$toast.success(res.data.message);
+                this.showFormModal = false;
+                this.getTour();
+            } else {
+                this.$toast.error(res.data.message);
+            }
+        })
+        .catch((error) => {
+            if (error.response && error.response.data && error.response.data.errors) {
+                const list = Object.values(error.response.data.errors);
+                list.forEach((v) => { this.$toast.error(v[0]); });
+            } else {
+                this.$toast.error('Lỗi hệ thống');
+            }
+        });
+},
 
         confirmDelete() {
             axios.post(apiUrl('admin/tour/destroy'), { id: this.del_tour.id }, {

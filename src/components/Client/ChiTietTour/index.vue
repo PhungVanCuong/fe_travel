@@ -11,14 +11,12 @@
 
         <div class="row">
             <div class="col-lg-7">
-               <div class="position-relative mb-4" 
-     style="overflow: hidden; border-radius: 15px; cursor: pointer;"
-     @click="openModal(getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh)))">
-    <img style="width: 100%; height: 320px; object-fit: cover;"
-         :src="getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh))" 
-         alt="Ảnh tour" 
-         class="shadow-sm hover-zoom w-100">
-</div>
+                <div class="position-relative mb-4" style="overflow: hidden; border-radius: 15px; cursor: pointer;"
+                    @click="openModal(getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh)))">
+                    <img style="width: 100%; height: 320px; object-fit: cover;"
+                        :src="getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh))" alt="Ảnh tour"
+                        class="shadow-sm hover-zoom w-100">
+                </div>
                 <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;" ref="tourDescription">
                     <div class="card-body">
                         <h3 class="fw-bold mb-3">Mô tả tour</h3>
@@ -57,8 +55,8 @@
                             <div @click="toggleSingle(index)" class="d-flex align-items-center justify-content-between"
                                 style="cursor: pointer;">
                                 <div class="d-flex align-items-center">
-                                    <img v-if="index_mo !== index && !is_open_all"
-                                        :src="item.hinh_anh || 'https://via.placeholder.com/80x60?text=No+Image'"
+                                    <img v-if="!index_mo.includes(index) && !is_open_all"
+                                        :src="getImageUrl(getFirstImage(item.hinh_anh)) || 'https://via.placeholder.com/80x60?text=No+Image'"
                                         style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;"
                                         class="me-3">
                                     <div>
@@ -66,13 +64,13 @@
                                         <h6 class="mb-0 fw-bold">{{ item.ten_diem_den }}</h6>
                                     </div>
                                 </div>
-                                <i :class="(index_mo === index || is_open_all) ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                <i :class="(index_mo.includes(index) || is_open_all) ? 'fa-chevron-up' : 'fa-chevron-down'"
                                     class="fa-solid text-secondary"></i>
                             </div>
 
-                            <div v-if="index_mo === index || is_open_all"
+                            <div v-if="index_mo.includes(index) || is_open_all"
                                 class="mt-3 animate__animated animate__fadeIn">
-                                <img :src="item.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'"
+                                <img :src="getImageUrl(getFirstImage(item.hinh_anh)) || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'"
                                     class="img-fluid rounded-3 mb-3"
                                     style="width: 100%; max-height: 300px; object-fit: cover;">
 
@@ -181,14 +179,17 @@
                 <div class="row">
                     <div v-for="(img, index) in list_hinh_anh" :key="index" class="col-lg-6 mb-3 position-relative"
                         @click="openModal(img.url)" style="cursor: pointer;">
+
                         <img :src="img.url" class="img-fluid rounded shadow-sm hover-zoom"
                             style="width: 100%; height: 150px; object-fit: cover;">
+
                         <div v-if="img.is_more"
-                            class="position-absolute top-0 start-0 w-100 h-100 rounded d-flex align-items-center justify-content-center hover-overlay"
+                            class="position-absolute top-0 start-0 w-100 h-100 rounded d-flex align-items-center justify-content-center hover-overlay hover-zoom"
                             style="background: rgba(0,0,0,0.6); margin-left: 12px; width: calc(100% - 24px) !important; transition: all 0.3s;">
-                            <span class="text-white fw-bold fs-5"><i class="fa-solid fa-images me-1"></i> Khám phá
+                            <span class="text-white fw-bold fs-5"><i class="fa-solid fa-images me-1 "></i> Khám phá
                                 thêm</span>
                         </div>
+
                     </div>
                 </div>
 
@@ -214,24 +215,24 @@
                                     <button class="btn btn-qty" type="button" @click="giamSoLuong">
                                         <i class="fa-solid fa-minus"></i>
                                     </button>
-                                    <input type="number" 
-                                        class="form-control text-center fw-bold input-qty" 
-                                        v-model.number="dat_tour.so_luong_nguoi"
-                                        @blur="validateSoLuong">
+                                    <input type="number" class="form-control text-center fw-bold input-qty"
+                                        v-model.number="dat_tour.so_luong_nguoi" @blur="validateSoLuong">
                                     <button class="btn btn-qty" type="button" @click="tangSoLuong">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
                                 </div>
-                                
-                                <span class="ms-3 text-muted fw-medium" v-if="chi_tiet_tour.so_nguoi_toi_da" style="font-size: 0.9rem;">
-                                    (Còn trống <strong class="text-danger">{{ chi_tiet_tour.so_nguoi_toi_da }}</strong> chỗ)
+
+                                <span class="ms-3 text-muted fw-medium" v-if="chi_tiet_tour.so_nguoi_toi_da"
+                                    style="font-size: 0.9rem;">
+                                    (Còn trống <strong class="text-danger">{{ chi_tiet_tour.so_nguoi_toi_da }}</strong>
+                                    chỗ)
                                 </span>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label class="fw-bold mb-1">
-                                Thông tin người đi cùng 
+                                Thông tin người đi cùng
                                 <span v-if="dat_tour.so_luong_nguoi >= 2" class="text-danger">* (Bắt buộc)</span>
                             </label>
                             <textarea class="form-control" rows="4" v-model="dat_tour.ghi_chu_danh_sach_nguoi_di"
@@ -260,8 +261,7 @@
                             border: 'none',
                             transition: '0.3s',
                             cursor: is_loading ? 'not-allowed' : 'pointer'
-                        }"
-                            @mouseover="!is_loading && ($event.target.style.background = 'linear-gradient(135deg, #78c9a0, #4da374)')"
+                        }" @mouseover="!is_loading && ($event.target.style.background = 'linear-gradient(135deg, #78c9a0, #4da374)')"
                             @mouseleave="!is_loading && ($event.target.style.background = 'linear-gradient(135deg, #8fdfb5, #5bb883)')"
                             @click="thucHienDatTour()">
                             {{ is_loading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN ĐẶT TOUR' }}
@@ -318,7 +318,9 @@
                 <div v-else class="text-center p-5 border border-dashed rounded-4 bg-light">
                     <i class="fa-solid fa-comments text-muted fs-1 mb-3"></i>
                     <p class="text-muted">
-                        {{ filterStar === 'all' ? 'Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!' : 'Không có đánh giá ' + filterStar + ' sao nào.' }}
+                        {{ filterStar === 'all'
+                            ? 'Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!' : 'Không có đánh giá '
+                            + filterStar + ' sao nào.' }}
                     </p>
                 </div>
             </div>
@@ -382,24 +384,33 @@
             </div>
         </div>
 
-        <div v-if="show_modal_anh" class="modal-lightbox" @click.self="closeModal" tabindex="0" @keydown.left.prevent="prevImage" @keydown.right.prevent="nextImage">
+        <div v-if="show_modal_anh" class="modal-lightbox" @click.self="closeModal" tabindex="0"
+            @keydown.left.prevent="prevImage" @keydown.right.prevent="nextImage">
             <button class="lightbox-close" @click="closeModal" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
             <div class="lightbox-inner">
                 <button class="lightbox-prev" @click="prevImage" v-if="all_images.length > 1" aria-label="Previous">
-                    <i class="fa-solid fa-chevron-left"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
                 </button>
 
                 <div class="lightbox-frame animate__animated animate__zoomIn animate__faster">
                     <img :src="all_images[current_image_index]" alt="Zoomed Image" class="lightbox-img">
                     <div class="lightbox-caption text-white text-center">{{ chi_tiet_tour.ten_tour || '' }}</div>
-                    <div class="lightbox-counter text-white text-center">{{ current_image_index + 1 }} / {{ all_images.length }}</div>
+                    <div class="lightbox-counter text-white text-center">{{ current_image_index + 1 }} / {{
+                        all_images.length }}
+                    </div>
                 </div>
 
                 <button class="lightbox-next" @click="nextImage" v-if="all_images.length > 1" aria-label="Next">
-                    <i class="fa-solid fa-chevron-right"></i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
                 </button>
             </div>
 
@@ -409,7 +420,7 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 </template>
 
 <script>
@@ -425,10 +436,10 @@ export default {
             list_tour_khac: [],
             ds_danh_gia: [],
             list_hinh_anh: [],
-            all_images: [],    
+            all_images: [],
             show_modal_anh: false,
-            current_image_index: 0, // Biến theo dõi ảnh đang mở hiện tại
-            index_mo: null,
+            current_image_index: 0,
+            index_mo: [],
             is_open_all: false,
             is_policy_open: false,
             dat_tour: {
@@ -442,7 +453,17 @@ export default {
             is_loading: false,
         }
     },
+
+    // =========================================================================
+    // LẮNG NGHE SỰ THAY ĐỔI VÀ VÒNG ĐỜI COMPONENT
+    // =========================================================================
+
     watch: {
+        /**
+         * Lắng nghe sự thay đổi của id_tour trên thanh URL.
+         * Cách thức: Khi người dùng click sang một tour khác (cùng route nhưng khác id),
+         * biến newId sẽ nhận giá trị mới, ta cập nhật lại id, gọi API tải lại dữ liệu và cuộn lên đầu trang.
+         */
         '$route.params.id_tour': function (newId) {
             this.id = newId;
             this.LoadTour();
@@ -451,16 +472,34 @@ export default {
         }
     },
     mounted() {
+        /**
+         * Chạy ngay khi component được nạp vào DOM.
+         * Cách thức: Gọi API lấy dữ liệu tour, lấy đánh giá và gắn sự kiện lắng nghe thao tác cuộn chuột (scroll) để xử lý phần mô tả.
+         */
         this.LoadTour();
         this.layDanhSachDanhGia();
         window.addEventListener('scroll', this.handleScrollMoTa);
 
     },
     unmounted() {
+        /**
+         * Chạy khi component bị hủy (người dùng chuyển sang trang khác).
+         * Cách thức: Dọn dẹp sự kiện cuộn chuột để tránh rò rỉ bộ nhớ (memory leak) và trả lại thanh cuộn mặc định cho body.
+         */
         window.removeEventListener('scroll', this.handleScrollMoTa);
         document.body.style.overflow = '';
     },
+
+    // =========================================================================
+    // DỮ LIỆU ĐƯỢC TÍNH TOÁN TỰ ĐỘNG
+    // =========================================================================
+
     computed: {
+        /**
+         * Lọc danh sách đánh giá theo số sao.
+         * Cách thức: Dựa vào biến filterStar, nếu là 'all' thì trả về toàn bộ mảng ds_danh_gia. 
+         * Nếu là số (1-5), dùng hàm filter() của mảng để giữ lại các đánh giá có sao khớp với filterStar.
+         */
         filteredDanhGia() {
             if (this.filterStar === 'all') {
                 return this.ds_danh_gia;
@@ -469,39 +508,76 @@ export default {
         }
     },
     methods: {
-        // --- CÁC HÀM XỬ LÝ MỞ RỘNG ẢNH (LIGHTBOX) ---
+        // =========================================================================
+        // CHỨC NĂNG: QUẢN LÝ TRÌNH XEM ẢNH FULL MÀN HÌNH (LIGHTBOX)
+        // =========================================================================
+
+        /**
+         * Mở modal xem ảnh phóng to.
+         * Cách thức: Nhận vào URL ảnh được click, tìm vị trí (index) của ảnh đó trong mảng all_images bằng indexOf.
+         * Cập nhật current_image_index để hiển thị đúng ảnh, bật cờ show_modal_anh và khóa cuộn chuột (overflow = 'hidden').
+         */
         openModal(imgUrl) {
-            // Tìm vị trí của ảnh được click trong kho all_images
             const index = this.all_images.indexOf(imgUrl);
             this.current_image_index = index !== -1 ? index : 0;
             this.show_modal_anh = true;
-            document.body.style.overflow = 'hidden'; // Khóa cuộn trang khi mở ảnh
+            document.body.style.overflow = 'hidden';
         },
+
+        /**
+         * Đóng modal xem ảnh.
+         * Cách thức: Tắt cờ show_modal_anh và mở khóa thanh cuộn chuột của trang web.
+         */
         closeModal() {
             this.show_modal_anh = false;
-            document.body.style.overflow = ''; // Mở lại cuộn trang
+            document.body.style.overflow = '';
         },
+
+        /**
+         * Chuyển sang ảnh tiếp theo.
+         * Cách thức: Kiểm tra nếu index hiện tại chưa phải là ảnh cuối cùng thì cộng thêm 1.
+         * Nếu đang ở ảnh cuối thì vòng lại ảnh đầu tiên (index = 0).
+         */
         nextImage() {
             if (this.current_image_index < this.all_images.length - 1) {
                 this.current_image_index++;
             } else {
-                this.current_image_index = 0; // Quay về đầu nếu đến ảnh cuối
+                this.current_image_index = 0;
             }
         },
+
+        /**
+         * Lùi về ảnh trước đó.
+         * Cách thức: Kiểm tra nếu index > 0 thì trừ đi 1.
+         * Nếu đang ở ảnh đầu tiên thì vòng lại ảnh cuối cùng trong mảng.
+         */
         prevImage() {
             if (this.current_image_index > 0) {
                 this.current_image_index--;
             } else {
-                this.current_image_index = this.all_images.length - 1; // Vòng về cuối nếu đang ở đầu
+                this.current_image_index = this.all_images.length - 1;
             }
         },
-        // ---------------------------------------------
 
+        // =========================================================================
+        // CHỨC NĂNG: QUẢN LÝ SỐ LƯỢNG KHÁCH ĐẶT TOUR
+        // =========================================================================
+
+        /**
+         * Giảm số lượng người đặt tour.
+         * Cách thức: Kiểm tra nếu số lượng lớn hơn 1 thì mới cho phép giảm đi 1, đảm bảo luôn có ít nhất 1 người.
+         */
         giamSoLuong() {
             if (this.dat_tour.so_luong_nguoi > 1) {
                 this.dat_tour.so_luong_nguoi--;
             }
         },
+
+        /**
+         * Tăng số lượng người đặt tour.
+         * Cách thức: Kiểm tra nếu số lượng hiện tại nhỏ hơn số người tối đa của tour thì cho phép tăng.
+         * Nếu vượt quá, hiển thị thông báo toast cảnh báo không đủ chỗ.
+         */
         tangSoLuong() {
             if (this.dat_tour.so_luong_nguoi < this.chi_tiet_tour.so_nguoi_toi_da) {
                 this.dat_tour.so_luong_nguoi++;
@@ -509,6 +585,14 @@ export default {
                 this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
             }
         },
+
+        /**
+         * Kiểm tra (validate) giá trị nhập tay vào ô số lượng.
+         * Cách thức: Chuyển dữ liệu người dùng nhập thành số nguyên. 
+         * Nếu nhập sai (chữ, số âm, < 1) thì reset về 1.
+         * Nếu nhập số lớn hơn số chỗ còn trống thì gán bằng số chỗ trống và báo lỗi.
+         * Nếu hợp lệ thì gán đúng giá trị đó.
+         */
         validateSoLuong() {
             let val = parseInt(this.dat_tour.so_luong_nguoi);
             if (isNaN(val) || val < 1) {
@@ -520,6 +604,17 @@ export default {
                 this.dat_tour.so_luong_nguoi = val;
             }
         },
+
+        // =========================================================================
+        // CHỨC NĂNG: XỬ LÝ VÀ ĐỊNH DẠNG HÌNH ẢNH
+        // =========================================================================
+
+        /**
+         * Lấy ảnh đầu tiên từ một mảng hoặc chuỗi JSON hình ảnh.
+         * Cách thức: Nếu đầu vào rỗng, trả về ảnh mặc định.
+         * Nếu là mảng chuẩn, lấy phần tử [0].
+         * Nếu là chuỗi JSON, dùng try-catch để parse thành mảng và lấy [0]. Nếu lỗi parse, trả về nguyên bản chuỗi đó.
+         */
         getFirstImage(hinh_anh) {
             if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
             if (Array.isArray(hinh_anh)) {
@@ -529,13 +624,29 @@ export default {
                 let parsed = JSON.parse(hinh_anh);
                 return Array.isArray(parsed) ? parsed[0] : parsed;
             } catch (e) {
-                return hinh_anh; 
+                return hinh_anh;
             }
         },
+
+        /**
+         * Xóa định dạng kích thước khỏi URL ảnh (nếu có) để lấy ảnh gốc rõ nét.
+         * Cách thức: Dùng biểu thức chính quy (Regex) tìm mẫu "-[số]x[số]" (vd: -400x300) và thay thế bằng chuỗi rỗng.
+         */
         getImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/400x300';
             return url.replace(/-\d+x\d+/g, '');
         },
+
+        // =========================================================================
+        // CHỨC NĂNG: XỬ LÝ GIAO DIỆN MÔ TẢ & LỊCH TRÌNH
+        // =========================================================================
+
+        /**
+         * Ẩn/Hiện đoạn text mô tả dài của tour.
+         * Cách thức: Đảo ngược trạng thái is_expanded_mo_ta (đóng/mở).
+         * Nếu mở, lưu lại vị trí cuộn trang hiện tại (open_scroll_y).
+         * Nếu đóng, tính toán tọa độ của vùng mô tả (ref tourDescription) và tự động cuộn màn hình mượt mà (smooth) về đó để không bị giật trang.
+         */
         toggleMoTa() {
             this.is_expanded_mo_ta = !this.is_expanded_mo_ta;
             if (this.is_expanded_mo_ta) {
@@ -547,6 +658,12 @@ export default {
                 }
             }
         },
+
+        /**
+         * Tự động đóng mô tả khi cuộn chuột đi quá xa.
+         * Cách thức: Tính khoảng cách (Math.abs) giữa vị trí cuộn lúc mở và vị trí hiện tại. 
+         * Nếu người dùng cuộn vượt quá 600px, tự động gán is_expanded_mo_ta = false để thu gọn lại.
+         */
         handleScrollMoTa() {
             if (this.is_expanded_mo_ta) {
                 if (Math.abs(window.scrollY - this.open_scroll_y) > 600) {
@@ -554,9 +671,56 @@ export default {
                 }
             }
         },
+
+        /**
+         * Bật/Tắt chế độ xem toàn bộ lịch trình tour.
+         * Cách thức: Đảo trạng thái cờ is_open_all.
+         * Nếu bật, reset lại mảng index_mo về rỗng để nhường quyền điều khiển mở rộng cho is_open_all.
+         */
+        toggleOpenAll() {
+            this.is_open_all = !this.is_open_all;
+            if (this.is_open_all) {
+                this.index_mo = [];
+            }
+        },
+
+        /**
+         * Mở/Đóng lịch trình của một ngày cụ thể (dựa vào index).
+         * Cách thức: 
+         * Nếu is_open_all đang bật, tắt nó đi và đẩy index của ngày vừa click vào mảng index_mo.
+         * Nếu đang không mở tất cả: kiểm tra xem index đã có trong mảng chưa. Có rồi thì xóa đi (đóng), chưa có thì thêm vào (mở).
+         */
+        toggleSingle(index) {
+            if (this.is_open_all) {
+                this.is_open_all = false;
+                this.index_mo = [index];
+            } else {
+                const idx = this.index_mo.indexOf(index);
+                if (idx !== -1) {
+                    this.index_mo.splice(idx, 1);
+                } else {
+                    this.index_mo.push(index);
+                }
+            }
+        },
+
+        // =========================================================================
+        // CHỨC NĂNG: XỬ LÝ DỮ LIỆU HIỂN THỊ (UTILS)
+        // =========================================================================
+
+        /**
+         * Đếm số lượng đánh giá theo số sao (1,2,3,4,5).
+         * Cách thức: Lọc mảng ds_danh_gia để lấy ra các phần tử có sao bằng biến truyền vào, sau đó lấy độ dài (.length).
+         */
         countStars(star) {
             return this.ds_danh_gia.filter(item => item.sao_danh_gia === star).length;
         },
+
+        /**
+         * Định dạng lại ngày tháng chuẩn hiển thị.
+         * Cách thức: Chuyển chuỗi ISO ngày tháng thành đối tượng Date. 
+         * Lấy ngày, tháng (cộng 1 do tháng bắt đầu từ 0), năm. Dùng padStart(2, '0') để chèn số 0 nếu ngày/tháng < 10. Trả về định dạng DD/MM/YYYY.
+         */
         formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
@@ -565,6 +729,23 @@ export default {
             const year = date.getFullYear();
             return `${day}/${month}/${year}`;
         },
+
+        /**
+         * Cuộn trang lên đầu cùng.
+         * Cách thức: Dùng window.scrollTo với tọa độ top: 0, kèm hiệu ứng smooth.
+         */
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+
+        // =========================================================================
+        // CHỨC NĂNG: GỌI API LẤY DỮ LIỆU (GET DATA)
+        // =========================================================================
+
+        /**
+         * Gọi API lấy danh sách bài đánh giá (review) của tour hiện tại.
+         * Cách thức: Dùng axios get đường dẫn API, nếu có dữ liệu trả về thì gán vào biến ds_danh_gia.
+         */
         layDanhSachDanhGia() {
             const id_tour = this.id;
             axios.get(apiUrl('client/danh-gia/get-danh-gia/' + id_tour))
@@ -575,6 +756,15 @@ export default {
                 })
                 .catch((err) => { console.error("Lỗi khi tải đánh giá:", err); });
         },
+
+        /**
+         * Gọi API lấy thông tin chi tiết tour và danh sách ảnh.
+         * Cách thức: 
+         * 1. Gửi payload chứa ID tour kèm token để xác thực người dùng.
+         * 2. Nhận dữ liệu gán cho chi_tiet_tour và lọc 4 tour khác đưa vào list_tour_khac (xử lý parse chuỗi ảnh).
+         * 3. Gom nhặt toàn bộ hình ảnh liên quan (ảnh tour chính + ảnh trong lịch trình), lọc trùng bằng uniqueImages.
+         * 4. Trộn 4 ảnh đưa vào list_hinh_anh để hiển thị làm thumbnail. Đánh dấu ảnh thứ 4 (is_more) nếu còn nhiều ảnh hơn để bật nút "Khám phá thêm".
+         */
         LoadTour() {
             var payload = { id: this.id };
             axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
@@ -627,7 +817,7 @@ export default {
                         ].sort(() => 0.5 - Math.random());
 
                         let finalImages = [];
-                        let secondaryImages = uniqueImages.slice(1); 
+                        let secondaryImages = uniqueImages.slice(1);
 
                         for (let i = 0; i < 4; i++) {
                             if (secondaryImages[i]) {
@@ -646,23 +836,20 @@ export default {
                     }
                 });
         },
-        toggleOpenAll() {
-            this.is_open_all = !this.is_open_all;
-            if (this.is_open_all) {
-                this.index_mo = null;
-            }
-        },
-        toggleSingle(index) {
-            if (this.is_open_all) {
-                this.is_open_all = false;
-                this.index_mo = index;
-            } else {
-                this.index_mo = (this.index_mo === index ? null : index);
-            }
-        },
-        scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        },
+
+        // =========================================================================
+        // CHỨC NĂNG: GỬI YÊU CẦU ĐẶT TOUR
+        // =========================================================================
+
+        /**
+         * Xử lý luồng thao tác thanh toán / đặt tour của khách.
+         * Cách thức: 
+         * 1. Chặn bấm click liên tục nếu hệ thống đang tải (is_loading = true).
+         * 2. Kiểm tra token, nếu không có đẩy qua trang đăng nhập.
+         * 3. Xác thực số lượng so với số chỗ trống, xác thực ghi chú danh sách người đi nếu đi >= 2 người.
+         * 4. Gửi request axios tới endpoint thanh toán. Xử lý logic điều hướng đến URL thanh toán tương ứng dựa theo maHoaDon (nếu trả về).
+         * 5. Xử lý bắt lỗi hết hạn token (401) hoặc lỗi hệ thống chung.
+         */
         thucHienDatTour() {
             if (this.is_loading) return;
 
@@ -672,7 +859,7 @@ export default {
                 this.$router.push('/client/dang-nhap');
                 return;
             }
-            
+
             if (this.dat_tour.so_luong_nguoi > this.chi_tiet_tour.so_nguoi_toi_da) {
                 this.$toast.warning("Rất tiếc, tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
                 return;
@@ -695,39 +882,49 @@ export default {
             axios.post(apiUrl("client/dat-tour/thanh-toan"), payload, {
                 headers: { Authorization: "Bearer " + token }
             })
-            .then((res) => {
-                if (res.data.status) {
-                    this.$toast.success(res.data.message);
-                    this.chi_tiet_tour.so_nguoi_toi_da -= this.dat_tour.so_luong_nguoi;
-                    const maHoaDon = res.data.data.hoa_don.ma_hoa_don;
-                    
-                    if (maHoaDon) {
-                        this.$router.push('/client/thanh-toan/' + maHoaDon);
+                .then((res) => {
+                    if (res.data.status) {
+                        this.$toast.success(res.data.message);
+                        this.chi_tiet_tour.so_nguoi_toi_da -= this.dat_tour.so_luong_nguoi;
+                        const maHoaDon = res.data.data.hoa_don.ma_hoa_don;
+
+                        if (maHoaDon) {
+                            this.$router.push('/client/thanh-toan/' + maHoaDon);
+                        } else {
+                            this.dat_tour.so_luong_nguoi = 1;
+                            this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
+                            setTimeout(() => { this.is_loading = false; }, 2000);
+                        }
                     } else {
-                        this.dat_tour.so_luong_nguoi = 1;
-                        this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
+                        this.$toast.error(res.data.message);
                         setTimeout(() => { this.is_loading = false; }, 2000);
                     }
-                } else {
-                    this.$toast.error(res.data.message);
+                })
+                .catch((err) => {
+                    if (err.response && err.response.status === 401) {
+                        this.$toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
+                        this.$router.push('/client/dang-nhap');
+                    } else {
+                        this.$toast.error("Hệ thống đang bận, vui lòng thử lại sau.");
+                    }
                     setTimeout(() => { this.is_loading = false; }, 2000);
-                }
-            })
-            .catch((err) => {
-                if (err.response && err.response.status === 401) {
-                    this.$toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.");
-                    this.$router.push('/client/dang-nhap');
-                } else {
-                    this.$toast.error("Hệ thống đang bận, vui lòng thử lại sau.");
-                }
-                setTimeout(() => { this.is_loading = false; }, 2000);
-            });
+                });
         }
     }
 }
 </script>
 
 <style scoped>
+/* =========================================================================
+   HIỆU ỨNG GIAO DIỆN CHUNG & TIỆN ÍCH (UTILITIES)
+   ========================================================================= */
+
+/**
+ * Lớp phủ mờ (fade) cho phần mô tả khi bị thu gọn.
+ * - Làm gì: Tạo cảm giác chữ đang mờ dần đi ở cuối đoạn text, báo hiệu cho người dùng biết còn nội dung bên dưới.
+ * - Làm ra sao: Đặt ở vị trí tuyệt đối (absolute) dưới cùng, dùng linear-gradient chuyển từ trong suốt sang màu trắng. 
+ * Đặc biệt dùng `pointer-events: none` để người dùng vẫn có thể click xuyên qua lớp mờ này.
+ */
 .fade-overlay {
     position: absolute;
     bottom: 0;
@@ -738,22 +935,42 @@ export default {
     pointer-events: none;
 }
 
+/**
+ * Giữ thanh đặt tour dính (sticky) trên màn hình khi cuộn.
+ * - Làm gì: Đảm bảo người dùng luôn thấy form đặt tour dù có cuộn trang xuống sâu.
+ * - Làm ra sao: Cách đỉnh (top) 100px. Dùng !important để ghi đè các thuộc tính top khác nếu có.
+ */
 .sticky-card {
     top: 100px !important;
     transition: all 0.3s ease;
 }
 
+/**
+ * Hiệu ứng khi di chuột (hover) vào tất cả các nút (button).
+ * - Làm gì: Tạo cảm giác nút được bấm hoặc nổi lên.
+ * - Làm ra sao: Giảm độ sáng (brightness 90%), đẩy phần tử lên trên 2px (translateY) và thêm đổ bóng (box-shadow).
+ */
 button:hover {
     filter: brightness(90%);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/**
+ * Hiệu ứng hover cho thẻ hiển thị "Tour khác".
+ * - Làm gì: Phóng to nhẹ và đổ bóng đậm hơn khi người dùng lia chuột vào tour.
+ * - Làm ra sao: Đẩy thẻ lên 5px và tăng kích thước bóng đổ (dùng !important để đảm bảo tính ưu tiên).
+ */
 .tour-card:hover {
     transform: translateY(-5px) !important;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
 }
 
+/**
+ * Hiệu ứng trượt ngang cho thẻ "Đánh giá".
+ * - Làm gì: Trượt nhẹ thẻ đánh giá sang phải khi lia chuột vào.
+ * - Làm ra sao: Dùng translateX(5px) đẩy sang ngang thay vì đẩy lên dọc, kết hợp đổ bóng.
+ */
 .list-danh-gia .card {
     transition: all 0.3s ease;
 }
@@ -763,148 +980,318 @@ button:hover {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08) !important;
 }
 
+/* Các class tiện ích cơ bản */
 .border-dashed {
     border: 2px dashed #dee2e6 !important;
 }
 
 .fa-solid.text-warning {
     color: #ffc107 !important;
+    /* Màu vàng cho ngôi sao đánh giá */
 }
 
-/* Lightbox styles */
+
+/* =========================================================================
+   GIAO DIỆN LIGHTBOX (TRÌNH XEM ẢNH FULL MÀN HÌNH - PHẦN 1)
+   ========================================================================= */
+
+/**
+ * 1. Khung nền chính của Modal xem ảnh.
+ * - Làm gì: Phủ mờ toàn bộ màn hình, khóa cuộn trang, tạo nền tối sang trọng và xuất hiện mượt mà.
+ * - Làm ra sao: Dùng fixed và inset 0, overflow: hidden cấm mọi thứ tràn ra. Dùng backdrop-filter: blur(8px) tạo hiệu ứng kính mờ (Glassmorphism) và gán animation fadeIn.
+ */
 .modal-lightbox {
     position: fixed;
     inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.8);
-    z-index: 2000;
-    padding: 30px 16px;
+    justify-content: space-between;
+    animation: fadeIn 0.3s ease-out;
 }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/**
+ * 2. Bố cục chứa phần Ảnh chính và Nút điều hướng.
+ * - Làm gì: Căn giữa nội dung, đảm bảo không gian này tự động co bóp nhường chỗ cho vùng Thumbnail phía dưới.
+ * - Làm ra sao: Gán flex: 1 để chiếm hết vùng trống, nhưng bắt buộc đi kèm min-height: 0 để kích hoạt "dynamic shrink" - cho phép khung tự thu nhỏ lại khi bị chật.
+ */
 .lightbox-inner {
     display: flex;
     align-items: center;
-    gap: 24px;
+    justify-content: center;
     width: 100%;
-    max-width: 1400px;
+    max-width: 1200px;
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    padding: 20px;
 }
+
 .lightbox-frame {
-    flex: 1 1 auto;
-    max-height: 85vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-.lightbox-img {
-    max-width: 90vw;
-    max-height: 82vh;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: 8px;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.65);
-    background: #111;
-}
-.lightbox-prev, .lightbox-next {
-    background: rgba(0,0,0,0.5);
-    border: none;
-    color: #fff;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
     justify-content: center;
-}
-.lightbox-prev:hover, .lightbox-next:hover {
-    background: rgba(0,0,0,0.75);
-}
-.lightbox-close {
-    position: absolute;
-    top: 18px;
-    right: 18px;
-    background: rgba(0,0,0,0.5);
-    border: none;
-    color: #fff;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2100;
-}
-.lightbox-caption {
-    margin-top: 12px;
-    font-size: 1.05rem;
-    opacity: 0.98;
-    font-weight: 600;
-}
-.lightbox-counter {
-    margin-top: 8px;
-    font-size: 1rem;
-    opacity: 0.95;
-    font-weight: 700;
-}
-.lightbox-thumbnails {
-    margin-top: 18px;
-    display: flex;
-    gap: 10px;
     width: 100%;
-    max-width: 1400px;
-    overflow-x: auto;
-    padding: 8px 12px;
-    justify-content: center;
-}
-.thumb { flex: 0 0 auto; }
-.thumb-img {
-    width: 120px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    opacity: 0.95;
-    border: 2px solid transparent;
-}
-.thumb-img.active {
-    border-color: #fff;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
-    transform: scale(1.04);
+    flex: 1;
+    min-height: 0;
 }
 
+/**
+ * 3. Ảnh hiển thị chính.
+ * - Làm gì: Hiển thị ảnh trọn vẹn, không vỡ nét, đặc biệt tự động thu nhỏ nếu là ảnh dọc (portrait) để không đè lên chữ.
+ * - Làm ra sao: Tiếp tục dùng flex: 1 và min-height: 0 để ép bản thân bức ảnh co lại theo không gian thực tế. Dùng object-fit: contain để giữ đúng tỷ lệ gốc.
+ */
+.lightbox-img {
+    flex: 1;
+    min-height: 0;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/**
+ * 4. Định dạng chung cho các nút (Đóng, Trái, Phải).
+ * - Làm gì: Tạo nút bấm (chứa SVG) thanh mảnh, tinh tế, có nền kính mờ và phát sáng nhẹ khi người dùng lia chuột.
+ * - Làm ra sao: Nền trong suốt (rgba), viền siêu mỏng, backdrop-filter. Khi hover, tăng độ sáng của màu nền/viền, đổ bóng (box-shadow) và phóng to (scale).
+ */
+.lightbox-close,
+.lightbox-prev,
+.lightbox-next {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+    z-index: 10000;
+}
+
+.lightbox-close:hover,
+.lightbox-prev:hover,
+.lightbox-next:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.1);
+}
+
+/* Vị trí Nút Đóng */
+.lightbox-close {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.4rem;
+}
+
+/* Vị trí Nút Trái / Phải */
+.lightbox-prev,
+.lightbox-next {
+    position: absolute;
+    top: 50%;
+    width: 55px;
+    height: 55px;
+    font-size: 1.5rem;
+}
+
+.lightbox-prev {
+    left: 40px;
+    transform: translateY(-50%);
+}
+
+.lightbox-prev:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-next {
+    right: 40px;
+    transform: translateY(-50%);
+}
+
+.lightbox-next:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+/**
+ * 5. Tiêu đề và số thứ tự ảnh.
+ * - Làm gì: Hiển thị mô tả ảnh rõ ràng trên nền tối, tuyệt đối không bị bóp méo khi màn hình nhỏ lại.
+ * - Làm ra sao: Gán flex-shrink: 0 để khóa cứng không gian của khối chữ. Thêm text-shadow để chữ nổi bật kể cả khi ảnh bên dưới có màu sáng.
+ */
+.lightbox-caption {
+    margin-top: 20px;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-caption,
+.lightbox-counter {
+    flex-shrink: 0;
+}
+
+.lightbox-counter {
+    margin-top: 5px;
+    font-size: 0.95rem;
+    opacity: 0.7;
+}
+
+/**
+ * 6. Danh sách ảnh thu nhỏ (Thumbnails).
+ * - Làm gì: Cụm chọn ảnh nằm dưới cùng, có thể cuộn ngang, làm nổi bật ảnh đang được xem. Khối này được bảo vệ không bị bức ảnh dọc chèn ép.
+ * - Làm ra sao: Dùng flex-shrink: 0 để giữ vững kích thước. Ẩn thanh cuộn bằng ::-webkit-scrollbar. 
+ * Ảnh mặc định bị làm mờ (opacity: 0.4), ảnh active sẽ sáng hẳn lên, đẩy nhẹ lên trên và có viền màu chủ đạo.
+ */
+.lightbox-thumbnails {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 30px;
+    flex-shrink: 0;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar {
+    display: none;
+}
+
+.thumb {
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.thumb-img {
+    width: 100px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 8px;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.thumb-img:hover {
+    opacity: 0.8;
+}
+
+.thumb-img.active {
+    opacity: 1;
+    border-color: #8fdfb5;
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* 7. Tương thích thiết bị di động (Responsive) */
+@media (max-width: 768px) {
+
+    .lightbox-prev,
+    .lightbox-next {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+
+    .lightbox-prev {
+        left: 15px;
+    }
+
+    .lightbox-next {
+        right: 15px;
+    }
+
+    .lightbox-close {
+        top: 15px;
+        right: 15px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .thumb-img {
+        width: 80px;
+        height: 56px;
+    }
+}
+
+/* =========================================================================
+   HIỆU ỨNG PHÓNG TO ẢNH (ZOOM TRONG CARD) VÀ LỚP PHỦ
+   ========================================================================= */
 .hover-zoom {
     transition: transform 0.4s ease;
 }
 
 .col-lg-6.position-relative:hover .hover-zoom {
     transform: scale(1.05);
+    /* Phóng to ảnh thêm 5% khi lia chuột */
 }
 
 .col-lg-6.position-relative {
     overflow: hidden;
+    /* Giấu phần ảnh bị phình ra khi zoom */
     border-radius: 5px;
 }
 
 .hover-overlay:hover {
     background: rgba(0, 0, 0, 0.7) !important;
+    /* Làm tối nền khi hover vào ảnh "Khám phá thêm" */
 }
 
+/* =========================================================================
+   XỬ LÝ DỮ LIỆU HTML ĐỘNG (V-HTML)
+   ========================================================================= */
+/**
+ * Chỉnh sửa CSS cho nội dung được render bằng v-html.
+ * - Làm gì: Sửa lỗi hiển thị danh sách (ul) bị thụt lề sai trong trình soạn thảo văn bản (WYSIWYG).
+ * - Làm ra sao: Dùng `:deep()` để Vue áp dụng CSS này cho phần tử con sinh ra động, thêm padding trái 20px.
+ */
 :deep(.mo-ta-html ul) {
     padding-left: 20px;
     margin-bottom: 15px;
 }
 
-/* KHỐI SỐ LƯỢNG KHÁCH */
+/* =========================================================================
+   KHỐI SỐ LƯỢNG KHÁCH (NÚT + / -)
+   ========================================================================= */
+/**
+ * Box bọc ngoài nút cộng trừ.
+ * - Làm gì: Tạo hình dáng bo góc, viền và căn chỉnh cho nhóm tăng/giảm số lượng.
+ */
 .custom-qty-group {
-    width: 150px; 
-    height: 45px; 
+    width: 150px;
+    height: 45px;
     background: #f8f9fa;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
     overflow: hidden;
 }
 
+/**
+ * Nút bấm cộng (+) và trừ (-).
+ * - Làm gì: Định dạng nút bấm, bỏ nền, chỉnh màu xanh lá và thêm hiệu ứng chuyển màu khi hover.
+ */
 .btn-qty {
     background: transparent;
     border: none;
@@ -922,11 +1309,16 @@ button:hover {
     color: white;
 }
 
+/* Hiệu ứng khi nút đang được bấm (click giữ) -> Hơi co lại */
 .btn-qty:active {
     background: #6dca96;
     transform: scale(0.95);
 }
 
+/**
+ * Ô nhập số lượng ở giữa.
+ * - Làm gì: Ẩn đi thanh viền của thẻ input mặc định, định dạng chữ to, in đậm.
+ */
 .input-qty {
     border: none !important;
     background: transparent !important;
@@ -937,33 +1329,46 @@ button:hover {
 
 .input-qty:focus {
     box-shadow: none !important;
+    /* Bỏ viền xanh (outline) khi focus vào ô nhập */
 }
 
+/**
+ * Ẩn hai nút tăng/giảm lên xuống (spinner) mặc định của HTML input type="number".
+ * - Làm gì: Giúp thẻ input sạch sẽ để ta dùng 2 nút bấm tùy chỉnh bên trên thay thế.
+ * - Làm ra sao: Dùng `-webkit-appearance: none` (cho Chrome, Safari) và `-moz-appearance: textfield` (cho Firefox).
+ */
 .input-qty::-webkit-outer-spin-button,
 .input-qty::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
 .input-qty[type=number] {
     -moz-appearance: textfield;
 }
 
-/* ========================================= */
-/* CSS CHO MODAL LIGHTBOX (XEM ẢNH FULL MÀN HÌNH) */
-/* ========================================= */
+/* =========================================================================
+   GHI ĐÈ CSS CHO MODAL LIGHTBOX (CẬP NHẬT KIỂU DÁNG MỚI & RESPONSIVE)
+   ========================================================================= */
 
+/**
+ * Chú ý: Dưới đây là phần code ghi đè lại các định dạng ở trên (do khai báo sau).
+ * Nó cập nhật thêm hiệu ứng làm mờ nền (backdrop-filter: blur) và thay đổi mức độ tối của nền (0.9).
+ */
 .modal-lightbox {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.9); /* Làm tối nền mạnh như hình của bạn */
+    background-color: rgba(0, 0, 0, 0.9);
+    /* Làm tối nền mạnh như hình của bạn */
     z-index: 9999;
     display: flex;
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(5px);
+    /* Thêm độ nhòe (blur) cho khung cảnh phía sau */
 }
 
 .lightbox-content {
@@ -977,14 +1382,15 @@ button:hover {
 
 .lightbox-img {
     max-width: 100%;
-    max-height: 85vh; /* Giới hạn chiều cao để không bị tràn màn hình */
+    max-height: 85vh;
+    /* Giới hạn chiều cao để không bị tràn màn hình */
     object-fit: contain;
     border-radius: 8px;
-    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease;
 }
 
-/* Nút tắt */
+/* Tái định dạng Nút tắt - Bố trí lên góc, đổi size chữ */
 .lightbox-close {
     position: absolute;
     top: 25px;
@@ -1004,8 +1410,9 @@ button:hover {
     transform: scale(1.1);
 }
 
-/* Nút qua trái / phải */
-.lightbox-prev, .lightbox-next {
+/* Tái định dạng nút qua trái / phải (Định nghĩa lần 1) */
+.lightbox-prev,
+.lightbox-next {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
@@ -1023,7 +1430,8 @@ button:hover {
     justify-content: center;
 }
 
-.lightbox-prev:hover, .lightbox-next:hover {
+.lightbox-prev:hover,
+.lightbox-next:hover {
     background: rgba(255, 255, 255, 0.3);
 }
 
@@ -1034,9 +1442,12 @@ button:hover {
 .lightbox-next {
     right: 40px;
 }
-/* Nút qua trái / phải */
-.lightbox-prev, .lightbox-next {
-    position: fixed; /* Đổi từ absolute sang fixed để khóa cứng vị trí trên màn hình */
+
+/* Tái định dạng nút qua trái / phải (Định nghĩa lần 2 - Fix position) */
+.lightbox-prev,
+.lightbox-next {
+    position: fixed;
+    /* Đổi từ absolute sang fixed để khóa cứng vị trí trên màn hình */
     top: 50%;
     transform: translateY(-50%);
     background: rgba(255, 255, 255, 0.1);
@@ -1053,10 +1464,28 @@ button:hover {
     justify-content: center;
 }
 
-/* Responsive nhỏ cho điện thoại */
+/**
+ * Tương thích thiết bị di động (Responsive).
+ * - Làm gì: Thu nhỏ kích thước và căn chỉnh lại lề của các nút bấm trên màn hình điện thoại (<768px).
+ * - Làm ra sao: Dùng @media queries. Giảm size nút, kéo nút sát ra hai viền màn hình để không che khuất hình ảnh.
+ */
 @media (max-width: 768px) {
-    .lightbox-prev { left: 10px; padding: 10px; font-size: 1.5rem; }
-    .lightbox-next { right: 10px; padding: 10px; font-size: 1.5rem; }
-    .lightbox-close { top: 15px; right: 15px; font-size: 2rem; }
+    .lightbox-prev {
+        left: 10px;
+        padding: 10px;
+        font-size: 1.5rem;
+    }
+
+    .lightbox-next {
+        right: 10px;
+        padding: 10px;
+        font-size: 1.5rem;
+    }
+
+    .lightbox-close {
+        top: 15px;
+        right: 15px;
+        font-size: 2rem;
+    }
 }
 </style>
