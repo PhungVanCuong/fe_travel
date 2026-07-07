@@ -358,10 +358,27 @@ const routes = [
     }
 ];
 
-
 const router = createRouter({
     history: createWebHistory(),
     routes: routes,
+
+    scrollBehavior(to, from, savedPosition) {
+    // Nếu người dùng nhấn nút Back/Forward trên trình duyệt, 
+    // trả về vị trí cuộn mà họ đã dừng lại trước đó
+    if (savedPosition) {
+      return savedPosition
+    } 
+    // Nếu chuyển sang một trang mới hoàn toàn, cuộn lên sát lề trên
+    else {
+      return { 
+        top: 0,
+        // Thêm thuộc tính này nếu bạn muốn hiệu ứng cuộn mượt mà
+        behavior: 'smooth' 
+      }
+    }
+  }
 });
+
+
 
 export default router;

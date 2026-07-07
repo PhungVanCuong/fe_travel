@@ -81,7 +81,7 @@
                class="tour-poster hover-scale-img"
                data-aos="fade-up" 
                :data-aos-delay="index * 100">
-            <img :src="getImageUrl(value.hinh_anh)" :alt="value.ten_tour" class="tour-img" />
+            <img :src="getImageUrl(getFirstImage(value.hinh_anh))" :alt="value.ten_tour" class="tour-img" />
             <div class="tour-overlay"></div>
             <span class="tour-badge badge-primary">Còn {{ value.so_nguoi_toi_da }} chỗ</span>
             
@@ -131,7 +131,7 @@
                class="tour-poster hover-scale-img"
                data-aos="fade-up" 
                :data-aos-delay="index * 100">
-            <img :src="getImageUrl(value.hinh_anh)" :alt="value.ten_tour" class="tour-img" />
+            <img :src="getImageUrl(getFirstImage(value.hinh_anh))" :alt="value.ten_tour" class="tour-img" />
             <div class="tour-overlay"></div>
             <span class="tour-badge badge-primary">Còn {{ value.so_nguoi_toi_da }} chỗ</span>
             
@@ -345,6 +345,31 @@ export default {
     this.stopHeroSlide(); 
   },
   methods: {
+    // HÀM MỚI: Xử lý bóc tách mảng JSON để lấy ảnh đầu tiên của Tour
+    getFirstImage(hinh_anh) {
+      if (!hinh_anh) return '';
+      let imgStr = hinh_anh;
+      
+      try {
+        // Cố gắng dịch ngược chuỗi JSON mảng
+        let parsed = JSON.parse(hinh_anh);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          imgStr = parsed[0];
+        }
+      } catch (e) {
+        // Dự phòng nếu chuỗi không chuẩn JSON (loại bỏ dấu ngoặc vuông và nháy kép)
+        if (typeof hinh_anh === 'string') {
+          imgStr = hinh_anh.replace(/[\[\]"]/g, '').split(',')[0];
+        }
+      }
+      
+      // Xóa đuôi kích thước ảnh mờ (như -450x265) để lấy ảnh nét nhất
+      if (typeof imgStr === 'string') {
+        return imgStr.replace(/-\d+x\d+/g, '').trim();
+      }
+      
+      return imgStr;
+    },
     getImageUrl(url) {
         if (!url) return 'https://via.placeholder.com/600x300?text=No+Image';
         if (url.startsWith('http') || url.startsWith('data:')) {
@@ -477,26 +502,55 @@ export default {
       this.activeSlide = index;
       this.playSlideLogic();
     },
-
     loadData() {
       axios.get(apiUrl('client/trang-chu/get-data'))
         .then((res) => {
-          this.list_tour = res.data.data.tours || [];
-          this.list_bv = res.data.data.baiViets || [];
+          // Kiểm tra xem res.data.data.tours có tồn tại không
+          let rawTours = (res.data && res.data.data && res.data.data.tours) ? res.data.data.tours : [];
           
-          let allSlides = res.data.data.slides || [];
+          this.list_tour = rawTours.map(tour => {
+              // 1. Xử lý ảnh: Đảm bảo hinh_anh là một chuỗi đường dẫn sạch
+              let imgPath = tour.hinh_anh;
+              
+              if (imgPath) {
+                  try {
+                      // Nếu nó là chuỗi JSON: '["anh1.jpg", "anh2.jpg"]'
+                      if (typeof imgPath === 'string' && imgPath.startsWith('[')) {
+                          let parsed = JSON.parse(imgPath);
+                          imgPath = Array.isArray(parsed) ? parsed[0] : parsed;
+                      }
+                      // Nếu nó là chuỗi cách nhau bằng dấu phẩy: "anh1.jpg,anh2.jpg"
+                      else if (typeof imgPath === 'string' && imgPath.includes(',')) {
+                          imgPath = imgPath.split(',')[0];
+                      }
+                      
+                      // Loại bỏ các ký tự lạ và đuôi size mờ (ví dụ -450x265)
+                      imgPath = String(imgPath).replace(/[\[\]"]/g, '').replace(/-\d+x\d+/g, '').trim();
+                  } catch (e) {
+                      console.error("Lỗi xử lý ảnh tour ID:", tour.id, e);
+                  }
+              }
+              
+              // Trả về tour với hinh_anh đã được làm sạch
+              return {
+                  ...tour,
+                  hinh_anh: imgPath || 'https://via.placeholder.com/400x300' // Ảnh mặc định nếu lỗi
+              };
+          });
+
+          this.list_bv = (res.data.data && res.data.data.baiViets) ? res.data.data.baiViets : [];
           
+          let allSlides = (res.data.data && res.data.data.slides) ? res.data.data.slides : [];
           this.list_slide = allSlides
             .filter(s => s.tinh_trang == 1)
             .sort((a, b) => Number(a.thu_tu || 0) - Number(b.thu_tu || 0));
           
-          // Sau khi nạp dữ liệu slide từ API xong, chạy logic kiểm tra slide đầu tiên ngay lập tức
           this.playSlideLogic();
-
-          this.$nextTick(() => {
-            AOS.refresh();
-          });
+          this.$nextTick(() => { AOS.refresh(); });
         })
+        .catch(err => {
+            console.error("Lỗi tải dữ liệu trang chủ:", err);
+        });
     },
     formatDate(dateString) {
       if (!dateString) return '';

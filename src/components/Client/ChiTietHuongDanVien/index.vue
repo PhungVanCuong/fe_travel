@@ -107,7 +107,7 @@
                     <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
                         <div class="row g-0 h-100">
                             <div class="col-md-4 position-relative">
-                                <img :src="tour.hinh_anh" class="img-fluid h-100 w-100" style="object-fit: cover; min-height: 250px;" :alt="tour.ten_tour">
+                                <img :src="getImageUrl(getFirstImage(tour.hinh_anh))" alt="Tour Image" class="img-fluid h-100 w-100" style="object-fit: cover; min-height: 250px;">
                                 <div class="position-absolute bottom-0 start-0 m-3">
                                     <span class="badge bg-danger px-3 py-2 fs-6 shadow">{{ new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(tour.gia) }}</span>
                                 </div>
@@ -136,7 +136,7 @@
                                             </div>
                                             <div class="timeline-content bg-light p-3 rounded-3 flex-grow-1">
                                                 <div class="d-flex align-items-center mb-1">
-                                                    <img v-if="lt.anh_diem_den" :src="lt.anh_diem_den" class="rounded me-2" width="30" height="30" style="object-fit: cover;">
+                                                    <img v-if="lt.anh_diem_den" :src="getImageUrl(getFirstImage(lt.anh_diem_den))" class="rounded me-2" width="30" height="30" style="object-fit: cover;">
                                                     <h6 class="fw-bold mb-0 text-dark">{{ lt.ten_diem_den || 'Điểm đến tự do' }}</h6>
                                                 </div>
                                                 <p class="mb-0 small text-secondary">{{ lt.tieu_de_hoat_dong }}</p>
@@ -176,6 +176,28 @@ export default {
         this.fetchChiTietHDV();
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         async fetchChiTietHDV() {
             try {
                 const res = await axios.get(apiUrl(`client/huong-dan-vien/chi-tiet/${this.id_hdv}`));

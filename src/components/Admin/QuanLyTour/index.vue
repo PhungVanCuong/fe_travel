@@ -133,7 +133,7 @@
                                     value.id }}
                                 </td>
                                 <td style="padding: 15px;">
-                                    <img v-if="value.hinh_anh" :src="value.hinh_anh" alt="Tour"
+                                    <img v-if="value.hinh_anh" :src="getImageUrl(getFirstImage(value.hinh_anh))"  alt="Tour"
                                         style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                     <div v-else
                                         style="width: 60px; height: 45px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
@@ -422,7 +422,7 @@
 
                 <div style="padding: 30px; display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
                     <div>
-                        <img v-if="view_tour.hinh_anh" :src="view_tour.hinh_anh"
+                        <img v-if="view_tour.hinh_anh" :src="getImageUrl(getFirstImage(view_tour.hinh_anh))" alt="Tour"
                             style="width: 100%; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                         <div v-else
                             style="width: 100%; height: 200px; background: #f1f5f9; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: #cbd5e1;">
@@ -678,6 +678,28 @@ export default {
         }
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);

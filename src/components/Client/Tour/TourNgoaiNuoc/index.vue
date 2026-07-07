@@ -157,7 +157,7 @@
                     @click="viewDetail(value.id)">
                     
                     <div class="position-relative overflow-hidden" style="height: 250px;">
-                      <img :src="value.hinh_anh" :alt="value.ten_tour"
+                      <img :src="getImageUrl(getFirstImage(value.hinh_anh))" :alt="value.ten_tour"
                         class="w-100 h-100 object-fit-cover tour-image-custom">
                       
                       <div class="position-absolute top-0 start-0 w-100 h-100" 
@@ -227,7 +227,7 @@
                      @click="viewDetail(value.id)" :style="{ animationDelay: `${index * 0.05}s` }">
                   
                   <div class="position-relative overflow-hidden tour-image-container-list flex-shrink-0">
-                    <img :src="value.hinh_anh" :alt="value.ten_tour"
+                    <img :src="getImageUrl(getFirstImage(value.hinh_anh))" :alt="value.ten_tour"
                       class="w-100 h-100 object-fit-cover tour-image-custom">
                     
                     <span class="position-absolute top-0 start-0 m-3 text-white px-3 py-1 rounded-pill shadow-sm glass-badge">
@@ -391,12 +391,47 @@ export default {
     sortBy() { this.currentPage = 1; }
   },
   methods: {
+    getFirstImage(hinh_anh) {
+        if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+        
+        // Nếu là mảng
+        if (Array.isArray(hinh_anh)) {
+            return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+        }
+        
+        // Nếu là chuỗi JSON
+        try {
+            let parsed = JSON.parse(hinh_anh);
+            return Array.isArray(parsed) ? parsed[0] : parsed;
+        } catch (e) {
+            return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+        }
+    },
+
+    // Hàm lấy URL ảnh chính xác
+    getImageUrl(url) {
+        if (!url) return 'https://via.placeholder.com/400x300';
+        // Loại bỏ đuôi size (ví dụ: -450x265) để lấy ảnh gốc rõ nét nhất
+        return url.replace(/-\d+x\d+/g, '');
+    },
     async fetchInternationalTours() {
       this.isLoading = true;
       try {
         const response = await axios.get(apiUrl('client/tour/get-data'));
         if (response.data.status) {
-          this.allTours = response.data.data.filter(tour => tour.id_quoc_gia !== 1 && tour.so_nguoi_toi_da > 0);
+          // Ép kiểu hinh_anh thành mảng ngay tại đây
+          this.allTours = response.data.data
+            .filter(tour => tour.id_quoc_gia !== 1 && tour.so_nguoi_toi_da > 0)
+            .map(tour => {
+              if (typeof tour.hinh_anh === 'string') {
+                try {
+                  tour.hinh_anh = JSON.parse(tour.hinh_anh);
+                } catch (e) {
+                  tour.hinh_anh = [tour.hinh_anh];
+                }
+              }
+              return tour;
+            });
           this.applyFilters();
         }
       } catch (error) {

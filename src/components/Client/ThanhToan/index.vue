@@ -95,7 +95,7 @@
                         </div>
                         <div class="card-body">
                             <div class="d-flex mb-4">
-                                <img :src="tour.hinh_anh" alt="Tour Image"
+                                <img :src="getImageUrl(getFirstImage(tour.hinh_anh))"  alt="Tour Image"
                                     style="width: 150px; height: 100px; object-fit: cover; border-radius: 10px;"
                                     class="me-3 shadow-sm border">
                                 <div class="flex-grow-1">
@@ -257,6 +257,28 @@ export default {
         this.loadData();
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         loadData() {
             axios.get(apiUrl("client/hoa-don/chi-tiet-thanh-toan/" + this.ma_hoa_don), {
                 headers: {

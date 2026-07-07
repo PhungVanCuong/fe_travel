@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-lg-7">
                 <img style="width: 100%; height: 320px; border-radius: 15px; object-fit: cover;"
-                    :src="chi_tiet_tour.hinh_anh" alt="" class="mb-4 shadow-sm">
+                    :src="mang_hinh_anh[0]" alt="" class="mb-4 shadow-sm">
 
                 <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;" ref="tourDescription">
                     <div class="card-body">
@@ -409,6 +409,7 @@ export default {
             filterStar: 'all',
             is_expanded_mo_ta: false, // Biến trạng thái Mở/Đóng mô tả
             open_scroll_y: 0,
+            mang_hinh_anh: [],
         }
         
     },
@@ -489,85 +490,139 @@ export default {
             return `${day}/${month}/${year}`;
         },
 
-        LoadTour() {
-    var payload = { id: this.id };
-    axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
-        headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
-    })
-    .then((res) => {
-        if (res.data.status) {
-            this.chi_tiet_tour = res.data.data;
-            
-            // Fix ảnh mờ cho danh sách Tour Gợi Ý (nếu có dính đuôi size)
-            this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
-                if (tour.hinh_anh) {
-                    tour.hinh_anh = tour.hinh_anh.replace(/-\d+x\d+/g, '');
-                }
-                return tour;
-            });
-
-            // --- LOGIC XỬ LÝ ẢNH MỚI (Lọc Trùng + Random) ---
-            let uniqueImages = [];
-
-            // 1. Nạp ảnh gốc của Tour vào đầu tiên và loại bỏ đuôi size (như -450x265)
-            if (this.chi_tiet_tour.hinh_anh) {
-                this.chi_tiet_tour.hinh_anh = this.chi_tiet_tour.hinh_anh.replace(/-\d+x\d+/g, '');
-                uniqueImages.push(this.chi_tiet_tour.hinh_anh);
-            }
-
-            // 2. Lấy ảnh từ Lịch Trình, loại bỏ đuôi size (như -120x76) và bỏ qua ảnh trùng
-            if (this.chi_tiet_tour.lich_trinh) {
-                this.chi_tiet_tour.lich_trinh.forEach(item => {
-                    if (item.hinh_anh) {
-                        item.hinh_anh = item.hinh_anh.replace(/-\d+x\d+/g, ''); // Cập nhật lại URL ảnh nét
-                        if (!uniqueImages.includes(item.hinh_anh)) {
-                            uniqueImages.push(item.hinh_anh);
+    LoadTour() {
+        var payload = { id: this.id };
+        axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
+            headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
+        })
+        .then((res) => {
+            if (res.data.status) {
+                this.chi_tiet_tour = res.data.data;
+                
+                // === BẮT ĐẦU ĐOẠN CẦN THAY THẾ ===
+                
+                // Fix lỗi hiển thị ảnh cho danh sách Tour Gợi Ý (Bóc tách JSON an toàn)
+                this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
+                    if (tour.hinh_anh) {
+                        let imgTourKhac = tour.hinh_anh;
+                        if (typeof imgTourKhac === 'string') {
+                            if (imgTourKhac.startsWith('[')) {
+                                try {
+                                    let parsed = JSON.parse(imgTourKhac);
+                                    imgTourKhac = Array.isArray(parsed) ? parsed[0] : imgTourKhac;
+                                } catch (e) {
+                                    // Fallback nếu chuỗi JSON bị lỗi
+                                    imgTourKhac = imgTourKhac.replace(/[\[\]"]/g, '').split(',')[0];
+                                }
+                            }
+                            // Loại bỏ đuôi size sau khi đã có link ảnh chuẩn
+                            tour.hinh_anh = typeof imgTourKhac === 'string' 
+                                ? imgTourKhac.replace(/-\d+x\d+/g, '').trim() 
+                                : '';
                         }
                     }
+                    return tour;
                 });
-            }
 
-            // Danh sách ảnh dự phòng chất lượng cao
-            let defaultImages = [
-                'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80',
-                'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
-                'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
-                'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
-                'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
-                'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80',
-                'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80',
-                'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
-                'https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80',
-                'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80'
-            ];
+                // --- 1. XỬ LÝ ẢNH TOUR GỐC (Ảnh 1, Ảnh 2, Ảnh 3...) ---
+                let uniqueImages = [];
+                let rawImages = [];
 
-            // Hàm trộn mảng (Shuffle) ngẫu nhiên để các Tour không bị trùng ảnh nền
-            defaultImages = defaultImages.sort(() => 0.5 - Math.random());
-
-            // Lưu toàn bộ ảnh để bung ra Modal
-            this.all_images = [...uniqueImages];
-
-            let finalImages = [];
-            // 3. Chuẩn bị đúng 4 slot cho Grid
-            for (let i = 0; i < 4; i++) {
-                if (uniqueImages[i]) {
-                    finalImages.push({ url: uniqueImages[i], is_more: false });
-                } else {
-                    // Nếu kho ảnh của tour không đủ 4 tấm, mượn ảnh Random bù vào
-                    finalImages.push({ url: defaultImages[i], is_more: false });
-                    this.all_images.push(defaultImages[i]); // Nhét luôn vào modal
+                if (this.chi_tiet_tour.hinh_anh) {
+                    if (typeof this.chi_tiet_tour.hinh_anh === 'string') {
+                        try {
+                            rawImages = JSON.parse(this.chi_tiet_tour.hinh_anh);
+                        } catch (e) {
+                            rawImages = this.chi_tiet_tour.hinh_anh.replace(/[\[\]"]/g, '').split(',');
+                        }
+                    } else if (Array.isArray(this.chi_tiet_tour.hinh_anh)) {
+                        rawImages = this.chi_tiet_tour.hinh_anh;
+                    }
                 }
-            }
 
-            // 4. Nếu tổng số ảnh >= 4, ô số 4 sẽ hiển thị Lớp phủ (Overlay) "Khám phá thêm"
-            if (uniqueImages.length >= 4) {
-                finalImages[3].is_more = true;
-            }
+                // Nạp mảng ảnh Tour vào kho chung và loại bỏ đuôi size mờ
+                if (Array.isArray(rawImages)) {
+                    rawImages.forEach(img => {
+                        if (img && typeof img === 'string') {
+                            let cleanImg = img.replace(/-\d+x\d+/g, '').trim();
+                            if (cleanImg && !uniqueImages.includes(cleanImg)) {
+                                uniqueImages.push(cleanImg);
+                            }
+                        }
+                    });
+                }
 
-            this.list_hinh_anh = finalImages;
-        }
-    });
-},
+                // --- 2. XỬ LÝ ẢNH LỊCH TRÌNH ---
+                if (this.chi_tiet_tour.lich_trinh && Array.isArray(this.chi_tiet_tour.lich_trinh)) {
+                    this.chi_tiet_tour.lich_trinh.forEach(item => {
+                        if (item.hinh_anh) {
+                            let imgStr = item.hinh_anh;
+                            if (typeof imgStr === 'string') {
+                                if (imgStr.startsWith('[')) {
+                                    try {
+                                        let parsed = JSON.parse(imgStr);
+                                        imgStr = Array.isArray(parsed) ? parsed[0] : imgStr;
+                                    } catch (e) {
+                                        imgStr = imgStr.replace(/[\[\]"]/g, '').split(',')[0];
+                                    }
+                                } else if (imgStr.includes(',')) {
+                                    imgStr = imgStr.split(',')[0];
+                                }
+                                
+                                if (typeof imgStr === 'string') {
+                                    item.hinh_anh = imgStr.replace(/-\d+x\d+/g, '').trim();
+                                    
+                                    // Bơm thêm ảnh lịch trình vào kho chung
+                                    if (item.hinh_anh && !uniqueImages.includes(item.hinh_anh)) {
+                                        uniqueImages.push(item.hinh_anh);
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // --- 3. ĐỔ DỮ LIỆU RA GIAO DIỆN ---
+                
+                // Cập nhật biến mang_hinh_anh để tấm [0] làm ảnh to bên col-lg-7
+                this.mang_hinh_anh = uniqueImages.length > 0 ? uniqueImages : ['https://via.placeholder.com/800x400'];
+                
+                // Lưu toàn bộ ảnh kho để bung ra Modal
+                this.all_images = [...this.mang_hinh_anh];
+
+                // Danh sách ảnh dự phòng chất lượng cao nếu Tour thiếu ảnh
+                let defaultImages = [
+                    'https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80',
+                    'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80',
+                    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+                    'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80',
+                    'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
+                    'https://images.unsplash.com/photo-1473625247510-8ceb1760943f?w=800&q=80'
+                ].sort(() => 0.5 - Math.random());
+
+                let finalImages = [];
+                // Lấy từ ảnh số 2 (index 1) trở đi để đổ vào 4 ô vuông nhỏ bên col-lg-5
+                let secondaryImages = this.mang_hinh_anh.slice(1); 
+
+                for (let i = 0; i < 4; i++) {
+                    if (secondaryImages[i]) {
+                        finalImages.push({ url: secondaryImages[i], is_more: false });
+                    } else {
+                        // Nếu tổng số ảnh Tour + Lịch trình vẫn chưa đủ lấp 4 ô, dùng ảnh Random
+                        finalImages.push({ url: defaultImages[i], is_more: false });
+                        this.all_images.push(defaultImages[i]); 
+                    }
+                }
+
+                // Nếu số lượng ảnh nhỏ phía sau > 4 tấm, bật Overlay "Khám phá thêm"
+                if (secondaryImages.length > 4) {
+                    finalImages[3].is_more = true;
+                }
+
+                this.list_hinh_anh = finalImages;
+            }
+        });
+    },
         toggleOpenAll() {
             this.is_open_all = !this.is_open_all;
             if (this.is_open_all) {

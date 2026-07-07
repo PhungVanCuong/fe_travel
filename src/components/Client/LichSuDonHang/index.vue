@@ -10,7 +10,9 @@
                 <div class="card-body p-0">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-3">
-                            <img :src="item.tour.hinh_anh" class="img-fluid rounded-start h-100 tour-img"
+                            <img :src="getImageUrl(getFirstImage(item.tour.hinh_anh))" 
+                                class="img-fluid rounded-start h-100 tour-img"
+                                style="object-fit: cover;"
                                 alt="tour image">
                         </div>
 
@@ -326,6 +328,28 @@ export default {
         this.getLichSu();
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         danhGiaTour(item) {
             this.is_show_detail = false; 
             this.is_show_danh_gia = true; 
@@ -437,12 +461,32 @@ export default {
                 headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
             })
             .then((res) => {
-                if (res.data.status) {
-                    this.ds_hoa_don = res.data.data;
-                }
+                this.ds_hoa_don = res.data.data.map(hd => {
+                    if (hd.tour && hd.tour.hinh_anh) {
+                        // 1. Chuyển thành mảng
+                        let arrAnh = [];
+                        if (typeof hd.tour.hinh_anh === 'string') {
+                            try {
+                                arrAnh = JSON.parse(hd.tour.hinh_anh);
+                            } catch(e) {
+                                arrAnh = [hd.tour.hinh_anh];
+                            }
+                        } else if (Array.isArray(hd.tour.hinh_anh)) {
+                            arrAnh = hd.tour.hinh_anh;
+                        }
+                        
+                        // 2. Làm sạch link (xóa đuôi size)
+                        hd.tour.hinh_anh = arrAnh.map(url => url.replace(/-\d+x\d+/g, ''));
+                    }
+                    return hd;
+                });
             })
-            .catch((err) => {})
-            .finally(() => { this.isLoading = false; });
+            .catch(err => {
+                console.error(err);
+            })
+            .finally(() => {
+                this.isLoading = false; // Nên thêm finally để tắt loading
+            });
         },
         formatVND(value) {
             if (!value) return "0 ₫";

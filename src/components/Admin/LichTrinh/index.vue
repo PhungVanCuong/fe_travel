@@ -65,7 +65,7 @@
                     
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 2px solid #e2e8f0;">
                         <div style="display: flex; align-items: center; gap: 15px;">
-                            <img v-if="tour.anh_tour" :src="tour.anh_tour" alt="Tour" style="width: 70px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <img v-if="tour.anh_tour" :src="getImageUrl(getFirstImage(tour.anh_tour))" alt="Tour" style="width: 70px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                             <div v-else style="width: 70px; height: 50px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #94a3b8;">
                                 <i class="fa-solid fa-image"></i>
                             </div>
@@ -86,7 +86,6 @@
                             <thead>
                                 <tr style="background: #f8f9fa; border-bottom: 2px solid #e2e8f0;">
                                     <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem; width: 80px;">Ảnh</th>
-                                    <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Nội Dung Hoạt Động</th>
                                     <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Điểm Đến</th>
                                     <th style="padding: 12px 15px; text-align: left; font-weight: 600; color: #333; font-size: 0.9rem;">Phương Tiện</th>
                                     <th style="padding: 12px 15px; text-align: center; font-weight: 600; color: #333; font-size: 0.9rem;">Thao Tác</th>
@@ -100,12 +99,11 @@
                                 </tr>
                                 <tr v-for="lich_trinh in tour.danh_sach_lich_trinh" :key="lich_trinh.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'" @mouseleave="(e) => e.currentTarget.style.background = ''">
                                     <td style="padding: 12px 15px;">
-                                        <img v-if="lich_trinh.anh_diem_den" :src="lich_trinh.anh_diem_den" alt="Điểm đến" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        <img v-if="lich_trinh.anh_diem_den" :src="getImageUrl(getFirstImage(lich_trinh.anh_diem_den))" alt="Điểm đến" style="width: 60px; height: 45px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                         <div v-else style="width: 60px; height: 45px; background: #f1f5f9; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #cbd5e1;">
                                             <i class="fa-solid fa-map-location-dot"></i>
                                         </div>
                                     </td>
-                                    <td style="padding: 12px 15px; color: #333;">{{ lich_trinh.tieu_de_hoat_dong }}</td>
                                     <td style="padding: 12px 15px; color: #667eea; font-weight: 500;">{{ lich_trinh.ten_diem_den || 'Không xác định' }}</td>
                                     <td style="padding: 12px 15px; color: #666;">
                                         <span v-if="lich_trinh.loai_phuong_tien" style="display: inline-block; padding: 4px 10px; background: #e0f2fe; color: #0369a1; border-radius: 6px; font-size: 0.85rem; font-weight: 500;">
@@ -172,7 +170,7 @@
                             <tr v-for="diem in paginatedDiemDens" :key="diem.id" style="border-bottom: 1px solid #e2e8f0; transition: background 0.2s;" @mouseenter="(e) => e.currentTarget.style.background = '#f9fafb'" @mouseleave="(e) => e.currentTarget.style.background = ''">
                                 <td style="padding: 15px; text-align: center; color: #667eea; font-weight: 700;">#{{ diem.id }}</td>
                                 <td style="padding: 15px; text-align: center;">
-                                    <img v-if="diem.hinh_anh" :src="diem.hinh_anh" alt="Ảnh điểm đến" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                    <img v-if="diem.hinh_anh" :src="getImageUrl(getFirstImage(diem.hinh_anh))" alt="Ảnh điểm đến" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                                     <span v-else style="color: #999; font-size: 0.8rem; background: #f1f5f9; padding: 15px; border-radius: 8px;">Trống</span>
                                 </td>
                                 <td style="padding: 15px; color: #333; font-weight: 600; font-size: 0.95rem;">{{ diem.ten_diem_den }}</td>
@@ -285,7 +283,7 @@
                         </div>
                         <div v-if="diemDenForm.hinh_anh" style="margin-top: 15px; text-align: center; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px dashed #e2e8f0;">
                             <p style="font-size: 0.8rem; color: #94a3b8; margin: 0 0 8px 0;">Ảnh xem trước</p>
-                            <img :src="diemDenForm.hinh_anh" alt="Preview" style="max-width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <img :src="getImageUrl(getFirstImage(diemDenForm.hinh_anh))" alt="Preview" style="max-width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 30px;">
@@ -395,6 +393,28 @@ export default {
         }
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         loadSchedules() {
             this.loading = true;
             axios.get(apiUrl('admin/lich-trinh/get-data'), {
