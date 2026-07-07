@@ -11,14 +11,18 @@
 
         <div class="row">
             <div class="col-lg-7">
-                <img style="width: 100%; height: 320px; border-radius: 15px; object-fit: cover;"
-                    :src="getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh))" alt="Ảnh tour" class="mb-4 shadow-sm">
-
+               <div class="position-relative mb-4" 
+     style="overflow: hidden; border-radius: 15px; cursor: pointer;"
+     @click="openModal(getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh)))">
+    <img style="width: 100%; height: 320px; object-fit: cover;"
+         :src="getImageUrl(getFirstImage(chi_tiet_tour.hinh_anh))" 
+         alt="Ảnh tour" 
+         class="shadow-sm hover-zoom w-100">
+</div>
                 <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;" ref="tourDescription">
                     <div class="card-body">
                         <h3 class="fw-bold mb-3">Mô tả tour</h3>
 
-                        <!-- Bao bọc nội dung để xử lý thu gọn/mở rộng bằng max-height -->
                         <div class="position-relative" style="transition: max-height 0.5s ease; overflow: hidden;"
                             :style="{ maxHeight: is_expanded_mo_ta ? '5000px' : '260px' }">
 
@@ -26,11 +30,9 @@
                                 v-html="(chi_tiet_tour.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
                             </div>
 
-                            <!-- Lớp phủ tạo hiệu ứng mờ dần ở dưới cùng khi nội dung bị thu gọn -->
                             <div v-if="!is_expanded_mo_ta" class="fade-overlay"></div>
                         </div>
 
-                        <!-- Nút Xem thêm / Thu gọn -->
                         <div class="text-center mt-3">
                             <button @click="toggleMoTa" class="btn btn-sm rounded-pill px-4 fw-bold shadow-sm"
                                 style="color: #198754; border: 2px solid #198754; background: white; transition: 0.3s;">
@@ -178,7 +180,7 @@
             <div class="col-lg-5">
                 <div class="row">
                     <div v-for="(img, index) in list_hinh_anh" :key="index" class="col-lg-6 mb-3 position-relative"
-                        @click="show_modal_anh = true" style="cursor: pointer;">
+                        @click="openModal(img.url)" style="cursor: pointer;">
                         <img :src="img.url" class="img-fluid rounded shadow-sm hover-zoom"
                             style="width: 100%; height: 150px; object-fit: cover;">
                         <div v-if="img.is_more"
@@ -321,7 +323,6 @@
                 </div>
             </div>
 
-
             <div class="col-lg-12 mt-5">
                 <h3 class="fw-bold mb-4">Các tour khác bạn có thể thích</h3>
                 <div class="row">
@@ -381,26 +382,34 @@
             </div>
         </div>
 
-        <div v-if="show_modal_anh" class="modal fade show d-block" tabindex="-1"
-            style="background: rgba(0,0,0,0.8); z-index: 1050;">
-            <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
-                <div class="modal-content border-0">
-                    <div class="modal-header">
-                        <h5 class="modal-title fw-bold">Khám phá hình ảnh Tour</h5>
-                        <button type="button" class="btn-close" @click="show_modal_anh = false"></button>
-                    </div>
-                    <div class="modal-body p-4 bg-light">
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6" v-for="(img, idx) in all_images" :key="idx">
-                                <img :src="img" class="img-fluid rounded shadow-sm w-100"
-                                    style="height: 250px; object-fit: cover;">
-                            </div>
-                        </div>
-                    </div>
+        <div v-if="show_modal_anh" class="modal-lightbox" @click.self="closeModal" tabindex="0" @keydown.left.prevent="prevImage" @keydown.right.prevent="nextImage">
+            <button class="lightbox-close" @click="closeModal" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="lightbox-inner">
+                <button class="lightbox-prev" @click="prevImage" v-if="all_images.length > 1" aria-label="Previous">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <div class="lightbox-frame animate__animated animate__zoomIn animate__faster">
+                    <img :src="all_images[current_image_index]" alt="Zoomed Image" class="lightbox-img">
+                    <div class="lightbox-caption text-white text-center">{{ chi_tiet_tour.ten_tour || '' }}</div>
+                    <div class="lightbox-counter text-white text-center">{{ current_image_index + 1 }} / {{ all_images.length }}</div>
+                </div>
+
+                <button class="lightbox-next" @click="nextImage" v-if="all_images.length > 1" aria-label="Next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="lightbox-thumbnails">
+                <div class="thumb" v-for="(img, idx) in all_images" :key="idx" @click.stop="current_image_index = idx">
+                    <img :src="img" :class="['thumb-img', { 'active': idx === current_image_index }]" alt="thumb">
                 </div>
             </div>
         </div>
-    </div>
+        </div>
 </template>
 
 <script>
@@ -415,9 +424,10 @@ export default {
             chi_tiet_tour: {},
             list_tour_khac: [],
             ds_danh_gia: [],
-            list_hinh_anh: [], // Mảng 4 ảnh đổ ra Grid
-            all_images: [],    // Mảng chứa toàn bộ ảnh để bung ra Modal
+            list_hinh_anh: [],
+            all_images: [],    
             show_modal_anh: false,
+            current_image_index: 0, // Biến theo dõi ảnh đang mở hiện tại
             index_mo: null,
             is_open_all: false,
             is_policy_open: false,
@@ -427,11 +437,10 @@ export default {
                 phuong_thuc_thanh_toan: 'Chuyển khoản'
             },
             filterStar: 'all',
-            is_expanded_mo_ta: false, // Biến trạng thái Mở/Đóng mô tả
+            is_expanded_mo_ta: false,
             open_scroll_y: 0,
             is_loading: false,
         }
-
     },
     watch: {
         '$route.params.id_tour': function (newId) {
@@ -448,8 +457,8 @@ export default {
 
     },
     unmounted() {
-
         window.removeEventListener('scroll', this.handleScrollMoTa);
+        document.body.style.overflow = '';
     },
     computed: {
         filteredDanhGia() {
@@ -460,6 +469,34 @@ export default {
         }
     },
     methods: {
+        // --- CÁC HÀM XỬ LÝ MỞ RỘNG ẢNH (LIGHTBOX) ---
+        openModal(imgUrl) {
+            // Tìm vị trí của ảnh được click trong kho all_images
+            const index = this.all_images.indexOf(imgUrl);
+            this.current_image_index = index !== -1 ? index : 0;
+            this.show_modal_anh = true;
+            document.body.style.overflow = 'hidden'; // Khóa cuộn trang khi mở ảnh
+        },
+        closeModal() {
+            this.show_modal_anh = false;
+            document.body.style.overflow = ''; // Mở lại cuộn trang
+        },
+        nextImage() {
+            if (this.current_image_index < this.all_images.length - 1) {
+                this.current_image_index++;
+            } else {
+                this.current_image_index = 0; // Quay về đầu nếu đến ảnh cuối
+            }
+        },
+        prevImage() {
+            if (this.current_image_index > 0) {
+                this.current_image_index--;
+            } else {
+                this.current_image_index = this.all_images.length - 1; // Vòng về cuối nếu đang ở đầu
+            }
+        },
+        // ---------------------------------------------
+
         giamSoLuong() {
             if (this.dat_tour.so_luong_nguoi > 1) {
                 this.dat_tour.so_luong_nguoi--;
@@ -473,41 +510,28 @@ export default {
             }
         },
         validateSoLuong() {
-            // Ép kiểu về số nguyên
             let val = parseInt(this.dat_tour.so_luong_nguoi);
-            
-            // Nếu nhập bậy (chữ) hoặc nhỏ hơn 1 -> Gán bằng 1
             if (isNaN(val) || val < 1) {
                 this.dat_tour.so_luong_nguoi = 1;
-            } 
-            // Nếu nhập lớn hơn số chỗ trống -> Gán bằng mức tối đa
-            else if (val > this.chi_tiet_tour.so_nguoi_toi_da) {
+            } else if (val > this.chi_tiet_tour.so_nguoi_toi_da) {
                 this.dat_tour.so_luong_nguoi = this.chi_tiet_tour.so_nguoi_toi_da;
                 this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
-            } 
-            // Nếu hợp lệ
-            else {
+            } else {
                 this.dat_tour.so_luong_nguoi = val;
             }
         },
-        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
         getFirstImage(hinh_anh) {
             if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
-
-            // Nếu là mảng
             if (Array.isArray(hinh_anh)) {
                 return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
             }
-
-            // Nếu là chuỗi JSON
             try {
                 let parsed = JSON.parse(hinh_anh);
                 return Array.isArray(parsed) ? parsed[0] : parsed;
             } catch (e) {
-                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+                return hinh_anh; 
             }
         },
-        // Hàm lấy URL ảnh sắc nét
         getImageUrl(url) {
             if (!url) return 'https://via.placeholder.com/400x300';
             return url.replace(/-\d+x\d+/g, '');
@@ -515,10 +539,8 @@ export default {
         toggleMoTa() {
             this.is_expanded_mo_ta = !this.is_expanded_mo_ta;
             if (this.is_expanded_mo_ta) {
-                // Khi mở, lưu lại tọa độ chuột hiện tại
                 this.open_scroll_y = window.scrollY;
             } else {
-                // Tùy chọn: Khi bấm Thu gọn, tự động cuộn mượt lên đầu ô mô tả
                 if (this.$refs.tourDescription) {
                     const y = this.$refs.tourDescription.getBoundingClientRect().top + window.scrollY - 100;
                     window.scrollTo({ top: y, behavior: 'smooth' });
@@ -527,7 +549,6 @@ export default {
         },
         handleScrollMoTa() {
             if (this.is_expanded_mo_ta) {
-                // Nếu cuộn đi xa hơn 600px so với lúc mở (cả lên và xuống), tự động đóng lại
                 if (Math.abs(window.scrollY - this.open_scroll_y) > 600) {
                     this.is_expanded_mo_ta = false;
                 }
@@ -537,9 +558,12 @@ export default {
             return this.ds_danh_gia.filter(item => item.sao_danh_gia === star).length;
         },
         formatDate(dateString) {
-            if (!dateString) return "...";
+            if (!dateString) return '';
             const date = new Date(dateString);
-            return new Intl.DateTimeFormat('vi-VN').format(date);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
         },
         layDanhSachDanhGia() {
             const id_tour = this.id;
@@ -551,17 +575,6 @@ export default {
                 })
                 .catch((err) => { console.error("Lỗi khi tải đánh giá:", err); });
         },
-
-        // Fix lỗi hiển thị Ngày Tháng
-        formatDate(dateString) {
-            if (!dateString) return '';
-            const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        },
-
         LoadTour() {
             var payload = { id: this.id };
             axios.post(apiUrl('client/chi-tiet-tour/get-data'), payload, {
@@ -570,8 +583,6 @@ export default {
                 .then((res) => {
                     if (res.data.status) {
                         this.chi_tiet_tour = res.data.data;
-
-                        // 1. Ép kiểu ảnh cho danh sách Tour Gợi Ý
                         this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
                             if (typeof tour.hinh_anh === 'string') {
                                 try { tour.hinh_anh = JSON.parse(tour.hinh_anh); }
@@ -580,7 +591,6 @@ export default {
                             return tour;
                         });
 
-                        // 2. Ép kiểu ảnh của Tour hiện tại
                         if (typeof this.chi_tiet_tour.hinh_anh === 'string') {
                             try {
                                 this.chi_tiet_tour.hinh_anh = JSON.parse(this.chi_tiet_tour.hinh_anh);
@@ -592,16 +602,12 @@ export default {
                             this.chi_tiet_tour.hinh_anh = [];
                         }
 
-                        // 3. Gom TẤT CẢ các ảnh vào 1 mảng chung để làm Thư viện (Đã lọc trùng & xóa đuôi size)
                         let uniqueImages = [];
-
-                        // - Lấy ảnh từ Tour
                         this.chi_tiet_tour.hinh_anh.forEach(img => {
                             let cleanImg = this.getImageUrl(img);
                             if (cleanImg && !uniqueImages.includes(cleanImg)) uniqueImages.push(cleanImg);
                         });
 
-                        // - Lấy ảnh từ Lịch Trình đưa vào kho chung
                         if (this.chi_tiet_tour.lich_trinh && Array.isArray(this.chi_tiet_tour.lich_trinh)) {
                             this.chi_tiet_tour.lich_trinh.forEach(item => {
                                 let cleanImg = this.getImageUrl(this.getFirstImage(item.hinh_anh));
@@ -609,7 +615,6 @@ export default {
                             });
                         }
 
-                        // 4. Chia ảnh để đổ ra giao diện
                         this.all_images = uniqueImages.length > 0 ? [...uniqueImages] : ['https://via.placeholder.com/800x400'];
 
                         let defaultImages = [
@@ -622,7 +627,7 @@ export default {
                         ].sort(() => 0.5 - Math.random());
 
                         let finalImages = [];
-                        let secondaryImages = uniqueImages.slice(1); // Lấy từ ảnh số 2 trở đi cho cột bên phải
+                        let secondaryImages = uniqueImages.slice(1); 
 
                         for (let i = 0; i < 4; i++) {
                             if (secondaryImages[i]) {
@@ -659,7 +664,6 @@ export default {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         },
         thucHienDatTour() {
-            // 1. Chặn click đúp: Đang xử lý thì ngưng luôn
             if (this.is_loading) return;
 
             const token = localStorage.getItem('key_client');
@@ -674,13 +678,11 @@ export default {
                 return;
             }
 
-            // 2. LOGIC KIỂM TRA: Bắt buộc nhập thông tin nếu đi từ 2 người trở lên
             if (this.dat_tour.so_luong_nguoi >= 2 && this.dat_tour.ghi_chu_danh_sach_nguoi_di.trim() === '') {
                 this.$toast.warning("Vui lòng điền thông tin người đi cùng khi đặt từ 2 vé trở lên!");
                 return;
             }
 
-            // 3. Khóa nút bấm lại (hiện ĐANG XỬ LÝ...)
             this.is_loading = true;
 
             var payload = {
@@ -701,16 +703,13 @@ export default {
                     
                     if (maHoaDon) {
                         this.$router.push('/client/thanh-toan/' + maHoaDon);
-                        // CHÚ Ý: Không mở khóa is_loading ở đây, giữ cho nút bị mờ luôn trong lúc đợi chuyển trang!
                     } else {
                         this.dat_tour.so_luong_nguoi = 1;
                         this.dat_tour.ghi_chu_danh_sach_nguoi_di = '';
-                        // Nếu không chuyển trang, mở khóa nút sau 2 giây
                         setTimeout(() => { this.is_loading = false; }, 2000);
                     }
                 } else {
                     this.$toast.error(res.data.message);
-                    // Mở khóa nút sau 2 giây nếu có lỗi logic (hết vé, sai dữ liệu...)
                     setTimeout(() => { this.is_loading = false; }, 2000);
                 }
             })
@@ -721,7 +720,6 @@ export default {
                 } else {
                     this.$toast.error("Hệ thống đang bận, vui lòng thử lại sau.");
                 }
-                // Mở khóa nút sau 2 giây nếu lỗi API/mạng
                 setTimeout(() => { this.is_loading = false; }, 2000);
             });
         }
@@ -738,7 +736,6 @@ export default {
     height: 80px;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 90%);
     pointer-events: none;
-    /* Để người dùng vẫn có thể copy chữ bên dưới lớp mờ */
 }
 
 .sticky-card {
@@ -774,7 +771,108 @@ button:hover {
     color: #ffc107 !important;
 }
 
-/* Hiệu ứng hover cho Grid ảnh */
+/* Lightbox styles */
+.modal-lightbox {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    padding: 30px 16px;
+}
+.lightbox-inner {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 1400px;
+}
+.lightbox-frame {
+    flex: 1 1 auto;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.lightbox-img {
+    max-width: 90vw;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.65);
+    background: #111;
+}
+.lightbox-prev, .lightbox-next {
+    background: rgba(0,0,0,0.5);
+    border: none;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.lightbox-prev:hover, .lightbox-next:hover {
+    background: rgba(0,0,0,0.75);
+}
+.lightbox-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: rgba(0,0,0,0.5);
+    border: none;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2100;
+}
+.lightbox-caption {
+    margin-top: 12px;
+    font-size: 1.05rem;
+    opacity: 0.98;
+    font-weight: 600;
+}
+.lightbox-counter {
+    margin-top: 8px;
+    font-size: 1rem;
+    opacity: 0.95;
+    font-weight: 700;
+}
+.lightbox-thumbnails {
+    margin-top: 18px;
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 1400px;
+    overflow-x: auto;
+    padding: 8px 12px;
+    justify-content: center;
+}
+.thumb { flex: 0 0 auto; }
+.thumb-img {
+    width: 120px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    opacity: 0.95;
+    border: 2px solid transparent;
+}
+.thumb-img.active {
+    border-color: #fff;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.5);
+    transform: scale(1.04);
+}
+
 .hover-zoom {
     transition: transform 0.4s ease;
 }
@@ -792,15 +890,15 @@ button:hover {
     background: rgba(0, 0, 0, 0.7) !important;
 }
 
-/* Các custom style trước đó (nếu bạn cần có thể giữ lại đoạn :deep dưới đây để css bullet point) */
 :deep(.mo-ta-html ul) {
     padding-left: 20px;
     margin-bottom: 15px;
 }
-/* ================= KHỐI SỐ LƯỢNG KHÁCH ================= */
+
+/* KHỐI SỐ LƯỢNG KHÁCH */
 .custom-qty-group {
-    width: 150px; /* Tăng chiều rộng tổng thể */
-    height: 45px; /* Tăng chiều cao để dễ bấm */
+    width: 150px; 
+    height: 45px; 
     background: #f8f9fa;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
@@ -841,14 +939,124 @@ button:hover {
     box-shadow: none !important;
 }
 
-/* Ẩn mũi tên mặc định của input number trên Chrome, Safari, Edge */
 .input-qty::-webkit-outer-spin-button,
 .input-qty::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-/* Ẩn mũi tên trên Firefox */
 .input-qty[type=number] {
     -moz-appearance: textfield;
+}
+
+/* ========================================= */
+/* CSS CHO MODAL LIGHTBOX (XEM ẢNH FULL MÀN HÌNH) */
+/* ========================================= */
+
+.modal-lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.9); /* Làm tối nền mạnh như hình của bạn */
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+}
+
+.lightbox-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 90%;
+    max-height: 90vh;
+}
+
+.lightbox-img {
+    max-width: 100%;
+    max-height: 85vh; /* Giới hạn chiều cao để không bị tràn màn hình */
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease;
+}
+
+/* Nút tắt */
+.lightbox-close {
+    position: absolute;
+    top: 25px;
+    right: 35px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    z-index: 10000;
+    transition: 0.2s;
+    opacity: 0.7;
+}
+
+.lightbox-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Nút qua trái / phải */
+.lightbox-prev, .lightbox-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    padding: 15px 20px;
+    cursor: pointer;
+    z-index: 10000;
+    border-radius: 50%;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lightbox-prev:hover, .lightbox-next:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.lightbox-prev {
+    left: 40px;
+}
+
+.lightbox-next {
+    right: 40px;
+}
+/* Nút qua trái / phải */
+.lightbox-prev, .lightbox-next {
+    position: fixed; /* Đổi từ absolute sang fixed để khóa cứng vị trí trên màn hình */
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+    padding: 15px 20px;
+    cursor: pointer;
+    z-index: 10000;
+    border-radius: 50%;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Responsive nhỏ cho điện thoại */
+@media (max-width: 768px) {
+    .lightbox-prev { left: 10px; padding: 10px; font-size: 1.5rem; }
+    .lightbox-next { right: 10px; padding: 10px; font-size: 1.5rem; }
+    .lightbox-close { top: 15px; right: 15px; font-size: 2rem; }
 }
 </style>
