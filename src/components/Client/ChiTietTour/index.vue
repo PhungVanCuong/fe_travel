@@ -467,6 +467,9 @@ export default {
             this.LoadTour();
             this.layDanhSachDanhGia();
             this.scrollToTop();
+        },
+        current_image_index(newIndex) {
+            this.scrollToActiveThumbnail(newIndex);
         }
     },
     mounted() {
@@ -555,6 +558,22 @@ export default {
             } else {
                 this.current_image_index = this.all_images.length - 1;
             }
+        },
+        /**
+         * Tự động cuộn thanh Thumbnail để ảnh đang xem luôn hiển thị (và nằm giữa)
+         */
+        scrollToActiveThumbnail(index) {
+            this.$nextTick(() => {
+                const thumbs = this.$el.querySelectorAll('.lightbox-thumbnails .thumb');
+                if (thumbs && thumbs[index]) {
+                    
+                    thumbs[index].scrollIntoView({
+                        behavior: 'smooth', 
+                        block: 'nearest',   
+                        inline: 'center'    
+                    });
+                }
+            });
         },
 
         // =========================================================================
