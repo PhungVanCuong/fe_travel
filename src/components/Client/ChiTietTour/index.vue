@@ -398,7 +398,6 @@
 
                 <div class="lightbox-frame animate__animated animate__zoomIn animate__faster">
                     <img :src="all_images[current_image_index]" alt="Zoomed Image" class="lightbox-img">
-                    <div class="lightbox-caption text-white text-center">{{ chi_tiet_tour.ten_tour || '' }}</div>
                     <div class="lightbox-counter text-white text-center">{{ current_image_index + 1 }} / {{
                         all_images.length }}
                     </div>
@@ -1156,15 +1155,9 @@ button:hover {
  * - Làm gì: Hiển thị mô tả ảnh rõ ràng trên nền tối, tuyệt đối không bị bóp méo khi màn hình nhỏ lại.
  * - Làm ra sao: Gán flex-shrink: 0 để khóa cứng không gian của khối chữ. Thêm text-shadow để chữ nổi bật kể cả khi ảnh bên dưới có màu sáng.
  */
-.lightbox-caption {
-    margin-top: 20px;
-    font-size: 1.15rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
 
-.lightbox-caption,
+
+
 .lightbox-counter {
     flex-shrink: 0;
 }
