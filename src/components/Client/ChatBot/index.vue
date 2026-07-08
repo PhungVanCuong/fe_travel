@@ -52,7 +52,7 @@
                             <div v-if="msg.tours && msg.tours.length > 0" class="tour-cards-container">
                                 <div v-for="(tour, tIndex) in msg.tours" :key="tIndex" @click="viewTour(tour.id)"
                                     class="chat-tour-card shadow-sm">
-                                    <img :src="tour.hinh_anh" alt="Tour" class="tour-img">
+                                    <img :src="getImageUrl(getFirstImage(tour.hinh_anh))" alt="Tour" class="tour-img">
                                     <div class="tour-info">
                                         <h6 class="tour-title">{{ tour.ten_tour }}</h6>
                                         <div class="tour-meta">
@@ -145,6 +145,28 @@ export default {
         }
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         startDrag(e) {
             this.isDragging = true;
             this.startX = e.pageX - this.$refs.quickActionsBar.offsetLeft;

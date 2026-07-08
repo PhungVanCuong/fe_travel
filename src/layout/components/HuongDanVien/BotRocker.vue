@@ -15,5 +15,10 @@ export default {
 .page-footer {
     padding: 10px;
     background: #fff;
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
 }
 </style>

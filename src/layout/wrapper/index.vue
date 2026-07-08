@@ -10,10 +10,7 @@
           <router-view></router-view>
         </div>
       </a-layout-content>
-
-      <a-layout-footer style="text-align: center; background: #fff; padding: 20px;">
-        <BotRocker />
-      </a-layout-footer>
+      <BotRocker />
     </a-layout>
   </a-layout>
 </template>

@@ -294,7 +294,7 @@ export default {
           role: 'Travel Blogger'
         },
         {
-          img: 'https://images.unsplash.com/photo-1661478881270-6c3a0fc883f4?w=500&h=400&fit=crop&auto=format',
+          img: 'https://daongocphuquoc.com/wp-content/uploads/2023/10/Tour-du-lich-thai-lan-tu-phu-quoc.jpg',
           text: '"Tour Thái Lan giá quá tốt so với chất lượng. Đồ ăn ngon, xe đưa đón xịn xò và không hề bị ép mua sắm. Cảm ơn Ixtal Tour đã mang đến trải nghiệm ưng ý."',
           avatar: 'https://randomuser.me/api/portraits/men/65.jpg',
           name: 'Phạm Minh Tuấn',
