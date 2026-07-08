@@ -91,9 +91,11 @@
               
               <div style="display:flex;align-items:center;justify-content:space-between; margin-top: 12px;">
                 <div>
-                  <div style="display:flex;align-items:center;gap:2px;margin-bottom:4px;">
-                    <span style="color:#fbbf24;font-size:.85rem;">★★★★★</span>
-                    <span style="font-size:.75rem;color:rgba(255,255,255,.8);margin-left:4px;">{{ Number(value.avg_sao || 0).toFixed(1) }} ({{ value.so_luot_danh_gia || 0 }})</span>
+                  <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+                    <span style="color:#fbbf24;font-size:.85rem; letter-spacing: 1px;" v-html="renderStars(value.avg_sao)"></span>
+                    <span style="font-size:.75rem;color:rgba(255,255,255,.8);margin-left:4px; font-weight: 500;">
+                      {{ Number(value.avg_sao || 0).toFixed(1) }} ({{ value.so_luot_danh_gia || 0 }})
+                    </span>
                   </div>
                   <span class="tour-price">{{ formatCurrency(value.gia) }}</span>
                 </div>
@@ -141,9 +143,11 @@
               
               <div style="display:flex;align-items:center;justify-content:space-between; margin-top: 12px;">
                 <div>
-                  <div style="display:flex;align-items:center;gap:2px;margin-bottom:4px;">
-                    <span style="color:#fbbf24;font-size:.85rem;">★★★★★</span>
-                    <span style="font-size:.75rem;color:rgba(255,255,255,.8);margin-left:4px;">{{ Number(value.avg_sao || 0).toFixed(1) }} ({{ value.so_luot_danh_gia || 0 }})</span>
+                  <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;">
+                    <span style="color:#fbbf24;font-size:.85rem; letter-spacing: 1px;" v-html="renderStars(value.avg_sao)"></span>
+                    <span style="font-size:.75rem;color:rgba(255,255,255,.8);margin-left:4px; font-weight: 500;">
+                      {{ Number(value.avg_sao || 0).toFixed(1) }} ({{ value.so_luot_danh_gia || 0 }})
+                    </span>
                   </div>
                   <span class="tour-price">{{ formatCurrency(value.gia) }}</span>
                 </div>
@@ -345,6 +349,32 @@ export default {
     this.stopHeroSlide(); 
   },
   methods: {
+    // HÀM MỚI: Tính toán và hiển thị HTML số sao chính xác
+    renderStars(rating) {
+      const score = Number(rating || 0);
+      const fullStars = Math.floor(score); // Số lượng sao đầy (Ví dụ: 4.5 -> 4 sao đầy)
+      const hasHalfStar = score - fullStars >= 0.5; // Kiểm tra có nửa sao không
+      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0); // Số sao rỗng còn lại
+
+      let html = '';
+      
+      // 1. In ra các sao đầy
+      for (let i = 0; i < fullStars; i++) {
+        html += '<i class="fa-solid fa-star"></i>';
+      }
+      
+      // 2. In ra nửa sao (Nếu có)
+      if (hasHalfStar) {
+        html += '<i class="fa-solid fa-star-half-stroke"></i>';
+      }
+      
+      // 3. In ra các sao rỗng cho đủ 5
+      for (let i = 0; i < emptyStars; i++) {
+        html += '<i class="fa-regular fa-star"></i>';
+      }
+
+      return html;
+    },
     // HÀM MỚI: Xử lý bóc tách mảng JSON để lấy ảnh đầu tiên của Tour
     getFirstImage(hinh_anh) {
       if (!hinh_anh) return '';

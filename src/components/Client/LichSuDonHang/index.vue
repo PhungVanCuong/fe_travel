@@ -1,12 +1,27 @@
 <template>
     <div class="container my-5">
-        <div class="header-section mb-5">
+        <div class="header-section mb-4">
             <h1 class="fw-bold text-dark">Lịch sử đặt tour</h1>
             <p class="text-secondary">Quản lý và xem lại những hành trình tuyệt vời bạn đã trải qua cùng Ixtal Tour.</p>
         </div>
 
-        <div v-if="ds_hoa_don.length > 0">
-            <div v-for="(item, index) in ds_hoa_don" :key="index" class="card mb-4 shadow-sm border-0 tour-card">
+        <div class="filter-bar mb-4 d-flex justify-content-start gap-2">
+            <button class="filter-pill" :class="{ active: filter_status === 'all' }" @click="filter_status = 'all'">
+                <i class="fa-solid fa-list-ul me-1"></i> Tất cả
+            </button>
+            <button class="filter-pill paid" :class="{ active: filter_status === 'paid' }" @click="filter_status = 'paid'">
+                <i class="fa-solid fa-circle-check me-1"></i> Thành công
+            </button>
+            <button class="filter-pill pending" :class="{ active: filter_status === 'pending' }" @click="filter_status = 'pending'">
+                <i class="fa-solid fa-hourglass-half me-1"></i> Chờ thanh toán
+            </button>
+            <button class="filter-pill cancelled" :class="{ active: filter_status === 'cancelled' }" @click="filter_status = 'cancelled'">
+                <i class="fa-solid fa-circle-xmark me-1"></i> Đã hủy
+            </button>
+        </div>
+
+        <div v-if="getFilteredHoaDon().length > 0">
+            <div v-for="(item, index) in getFilteredHoaDon()" :key="index" class="card mb-4 shadow-sm border-0 tour-card">
                 <div class="card-body p-0">
                     <div class="row g-0 align-items-center">
                         <div class="col-md-3">
@@ -83,8 +98,8 @@
 
             <div class="modal-body">
                 <div class="tour-summary-box d-flex align-items-center p-3 mb-4 rounded-3 border">
-                    <img :src="chi_tiet.tour.hinh_anh" class="rounded me-3"
-                        style="width: 100px; height: 70px; object-fit: cover;">
+                    <img :src="getImageUrl(getFirstImage(chi_tiet.tour ? chi_tiet.tour.hinh_anh : null))" class="rounded me-3"
+                        style="width: 100px; height: 70px; object-fit: cover;" alt="tour image">
                     <div>
                         <h6 class="fw-bold mb-1">{{ chi_tiet.tour.ten_tour }}</h6>
                         <div class="small text-muted">
@@ -147,6 +162,52 @@
                     </div>
                 </div>
 
+                <div class="mb-4 mt-3 d-flex justify-content-center">
+                    <!-- Bọc trong 1 container giới hạn chiều rộng để không bị quá dài -->
+                    <div class="col-lg-12 col-md-12">
+                        <!-- Header -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold mb-0">
+                                <i class="fa-solid fa-star me-2 text-warning"></i>Đánh giá của tôi
+                            </h6>
+                            <span v-if="review_data_loaded" class="badge bg-success-subtle text-success border border-success-subtle">
+                                <i class="fa-solid fa-check me-1"></i>Đã đánh giá
+                            </span>
+                            <span v-else class="badge bg-light text-muted border">Chưa có đánh giá</span>
+                        </div>
+
+                        <!-- Nội dung card -->
+                        <div class="review-card p-4 rounded-4 border shadow-sm bg-white">
+                            <div v-if="review_data_loaded" class="row align-items-center">
+                                <!-- Cột trái: Thông tin khách hàng (Căn giữa icon) -->
+                                <div class="col-md-3 col-sm-4 text-center border-md-end mb-3 mb-md-0">
+                                    <img :src="review_data_loaded.avatar || 'https://via.placeholder.com/40x40'" 
+                                        class="rounded-circle mb-2 shadow-sm border border-2 border-white" 
+                                        width="60" height="60" alt="avatar" style="object-fit: cover;">
+                                    <div class="fw-bold text-dark">{{ review_data_loaded.ho_va_ten || 'Khách hàng ẩn danh' }}</div>
+                                    <small class="text-muted d-block">{{ new Date(review_data_loaded.created_at).toLocaleDateString('vi-VN') }}</small>
+                                </div>
+                                
+                                <!-- Cột phải: Nội dung đánh giá -->
+                                <div class="col-md-9 col-sm-8 ps-md-4">
+                                    <div class="review-stars-row mb-2 d-flex align-items-center">
+                                        <span class="review-stars text-warning me-2" v-html="renderStars(review_data_loaded.sao_danh_gia || 0)"></span>
+                                        <span class="review-score fw-bold text-dark">{{ (review_data_loaded.sao_danh_gia || 0).toFixed(1) }} / 5.0</span>
+                                    </div>
+                                    <div class="text-secondary small fst-italic" style="line-height: 1.7;">
+                                        "{{ review_data_loaded.noi_dung || 'Không có nội dung đánh giá.' }}"
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div v-else class="small text-muted text-center py-4">
+                                <i class="fa-solid fa-comment-slash fs-4 mb-2 text-secondary"></i><br>
+                                Bạn chưa đánh giá tour này. Hãy cho chúng tôi biết cảm nhận của bạn nhé!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <hr class="my-4">
 
                 <div class="price-detail">
@@ -168,13 +229,13 @@
                 </button>
 
                 <div class="d-flex gap-2">
+                    <button class="btn btn-outline-info px-4 fw-bold shadow-sm" @click="taiHoaDonPDF(chi_tiet)">
+                        <i class="fa-solid fa-download me-2"></i>Tải PDF
+                    </button>
+
                     <button v-if="chi_tiet.trang_thai == 2" class="btn btn-rating px-4 fw-bold text-white shadow-sm"
                         @click="danhGiaTour(chi_tiet)">
                         <i class="fa-solid fa-star me-2"></i>Đánh giá tour
-                    </button>
-
-                    <button v-if="chi_tiet.trang_thai == 2" class="btn btn-outline-info px-4 fw-bold shadow-sm">
-                        <i class="fa-solid fa-file-invoice-dollar me-2"></i>Tải hóa đơn
                     </button>
 
                     <!-- NÚT HỦY ĐƠN HÀNG KHI CHƯA THANH TOÁN -->
@@ -196,7 +257,7 @@
     <div v-if="is_show_danh_gia" class="modal-overlay" @click.self="is_show_danh_gia = false">
         <div class="modal-detail-content animate__animated animate__fadeInUp" style="width: 500px;">
             <div class="modal-header border-bottom-0">
-                <h4 class="fw-bold mb-0">Đánh giá dịch vụ</h4>
+                <h4 class="fw-bold mb-0 mb-3 mt-3">Đánh giá dịch vụ</h4>
                 <button type="button" class="btn-close" @click="is_show_danh_gia = false"></button>
             </div>
             <div class="modal-body text-center">
@@ -214,10 +275,60 @@
                 </div>
             </div>
             <div class="modal-footer border-top-0 p-4">
-                <button class="btn btn-secondary px-4" @click="is_show_danh_gia = false">Hủy bỏ</button>
+                <button class="btn btn-secondary px-4 me-3" @click="is_show_danh_gia = false">Hủy bỏ</button>
                 <button class="btn btn-warning px-4 fw-bold text-white" @click="guiDanhGia()" :disabled="data_danh_gia.sao_danh_gia === 0">
                     Gửi đánh giá ngay
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="printable-invoice">
+        <div class="invoice-print-card">
+            <div class="invoice-print-header">
+                <div>
+                    <h3 class="fw-bold mb-1">HÓA ĐƠN DU LỊCH</h3>
+                    <p class="mb-0 text-muted">Mã hóa đơn: #{{ chi_tiet.ma_hoa_don || chi_tiet.id_hoa_don || '---' }}</p>
+                </div>
+                <div class="text-end">
+                    <span class="invoice-status-badge">{{ getStatusLabel(chi_tiet.trang_thai) }}</span>
+                </div>
+            </div>
+
+            <div class="invoice-print-body">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <p class="mb-1 text-muted small">Khách hàng</p>
+                        <p class="fw-bold mb-0">{{ chi_tiet.ten_khach_hang || 'Khách hàng Ixtal Tour' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1 text-muted small">Ngày đặt</p>
+                        <p class="fw-bold mb-0">{{ chi_tiet.ngay_dat || '---' }}</p>
+                    </div>
+                    <div class="col-12">
+                        <p class="mb-1 text-muted small">Tour</p>
+                        <p class="fw-bold mb-0">{{ chi_tiet.tour ? chi_tiet.tour.ten_tour : '---' }}</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1 text-muted small">Số lượng khách</p>
+                        <p class="fw-bold mb-0">{{ chi_tiet.so_luong_nguoi || 0 }} người</p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1 text-muted small">Phương thức thanh toán</p>
+                        <p class="fw-bold mb-0">{{ chi_tiet.phuong_thuc_thanh_toan || 'Chuyển khoản' }}</p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Giá trị đơn hàng</span>
+                    <span>{{ formatVND(chi_tiet.tong_tien) }}</span>
+                </div>
+                <div class="d-flex justify-content-between fs-5 fw-bold mt-3 pt-3 border-top">
+                    <span>Tổng cộng</span>
+                    <span class="text-primary">{{ formatVND(chi_tiet.tong_tien) }}</span>
+                </div>
             </div>
         </div>
     </div>
@@ -321,7 +432,9 @@ export default {
             is_show_payment_modal: false,
             method: 1, 
             selectedWallet: 'vnpay',
-            payment_hoa_don: null 
+            payment_hoa_don: null,
+            filter_status: 'all',
+            review_data_loaded: null
         }
     },
     mounted() {
@@ -365,6 +478,13 @@ export default {
                 if (res.data.status) {
                     this.$toast.success(res.data.message);
                     this.is_show_danh_gia = false;
+                    
+                    // Tải lại dữ liệu đánh giá vừa gửi
+                    this.$nextTick(() => {
+                        if (this.chi_tiet && this.chi_tiet.tour && this.chi_tiet.tour.id_tour) {
+                            this.loadReviewData(this.chi_tiet.tour.id_tour);
+                        }
+                    });
                 } else {
                     this.$toast.error(res.data.message);
                 }
@@ -380,6 +500,81 @@ export default {
             this.method = 1;             
             this.selectedWallet = 'vnpay';
             this.is_show_payment_modal = true; 
+        },
+
+        getFilteredHoaDon() {
+            if (!this.ds_hoa_don) return [];
+            switch (this.filter_status) {
+                case 'paid':
+                    return this.ds_hoa_don.filter(item => item.trang_thai == 2);
+                case 'pending':
+                    return this.ds_hoa_don.filter(item => item.trang_thai == 1);
+                case 'cancelled':
+                    return this.ds_hoa_don.filter(item => item.trang_thai != 1 && item.trang_thai != 2);
+                default:
+                    return this.ds_hoa_don;
+            }
+        },
+        getStatusLabel(status) {
+            if (status == 2) return 'Đã thanh toán';
+            if (status == 1) return 'Chờ thanh toán';
+            return 'Đã hủy';
+        },
+        getReviewData(item) {
+            if (this.review_data_loaded) {
+                return this.review_data_loaded;
+            }
+            if (!item) return null;
+            return item.danh_gia || item.danhGia || item.review || item.review_info || null;
+        },
+        loadReviewData(tour_id) {
+            this.review_data_loaded = null;
+            
+            if (!tour_id) return;
+            
+            // Gọi API để lấy dữ liệu đánh giá của khách hàng hiện tại
+            axios.get(apiUrl('/client/danh-gia/get-danh-gia-cua-toi/' + tour_id), {
+                headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
+            })
+            .then(res => {
+                if (res.data.status && res.data.data) {
+                    this.review_data_loaded = res.data.data;
+                } else {
+                    this.review_data_loaded = null;
+                }
+            })
+            .catch(err => {
+                console.log('Không có đánh giá của bạn cho tour này');
+                this.review_data_loaded = null;
+            });
+        },
+        renderStars(rating) {
+            const score = Number(rating || 0);
+            const fullStars = Math.floor(score);
+            const hasHalfStar = score - fullStars >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+            let html = '';
+
+            for (let i = 0; i < fullStars; i++) {
+                html += '<i class="fa-solid fa-star"></i>';
+            }
+
+            if (hasHalfStar) {
+                html += '<i class="fa-solid fa-star-half-stroke"></i>';
+            }
+
+            for (let i = 0; i < emptyStars; i++) {
+                html += '<i class="fa-regular fa-star"></i>';
+            }
+
+            return html;
+        },
+        taiHoaDonPDF(item) {
+            this.chi_tiet = item || this.chi_tiet;
+            this.$nextTick(() => {
+                window.print();
+            });
         },
 
         xacNhanThanhToanLai() {
@@ -453,7 +648,13 @@ export default {
 
         xemChiTiet(item) {
             this.chi_tiet = item;
+            this.review_data_loaded = null;
             this.is_show_detail = true;
+            if (item && item.tour && item.tour.id_tour) {
+                this.$nextTick(() => {
+                    this.loadReviewData(item.tour.id_tour);
+                });
+            }
         },
         getLichSu() {
             this.isLoading = true;
@@ -508,7 +709,13 @@ export default {
 .btn-outline-danger { border: 2px solid #dc3545; color: #dc3545; background-color: transparent; transition: all 0.3s ease; }
 .btn-outline-danger:hover { background-color: #dc3545; color: white; }
 
-.modal-footer button { border-radius: 12px; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; }
+.modal-footer button { border-radius: 14px; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; }
+.btn-close { border-radius: 50% !important; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: #f0f2f5 !important; transition: all 0.3s ease; }
+.btn-close:hover { background-color: #e9ecef !important; transform: rotate(90deg); }
+.modal-header { padding: 24px 28px; background: linear-gradient(135deg, #f8fbff, #eef7ff); border-bottom: 1px solid #e1f0ff; }
+.modal-header h4 { font-size: 1.4rem; letter-spacing: -0.5px; }
+.modal-body { padding: 28px; }
+.modal-footer { padding: 20px 28px; background: #f8f9fa; }
 .tour-card { transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px !important; overflow: hidden; }
 .tour-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important; }
 .tour-img { object-fit: cover; min-height: 200px; width: 100%; }
@@ -527,13 +734,88 @@ export default {
     align-items: center; z-index: 1050;
 }
 .modal-detail-content {
-    background: white; width: 650px; border-radius: 20px;
-    max-height: 90vh; overflow-y: auto; padding: 10px; animation-duration: 0.4s;
+    background: white; width: 750px; max-width: 90vw; border-radius: 24px;
+    max-height: 90vh; overflow-y: auto; overflow-x: hidden; padding: 0; animation-duration: 0.4s;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
-.tour-summary-box { background-color: #f8fbff; border-color: #e1f0ff !important; }
+.tour-summary-box { background-color: #f8fbff; border-color: #e1f0ff !important; border-width: 2px; }
+.tour-summary-box h6 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.3px; }
 .bg-success-subtle { background-color: #d1e7dd !important; }
 .bg-warning-subtle { background-color: #fff3cd !important; }
 .bg-danger-subtle { background-color: #f8d7da !important; color: #dc3545 !important; }
+.price-detail { margin-top: 20px; }
+.price-detail h6 { font-size: 1.1rem; font-weight: 700; color: #1a1a1a; letter-spacing: -0.5px; margin-bottom: 18px; }
+.price-detail .d-flex { font-size: 0.95rem; font-weight: 500; color: #495057; }
+.price-detail .fs-4 { font-size: 1.35rem !important; }
+
+/* FILTER */
+.filter-bar {
+    padding: 10px;
+    border-radius: 50px;
+    display: inline-flex;
+    margin: 0 auto;
+}
+
+.filter-pill {
+    padding: 10px 22px;
+    border-radius: 40px;
+    border: none;
+    background: transparent;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #64748b;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.filter-pill:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+/* Hiệu ứng Active cho từng loại */
+.filter-pill.active {
+    color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* Màu riêng cho từng trạng thái khi Active */
+.filter-pill.active.paid { background: linear-gradient(135deg, #10b981, #059669); }
+.filter-pill.active.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.filter-pill.active.cancelled { background: linear-gradient(135deg, #ef4444, #dc2626); }
+.filter-pill.active:not(.paid):not(.pending):not(.cancelled) { background: #125633; }
+
+.review-card {
+    background: linear-gradient(135deg, #fffaf0, #fff8e1); border-color: #ffe7b3 !important; border-width: 2px;
+}
+.review-card h6 { font-size: 1.1rem; letter-spacing: -0.3px; }
+.review-card .fw-bold { color: #1a1a1a; }
+.review-stars-row {
+    display: flex; align-items: center; gap: 8px;
+}
+.review-stars {
+    color: #fbbf24; font-size: 0.9rem; letter-spacing: 1px;
+}
+.review-score {
+    font-size: 0.8rem; color: #b45309; font-weight: 600;
+}
+.invoice-card {
+    background: linear-gradient(135deg, #f8fbff, #eef7ff); border-color: #dcefff !important; border-width: 2px;
+}
+.invoice-card h6 { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.3px; }
+.printable-invoice {
+    display: none;
+}
+.invoice-print-card {
+    background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 24px; max-width: 760px; margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+.invoice-print-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #e5e7eb;
+}
+.invoice-status-badge {
+    background: #005baa; color: white; padding: 8px 12px; border-radius: 999px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px;
+}
 
 /* DRAWER STYLE */
 .modal-payment-drawer {
@@ -551,4 +833,31 @@ export default {
 .payment-item.active .icon-box { background: #005baa; color: white; }
 .form-check-input { width: 1.3em; height: 1.3em; }
 .form-check-input:checked { background-color: #005baa; border-color: #005baa; }
+.review-card {
+    transition: all 0.3s ease;
+    background: #fff;
+}
+.review-card:hover {
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+}
+
+/* Hiệu ứng cho sao */
+.review-stars {
+    font-size: 1rem;
+    letter-spacing: 2px;
+}
+
+/* Đảm bảo hình ảnh tròn đẹp */
+.rounded-circle {
+    box-shadow: 0 0 0 4px #f8f9fa;
+}
+
+/* Căn lề giữa cho responsive */
+@media (max-width: 768px) {
+    .border-md-end {
+        border-right: none !important;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+    }
+}
 </style>
