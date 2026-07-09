@@ -323,10 +323,10 @@
                 </div>
             </div>
 
-            <div class="col-lg-12 mt-5">
+            <div class="col-lg-12 mt-5" v-if="filteredTourKhac && filteredTourKhac.length > 0">
                 <h3 class="fw-bold mb-4">Các tour khác bạn có thể thích</h3>
                 <div class="row">
-                    <template v-for="(value, index) in list_tour_khac.slice(0, 3)" :key="index">
+                    <template v-for="(value, index) in filteredTourKhac" :key="index">
                         <div class="col-lg-4 col-md-6 mb-4">
                             <div class="card h-100 shadow-sm border-0 tour-card"
                                 style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease;"
@@ -360,8 +360,7 @@
                                         v-html="(value.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
                                     </p>
 
-                                    <div
-                                        class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
+                                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
                                         <div>
                                             <small class="text-muted d-block" style="font-size: 0.75rem;">Giá từ</small>
                                             <h5 class="fw-bold mb-0 text-danger">
@@ -505,6 +504,37 @@ export default {
                 return this.ds_danh_gia;
             }
             return this.ds_danh_gia.filter(item => item.sao_danh_gia === this.filterStar);
+        },
+        filteredTourKhac() {
+            // 1. Kiểm tra an toàn dữ liệu đầu vào
+            if (!this.chi_tiet_tour || !this.list_tour_khac || !Array.isArray(this.list_tour_khac)) {
+                return [];
+            }
+
+            // Lấy ID quốc gia hiện tại (Việt Nam có ID = 1)
+            const currentQuocGiaId = Number(this.chi_tiet_tour.id_quoc_gia);
+            const currentTourId = Number(this.chi_tiet_tour.id);
+
+            // 2. Loại bỏ tour đang xem hiện tại và các tour bị khóa
+            let danhSachHople = this.list_tour_khac.filter(tour => {
+                return Number(tour.id) !== currentTourId && tour.tinh_trang != 0;
+            });
+
+            // 3. Tiến hành lọc NGHIÊM NGẶT theo Vùng / Nước
+            let ketQuaLoc = danhSachHople.filter(tour => {
+                const tourQuocGiaId = Number(tour.id_quoc_gia);
+                
+                if (currentQuocGiaId === 1) {
+                    // Nếu đang xem tour Việt Nam -> CHỈ lấy tour Việt Nam
+                    return tourQuocGiaId === 1;
+                } else {
+                    // Nếu đang xem tour Nước ngoài -> CHỈ lấy tour Nước ngoài (khác 1)
+                    return tourQuocGiaId !== 1;
+                }
+            });
+
+            // Trả về tối đa 3 tour để hiển thị đẹp nhất
+            return ketQuaLoc.slice(0, 3);
         }
     },
     methods: {
@@ -788,8 +818,32 @@ export default {
             })
                 .then((res) => {
                     if (res.data.status) {
+                        // 1. Gán chi tiết tour hiện tại
                         this.chi_tiet_tour = res.data.data;
-                        this.list_tour_khac = res.data.tour_khac.slice(0, 4).map(tour => {
+                        
+                        // Lấy ID quốc gia và ID tour đang xem
+                        const currentQuocGiaId = Number(this.chi_tiet_tour.id_quoc_gia);
+                        const currentTourId = Number(this.chi_tiet_tour.id);
+
+                        // 2. Lọc mảng tour khác ngay khi API vừa trả về
+                        let filteredTours = res.data.tour_khac.filter(tour => {
+                            // Bỏ qua tour đang xem hiện tại
+                            if (Number(tour.id) === currentTourId) return false;
+                            
+                            const tourQuocGiaId = Number(tour.id_quoc_gia);
+                            
+                            // Đang xem tour Việt Nam (ID = 1) -> Chỉ lấy tour Việt Nam
+                            if (currentQuocGiaId === 1) {
+                                return tourQuocGiaId === 1;
+                            } 
+                            // Đang xem tour Nước Ngoài -> Chỉ lấy tour Nước Ngoài (ID khác 1)
+                            else {
+                                return tourQuocGiaId !== 1;
+                            }
+                        });
+
+                        // 3. Giới hạn lấy 3 tour chuẩn nhất, xử lý hình ảnh và gán vào list_tour_khac
+                        this.list_tour_khac = filteredTours.slice(0, 3).map(tour => {
                             if (typeof tour.hinh_anh === 'string') {
                                 try { tour.hinh_anh = JSON.parse(tour.hinh_anh); }
                                 catch (e) { tour.hinh_anh = [tour.hinh_anh]; }
