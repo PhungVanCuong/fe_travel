@@ -272,52 +272,73 @@
         </div>
 
         <div class="row mt-5">
-            <div class="col-lg-12 mt-4">
-                <h3 class="fw-bold mb-3">Đánh giá từ khách hàng ({{ ds_danh_gia.length }})</h3>
+            <div class="col-lg-12 mt-4 review-section">
+                <h3 class="review-main-title">Đánh giá khách hàng</h3>
 
-                <div class="d-flex flex-wrap gap-2 mb-4">
-                    <button @click="filterStar = 'all'"
-                        :class="['btn btn-sm px-3 rounded-pill fw-bold', filterStar === 'all' ? 'btn-secondary text-white' : 'btn-outline-secondary']">
-                        Tất cả ({{ ds_danh_gia.length }})
-                    </button>
+                <div v-if="ds_danh_gia.length > 0" class="review-summary-box">
+                    <div class="review-score-box">
+                        <div class="review-score-number">{{ averageRating }}</div>
+                        <div class="review-score-stars">
+                            <i v-for="star in 5" :key="star" class="fa-star"
+                                :class="star <= Math.floor(averageRatingNumber) ? 'fa-solid' : 'fa-regular'"></i>
+                        </div>
+                        <div class="review-total-text">{{ ds_danh_gia.length }} đánh giá</div>
+                    </div>
 
-                    <button v-for="star in [5, 4, 3, 2, 1]" :key="star" @click="filterStar = star"
-                        :class="['btn btn-sm px-3 rounded-pill fw-bold d-flex align-items-center gap-1', filterStar === star ? 'btn-warning text-dark' : 'btn-outline-warning']">
-                        {{ star }} <i class="fa-solid fa-star small"></i> ({{ countStars(star) }})
-                    </button>
-                </div>
-
-                <div v-if="filteredDanhGia.length > 0" class="list-danh-gia">
-                    <div v-for="(v, k) in filteredDanhGia" :key="k" class="card border-0 shadow-sm mb-3 p-3"
-                        style="border-radius: 15px;">
-                        <div class="d-flex align-items-start">
-                            <img :src="v.avatar || 'https://via.placeholder.com/50'" class="rounded-circle me-3"
-                                style="width: 50px; height: 50px; object-fit: cover; border: 2px solid #eee;">
-
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-center mb-1">
-                                    <h6 class="fw-bold mb-0 text-dark">{{ v.ho_va_ten }}</h6>
-                                    <small class="text-muted">{{ formatDate(v.created_at) }}</small>
-                                </div>
-
-                                <div class="star-rating mb-2">
-                                    <i v-for="star in 5" :key="star" class="fa-star me-1"
-                                        :class="star <= v.sao_danh_gia ? 'fa-solid text-warning' : 'fa-regular text-secondary'"
-                                        style="font-size: 0.85rem;">
-                                    </i>
-                                </div>
-
-                                <p class="text-secondary mb-0 small" style="line-height: 1.6;">
-                                    {{ v.noi_dung || 'Khách hàng không để lại bình luận.' }}
-                                </p>
+                    <div class="review-rating-bars">
+                        <div v-for="star in [5, 4, 3, 2, 1]" :key="star" class="review-bar-row"
+                            :class="{ active: Number(filterStar) === Number(star) }"
+                            @click="chonLocSao(star)">
+                            <div class="review-bar-label">
+                                {{ star }} <i class="fa-solid fa-star"></i>
                             </div>
+                            <div class="review-progress">
+                                <div class="review-progress-fill" :style="{ width: ratingPercent(star) + '%' }"></div>
+                            </div>
+                            <div class="review-percent">{{ ratingPercent(star) }}%</div>
                         </div>
                     </div>
                 </div>
 
-                <div v-else class="text-center p-5 border border-dashed rounded-4 bg-light">
-                    <i class="fa-solid fa-comments text-muted fs-1 mb-3"></i>
-                    <p class="text-muted">
+                <div v-if="filteredDanhGia.length > 0" class="review-list">
+                    <div v-for="(v, k) in filteredDanhGia" :key="k" class="review-card">
+                        <div class="review-avatar-wrap">
+                            <img v-if="v.avatar" :src="v.avatar" class="review-avatar-img" alt="avatar">
+                            <div v-else class="review-avatar-text">{{ reviewInitials(v.ho_va_ten) }}</div>
+                        </div>
+
+                        <div class="review-content">
+                            <div class="review-head">
+                                <div>
+                                    <h6 class="review-name">{{ v.ho_va_ten || 'Khách hàng' }}</h6>
+                                    <div class="review-stars-line">
+                                        <i v-for="star in 5" :key="star" class="fa-star"
+                                            :class="star <= Number(v.sao_danh_gia || 0) ? 'fa-solid' : 'fa-regular'"></i>
+                                        <span class="review-count-small">
+                                            <i class="fa-regular fa-image"></i>
+                                            {{ Number(v.sao_danh_gia || 0) }} đánh
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="review-date">{{ formatDate(v.created_at) }}</div>
+                            </div>
+
+                            <h6 class="review-title">{{ reviewTitle(v) }}</h6>
+                            <p class="review-desc">
+                                {{ v.noi_dung || 'Khách hàng không để lại bình luận.' }}
+                            </p>
+
+                            <button type="button" class="review-helpful-btn">
+                                <i class="fa-regular fa-message"></i>
+                                Hữu ích ({{ v.so_luot_huu_ich || v.huu_ich || 0 }})
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-else class="review-empty-box">
+                    <i class="fa-solid fa-comments"></i>
+                    <p>
                         {{ filterStar === 'all' ? 'Chưa có đánh giá nào cho tour này. Hãy là người đầu tiên trải nghiệm!' : 'Không có đánh giá '+ filterStar + ' sao nào.' }}
                     </p>
                 </div>
@@ -462,6 +483,7 @@ export default {
          */
         '$route.params.id_tour': function (newId) {
             this.id = newId;
+            this.filterStar = 'all';
             this.LoadTour();
             this.layDanhSachDanhGia();
             this.scrollToTop();
@@ -503,7 +525,15 @@ export default {
             if (this.filterStar === 'all') {
                 return this.ds_danh_gia;
             }
-            return this.ds_danh_gia.filter(item => item.sao_danh_gia === this.filterStar);
+            return this.ds_danh_gia.filter(item => Number(item.sao_danh_gia) === Number(this.filterStar));
+        },
+        averageRatingNumber() {
+            if (!this.ds_danh_gia.length) return 0;
+            const total = this.ds_danh_gia.reduce((sum, item) => sum + Number(item.sao_danh_gia || 0), 0);
+            return total / this.ds_danh_gia.length;
+        },
+        averageRating() {
+            return this.averageRatingNumber.toFixed(1);
         },
         filteredTourKhac() {
             // 1. Kiểm tra an toàn dữ liệu đầu vào
@@ -538,6 +568,14 @@ export default {
         }
     },
     methods: {
+        chonLocSao(star) {
+            if (Number(this.filterStar) === Number(star)) {
+                this.filterStar = 'all';
+            } else {
+                this.filterStar = star;
+            }
+        },
+
         // =========================================================================
         // CHỨC NĂNG: QUẢN LÝ TRÌNH XEM ẢNH FULL MÀN HÌNH (LIGHTBOX)
         // =========================================================================
@@ -759,7 +797,22 @@ export default {
          * Cách thức: Lọc mảng ds_danh_gia để lấy ra các phần tử có sao bằng biến truyền vào, sau đó lấy độ dài (.length).
          */
         countStars(star) {
-            return this.ds_danh_gia.filter(item => item.sao_danh_gia === star).length;
+            return this.ds_danh_gia.filter(item => Number(item.sao_danh_gia) === Number(star)).length;
+        },
+
+        ratingPercent(star) {
+            if (!this.ds_danh_gia.length) return 0;
+            return Math.round((this.countStars(star) / this.ds_danh_gia.length) * 100);
+        },
+
+        reviewInitials(name) {
+            const parts = (name || 'Khách hàng').trim().split(/\s+/);
+            if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        },
+
+        reviewTitle(review) {
+            return review.tieu_de || review.tieu_de_danh_gia || 'Đánh giá của khách hàng';
         },
 
         /**
@@ -985,6 +1038,265 @@ export default {
 </script>
 
 <style scoped>
+
+/* ===================== ĐÁNH GIÁ KHÁCH HÀNG - GIỐNG MẪU ===================== */
+.review-section {
+    color: #173b3f;
+}
+
+.review-main-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: #102f35;
+}
+
+.review-summary-box {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 28px;
+    align-items: center;
+    padding: 22px 20px;
+    margin-bottom: 24px;
+    background: #eef8f6;
+    border-radius: 18px;
+}
+
+.review-score-box {
+    text-align: left;
+}
+
+.review-score-number {
+    font-size: 3.8rem;
+    line-height: 1;
+    font-weight: 800;
+    color: #07998f;
+    letter-spacing: -1px;
+}
+
+.review-score-stars {
+    display: flex;
+    gap: 3px;
+    margin-top: 6px;
+    color: #ffbf00;
+    font-size: 1.1rem;
+}
+
+.review-total-text {
+    margin-top: 4px;
+    color: #4e6a70;
+    font-size: 0.95rem;
+}
+
+.review-rating-bars {
+    width: 100%;
+}
+
+.review-bar-row {
+    display: grid;
+    grid-template-columns: 48px 1fr 44px;
+    align-items: center;
+    gap: 12px;
+    margin: 7px 0;
+    padding: 4px 6px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #4e6a70;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.review-bar-row:hover,
+.review-bar-row.active {
+    background: rgba(7, 153, 143, 0.12);
+}
+
+.review-bar-row.active .review-bar-label,
+.review-bar-row.active .review-percent,
+.review-bar-row.active .review-bar-label i {
+    color: #07998f;
+}
+
+.review-bar-label {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.review-bar-label i {
+    font-size: 0.75rem;
+    color: #4e6a70;
+}
+
+.review-progress {
+    height: 8px;
+    background: #d6eeeb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.review-progress-fill {
+    height: 100%;
+    background: #ffc107;
+    border-radius: 999px;
+    transition: width 0.35s ease;
+}
+
+.review-percent {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #4e6a70;
+}
+
+.review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.review-card {
+    display: flex;
+    gap: 16px;
+    padding: 22px 20px;
+    border: 1px solid #d7eeee;
+    border-radius: 18px;
+    background: #fff;
+    transition: all 0.25s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+.review-avatar-wrap {
+    flex: 0 0 40px;
+}
+
+.review-avatar-img,
+.review-avatar-text {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.review-avatar-img {
+    object-fit: cover;
+}
+
+.review-avatar-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #07998f;
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.85rem;
+}
+
+.review-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.review-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 8px;
+}
+
+.review-name {
+    margin: 0 0 4px;
+    font-weight: 800;
+    color: #102f35;
+}
+
+.review-stars-line {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    color: #ffbf00;
+    font-size: 0.82rem;
+}
+
+.review-count-small {
+    margin-left: 8px;
+    color: #6a8588;
+    font-size: 0.82rem;
+}
+
+.review-date {
+    white-space: nowrap;
+    color: #4e6a70;
+    font-size: 0.9rem;
+}
+
+.review-title {
+    margin: 0 0 7px;
+    font-weight: 800;
+    color: #102f35;
+    font-size: 0.98rem;
+}
+
+.review-desc {
+    margin: 0;
+    color: #45646a;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+.review-helpful-btn {
+    border: 0;
+    padding: 0;
+    margin-top: 12px;
+    background: transparent;
+    color: #45646a;
+    font-size: 0.85rem;
+    box-shadow: none !important;
+    transform: none !important;
+    filter: none !important;
+}
+
+.review-helpful-btn:hover {
+    color: #07998f;
+}
+
+.review-empty-box {
+    text-align: center;
+    padding: 50px 20px;
+    border: 1px dashed #d7eeee;
+    border-radius: 18px;
+    background: #f8fbfb;
+    color: #6a8588;
+}
+
+.review-empty-box i {
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 768px) {
+    .review-summary-box {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .review-bar-row {
+        grid-template-columns: 42px 1fr 38px;
+        gap: 8px;
+    }
+
+    .review-card {
+        padding: 18px 14px;
+    }
+
+    .review-head {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
 /* =========================================================================
    HIỆU ỨNG GIAO DIỆN CHUNG & TIỆN ÍCH (UTILITIES)
    ========================================================================= */
