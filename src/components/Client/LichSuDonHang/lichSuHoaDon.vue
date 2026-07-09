@@ -51,11 +51,11 @@
                             <div class="tour-info mt-3">
                                 <div class="mb-2 text-muted">
                                     <i class="fa-solid fa-calendar-check me-2"></i>
-                                    Đặt ngày: <span class="fw-medium text-dark">{{ formatDate(item.ngay_dat) }}</span>
+                                    Đặt ngày: <span class="fw-medium text-dark">{{ item.ngay_dat }}</span>
                                 </div>
                                 <div class="text-muted">
                                     <i class="fa-solid fa-plane-departure me-2"></i>
-                                    Khởi hành: <span class="fw-medium text-dark">{{ formatDate(item.tour.ngay_bat_dau) }} - {{ formatDate(item.tour.ngay_ket_thuc) }}</span>
+                                    Khởi hành: <span class="fw-medium text-dark">{{ item.tour.ngay_bat_dau }} - {{ item.tour.ngay_ket_thuc }}</span>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                 <div>
                     <!-- Đã tô màu đỏ mã hóa đơn -->
                     <h4 class="fw-bold mb-0">Chi tiết đơn hàng #<span class="text-danger">{{ chi_tiet.ma_hoa_don }}</span></h4>
-                    <small class="text-muted">Đặt ngày: {{ formatDate(chi_tiet.ngay_dat) }}</small>
+                    <small class="text-muted">Đặt ngày: {{ chi_tiet.ngay_dat }}</small>
                 </div>
                 <button type="button" class="btn-close" @click="is_show_detail = false"></button>
             </div>
@@ -104,7 +104,7 @@
                         <h6 class="fw-bold mb-1">{{ chi_tiet.tour.ten_tour }}</h6>
                         <div class="small text-muted">
                             <i class="fa-solid fa-calendar-days me-1"></i> Khởi hành: <span
-                                class="text-primary fw-bold">{{ formatDate(chi_tiet.tour.ngay_bat_dau) }}</span>
+                                class="text-primary fw-bold">{{ chi_tiet.tour.ngay_bat_dau }}</span>
                         </div>
                     </div>
                 </div>
@@ -441,28 +441,6 @@ export default {
         this.getLichSu();
     },
     methods: {
-        // Thay thế hàm formatDate cũ bằng hàm này
-        formatDate(dateStr) {
-            if (!dateStr) return '';
-            const d = new Date(dateStr);
-            
-            // Lấy ngày, tháng, năm và thêm số 0 ở trước nếu nhỏ hơn 10
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const year = d.getFullYear();
-            
-            // Kiểm tra xem dữ liệu truyền vào có chứa giờ giấc không (thường chứa chữ 'T' hoặc dấu ':')
-            if (dateStr.includes('T') || dateStr.includes(':')) {
-                const hours = String(d.getHours()).padStart(2, '0');
-                const minutes = String(d.getMinutes()).padStart(2, '0');
-                
-                // Trả về định dạng: Giờ:Phút - Ngày/Tháng/Năm (Dành cho thời gian đặt tour)
-                return `${hours}:${minutes} - ${day}/${month}/${year}`;
-            }
-            
-            // Trả về định dạng: Ngày/Tháng/Năm (Dành cho ngày khởi hành/kết thúc tour)
-            return `${day}/${month}/${year}`;
-        },
         // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
         getFirstImage(hinh_anh) {
             if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
