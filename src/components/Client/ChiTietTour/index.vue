@@ -19,7 +19,7 @@
                 </div>
                 <div class="card mb-4 border-0 shadow-sm" style="border-radius: 15px;" ref="tourDescription">
                     <div class="card-body">
-                        <h3 class="fw-bold mb-3">Mô tả tour</h3>
+                        
 
                         <div class="position-relative" style="transition: max-height 0.5s ease; overflow: hidden;"
                             :style="{ maxHeight: is_expanded_mo_ta ? '5000px' : '260px' }">
@@ -314,10 +314,7 @@
                                     <div class="review-stars-line">
                                         <i v-for="star in 5" :key="star" class="fa-star"
                                             :class="star <= Number(v.sao_danh_gia || 0) ? 'fa-solid' : 'fa-regular'"></i>
-                                        <span class="review-count-small">
-                                            <i class="fa-regular fa-image"></i>
-                                            {{ Number(v.sao_danh_gia || 0) }} đánh
-                                        </span>
+                                       
                                     </div>
                                 </div>
                                 <div class="review-date">{{ formatDate(v.created_at) }}</div>
@@ -344,60 +341,48 @@
                 </div>
             </div>
 
-            <div class="col-lg-12 mt-5" v-if="filteredTourKhac && filteredTourKhac.length > 0">
-                <h3 class="fw-bold mb-4">Các tour khác bạn có thể thích</h3>
-                <div class="row">
-                    <template v-for="(value, index) in filteredTourKhac" :key="index">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100 shadow-sm border-0 tour-card"
-                                style="cursor: pointer; border-radius: 12px; transition: transform 0.3s ease;"
-                                @click="$router.push('/client/chi-tiet-tour/' + value.id)">
+            <div class="col-lg-12 mt-5 related-tour-section" v-if="filteredTourKhac && filteredTourKhac.length > 0">
+                <div class="related-tour-head">
+                    <div>
+                        <p class="related-tour-subtitle">Gợi ý cho bạn</p>
+                        <h3 class="related-tour-heading">Các tour khác bạn có thể thích</h3>
+                    </div>
+                </div>
 
-                                <div class="position-relative">
-                                    <img :src="getImageUrl(getFirstImage(value.hinh_anh))" class="card-img-top"
-                                        :alt="value.ten_tour"
-                                        style="height: 200px; object-fit: cover; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+                <div class="no-scrollbar track-container related-tour-track">
+                    <div v-for="(value, index) in filteredTourKhac" :key="index" class="tour-poster hover-scale-img"
+                        data-aos="fade-up" :data-aos-delay="index * 100"
+                        @click="$router.push('/client/chi-tiet-tour/' + value.id)">
+                        <img :src="getImageUrl(getFirstImage(value.hinh_anh))" :alt="value.ten_tour" class="tour-img" />
+                        <div class="tour-overlay"></div>
+                        <span class="tour-badge badge-primary">Còn {{ value.so_nguoi_toi_da }} chỗ</span>
 
-                                    <div class="position-absolute text-white px-2 py-1 bg-dark bg-opacity-50 rounded"
-                                        style="bottom: 10px; right: 10px; font-size: 0.8rem;">
-                                        <i class="fa-solid fa-users me-1"></i> Còn: {{ value.so_nguoi_toi_da }}
+                        <div class="tour-info">
+                            <p class="tour-pickup">📍 Đón tại: {{ value.diem_don }}</p>
+                            <h3 class="tour-title">{{ value.ten_tour }}</h3>
+
+                            <div class="tour-meta-row">
+                                <div>
+                                    <div class="tour-rating-line">
+                                        <span class="tour-stars"
+                                            v-html="renderStars(value.avg_sao || value.sao_trung_binh || value.sao_danh_gia || 0)"></span>
+                                        <span class="tour-rating-text">
+                                            {{ Number(value.avg_sao || value.sao_trung_binh || value.sao_danh_gia || 0).toFixed(1) }}
+                                            ({{ value.so_luot_danh_gia || value.so_danh_gia || 0 }})
+                                        </span>
                                     </div>
+                                    <span class="tour-price">{{ formatCurrency(value.gia) }}</span>
                                 </div>
+                                <span class="tour-duration">{{ formatDate(value.ngay_bat_dau) }}</span>
+                            </div>
 
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title fw-bold text-dark mb-2"
-                                        style="line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2.8em;">
-                                        {{ value.ten_tour }}
-                                    </h5>
-
-                                    <div class="d-flex align-items-center gap-2 mb-2 text-secondary"
-                                        style="font-size: 0.9rem;">
-                                        <i class="fa-solid fa-location-dot text-primary"></i>
-                                        <span>{{ value.diem_don }}</span>
-                                    </div>
-
-                                    <p class="text-muted mb-3 mo-ta-html"
-                                        style="font-size: 0.85rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"
-                                        v-html="(value.mo_ta || '').replace(/<img /g, '<img style=\'max-width:100%;height:auto;display:block;margin:10px auto;border-radius:8px\' ')">
-                                    </p>
-
-                                    <div class="mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <small class="text-muted d-block" style="font-size: 0.75rem;">Giá từ</small>
-                                            <h5 class="fw-bold mb-0 text-danger">
-                                                {{ new Intl.NumberFormat('vi-VN', {
-                                                    style: 'currency', currency: 'VND'
-                                                }).format(value.gia) }}
-                                            </h5>
-                                        </div>
-                                        <button class="btn btn-outline-primary btn-sm rounded-pill px-3">
-                                            Chi tiết
-                                        </button>
-                                    </div>
-                                </div>
+                            <div class="cta-reveal">
+                                <button class="view-details-btn" @click.stop="$router.push('/client/chi-tiet-tour/' + value.id)">
+                                    Xem Chi Tiết →
+                                </button>
                             </div>
                         </div>
-                    </template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -816,6 +801,38 @@ export default {
         },
 
         /**
+         * Định dạng tiền tệ Việt Nam cho card tour khác.
+         */
+        formatCurrency(value) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(Number(value || 0));
+        },
+
+        /**
+         * Render sao đánh giá cho card tour khác.
+         */
+        renderStars(rating) {
+            const score = Number(rating || 0);
+            const fullStars = Math.floor(score);
+            const hasHalfStar = score - fullStars >= 0.5;
+            const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+            let html = '';
+            for (let i = 0; i < fullStars; i++) {
+                html += '<i class="fa-solid fa-star"></i>';
+            }
+            if (hasHalfStar) {
+                html += '<i class="fa-solid fa-star-half-stroke"></i>';
+            }
+            for (let i = 0; i < emptyStars; i++) {
+                html += '<i class="fa-regular fa-star"></i>';
+            }
+            return html;
+        },
+
+        /**
          * Định dạng lại ngày tháng chuẩn hiển thị.
          * Cách thức: Chuyển chuỗi ISO ngày tháng thành đối tượng Date. 
          * Lấy ngày, tháng (cộng 1 do tháng bắt đầu từ 0), năm. Dùng padStart(2, '0') để chèn số 0 nếu ngày/tháng < 10. Trả về định dạng DD/MM/YYYY.
@@ -1045,7 +1062,7 @@ export default {
 }
 
 .review-main-title {
-    font-size: 1.25rem;
+   
     font-weight: 800;
     margin-bottom: 20px;
     color: #102f35;
@@ -1864,4 +1881,275 @@ button:hover {
         font-size: 2rem;
     }
 }
+
+/* =========================================================================
+   CARD TOUR KHÁC - GIAO DIỆN POSTER THEO MẪU TOUR
+   ========================================================================= */
+.related-tour-section {
+    margin-top: 64px !important;
+}
+
+.related-tour-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.related-tour-subtitle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #125633;
+    background: rgba(143, 223, 181, 0.22);
+    border: 1px solid rgba(143, 223, 181, 0.45);
+    border-radius: 999px;
+    padding: 7px 14px;
+    margin-bottom: 10px;
+}
+
+.related-tour-heading {
+    font-size: clamp(1.65rem, 3vw, 2.35rem);
+    font-weight: 800;
+    color: #0c1a2e;
+    line-height: 1.2;
+    margin: 0;
+}
+
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.track-container {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    padding: 4px 4px 22px;
+    scroll-snap-type: x mandatory;
+}
+
+/* Riêng phần tour khác: chia đều 3 card cho đủ chiều ngang */
+.related-tour-track {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    width: 100%;
+    overflow-x: visible !important;
+    padding: 4px 0 30px;
+    margin-left: 0;
+    margin-right: 0;
+    scroll-snap-type: none;
+}
+
+.hover-scale-img img {
+    transition: transform 0.6s ease;
+}
+
+.hover-scale-img:hover img {
+    transform: scale(1.07);
+}
+
+.tour-poster {
+    position: relative;
+    flex: 0 0 320px;
+    width: 320px;
+    height: 420px;
+    border-radius: 28px;
+    overflow: hidden;
+    cursor: pointer;
+    scroll-snap-align: start;
+    background: #0c1a2e;
+    box-shadow: 0 18px 38px rgba(12, 26, 46, 0.16);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Khi nằm trong related-tour-track thì bỏ width cố định 320px để card tự giãn */
+.related-tour-track .tour-poster {
+    width: 100% !important;
+    flex: unset !important;
+    flex-basis: unset !important;
+    min-width: 0;
+    height: 440px;
+}
+
+
+.tour-poster:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 52px rgba(12, 26, 46, 0.24);
+}
+
+.tour-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tour-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(12, 26, 46, 0.96) 0%, rgba(12, 26, 46, 0.36) 52%, rgba(12, 26, 46, 0.04) 100%);
+}
+
+.tour-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
+}
+
+.badge-primary {
+    background: #8fdfb5;
+    color: #125633;
+}
+
+.tour-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 24px;
+}
+
+.tour-pickup {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tour-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.tour-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.tour-rating-line {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.tour-stars {
+    color: #fbbf24;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.tour-rating-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.82);
+    margin-left: 4px;
+    font-weight: 600;
+}
+
+.tour-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: white;
+}
+
+.tour-duration {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.cta-reveal {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+}
+
+.tour-poster:hover .cta-reveal {
+    max-height: 54px;
+    opacity: 1;
+    margin-top: 16px;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 16px;
+    background: #8fdfb5;
+    color: #125633;
+    border: none;
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+@media (max-width: 992px) {
+    .related-tour-track {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .related-tour-section {
+        margin-top: 44px !important;
+    }
+
+    .related-tour-track {
+        grid-template-columns: 1fr;
+    }
+
+    .related-tour-track .tour-poster {
+        height: 390px;
+        border-radius: 24px;
+    }
+
+    .tour-info {
+        padding: 20px;
+    }
+
+    .tour-title {
+        font-size: 1.22rem;
+    }
+
+    .tour-price {
+        font-size: 1.08rem;
+    }
+}
+
 </style>
