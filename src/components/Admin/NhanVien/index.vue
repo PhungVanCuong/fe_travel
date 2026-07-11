@@ -152,7 +152,7 @@
                         <div>
                             <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Số Điện Thoại</p>
                             <p style="margin: 0; font-weight: 600; font-size: 1rem;">{{ selectedEmployee.so_dien_thoai
-                                }}</p>
+                            }}</p>
                         </div>
                         <div>
                             <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Ngày Sinh</p>
@@ -172,7 +172,7 @@
                     </div>
                     <div style="margin-bottom: 20px;">
                         <p style="color: #999; font-size: 0.85rem; margin: 0 0 5px 0;">Địa Chỉ</p>
-                        <p style="margin: 0; color: #555; line-height: 1.5;">{{ selectedEmployee.dia_chi || 'Chưa cậpnhật' }}</p>
+                        <p style="margin: 0; color: #555; line-height: 1.5;">{{ selectedEmployee.dia_chi || 'Chưa cập nhật' }}</p>
                     </div>
                     <button @click="showViewModal = false"
                         style="width: 100%; padding: 12px; background: #f0f0f0; border: none; border-radius: 8px; font-weight: 600; color: #333; cursor: pointer;">Đóng</button>
@@ -510,11 +510,17 @@ export default {
         confirmDelete() {
             if (!this.selectedEmployee) return;
 
-            axios.post(apiUrl('admin/nhan-vien/destroy'), { id: this.selectedEmployee.id }, {
-                headers: {
-                    Authorization: "Bearer " + localStorage.getItem('key_admin')
+            axios.post(
+                apiUrl('admin/nhan-vien/destroy'),
+                {
+                    id: this.selectedEmployee.id
+                },
+                {
+                    headers: {
+                        Authorization: "Bearer " + localStorage.getItem('key_admin')
+                    }
                 }
-            })
+            )
                 .then(res => {
                     if (res.data.status) {
                         this.$toast.success(res.data.message);
@@ -526,7 +532,12 @@ export default {
                 })
                 .catch(err => {
                     console.error('Error:', err);
-                    this.$toast.error('Lỗi khi xóa nhân viên');
+
+                    const message =
+                        err.response?.data?.message ||
+                        'Lỗi khi xóa nhân viên';
+
+                    this.$toast.error(message);
                 });
         },
         saveEmployee() {
