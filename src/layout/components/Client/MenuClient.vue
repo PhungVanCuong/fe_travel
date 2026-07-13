@@ -36,12 +36,12 @@
 
             <!-- Khung Gợi ý -->
             <transition name="fade-slide">
-              <ul class="dropdown-menu show w-100 shadow-lg border-0 position-absolute mt-2 goiy-dropdown" 
+              <ul class="dropdown-menu show w-100 shadow-lg border-0 position-absolute mt-2 goiy-dropdown goi-y-container" 
                   v-if="hienThiGoiY && danhSachGoiY.length > 0">
                   <li class="px-3 py-2 text-muted small border-bottom fw-bold text-uppercase">Tour gợi ý</li>
                   <li v-for="(tour, index) in danhSachGoiY.slice(0, 5)" :key="index">
                       <a class="dropdown-item d-flex align-items-center py-2 hover-glow" href="javascript:void(0)" @click="chonTourTuGoiY(tour.id)">
-                          <img :src="tour.hinh_anh" class="rounded-3 me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover;">
+                          <img :src="getImageUrl(getFirstImage(tour.hinh_anh))" class="rounded-3 me-3 shadow-sm" style="width: 45px; height: 45px; object-fit: cover;">
                           <div class="flex-grow-1 overflow-hidden">
                               <h6 class="mb-0 text-dark text-truncate fs-6 fw-bold">{{ tour.ten_tour }}</h6>
                               <small class="text-danger fw-bold">{{ formatVND(tour.gia) }}</small>
@@ -249,6 +249,29 @@ export default {
     document.removeEventListener('click', this.clickOutsideSearch);
   },
   methods: {
+    // THÊM 2 HÀM NÀY VÀO TRONG METHODS CỦA MENU CLIENT
+    getFirstImage(hinh_anh) {
+        if (!hinh_anh) return 'https://via.placeholder.com/40x40?text=No';
+        if (Array.isArray(hinh_anh)) {
+            return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/40x40';
+        }
+        try {
+            let parsed = JSON.parse(hinh_anh);
+            return Array.isArray(parsed) ? parsed[0] : parsed;
+        } catch (e) {
+            return hinh_anh;
+        }
+    },
+    
+    getImageUrl(url) {
+        if (!url) return 'https://via.placeholder.com/40x40';
+        if (url.startsWith('http') || url.startsWith('data:')) return url;
+        
+        url = url.replace(/-\d+x\d+/g, '');
+        const baseApiUrl = apiUrl('');
+        const backendDomain = baseApiUrl.replace(/\/api\/?$/, '');
+        return backendDomain + (url.startsWith('/') ? '' : '/') + url;
+    },
     clickOutsideSearch(event) {
         if (this.$refs.searchContainer && !this.$refs.searchContainer.contains(event.target)) {
             this.hienThiGoiY = false;
@@ -474,6 +497,20 @@ export default {
 .goiy-dropdown::-webkit-scrollbar { width: 5px; }
 .goiy-dropdown::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 10px; }
 
+/* 1. Ẩn thanh cuộn cho Chrome, Safari, Edge */
+.goi-y-container::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* 2. Ẩn thanh cuộn cho Firefox */
+.goi-y-container {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important; /* IE và Edge cũ */
+    overflow-x: auto; /* Giữ thuộc tính này để vẫn kéo được */
+    white-space: nowrap; /* Đảm bảo các phần tử nằm ngang */
+}
 /* ================= AVATAR & BADGE ================= */
 .anh-nguoi-dung { 
     width: 34px; height: 34px; 
@@ -538,4 +575,5 @@ export default {
         box-shadow:0 0 0 0 rgba(255,59,48,0);
     }
 }
+
 </style>

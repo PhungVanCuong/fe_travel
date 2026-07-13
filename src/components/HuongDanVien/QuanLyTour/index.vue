@@ -46,7 +46,7 @@
                 <div class="col" v-for="(tour, index) in filteredTourTrong" :key="index">
                     <div class="card premium-tour-card h-100 shadow-sm border-0 bg-white">
                         <div class="card-img-wrapper position-relative">
-                            <img :src="tour.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'" class="card-img-top" alt="Tour Image">
+                            <img :src="getImageUrl(getFirstImage(tour.hinh_anh)) || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'" class="card-img-top" alt="Tour Image">
                             <div class="overlay-gradient"></div>
                             <span class="badge-status bg-white text-danger shadow-sm rounded-pill px-3 py-1 fw-bold">
                                 <i class="fa-solid fa-fire me-1"></i> Đang cần HDV
@@ -89,7 +89,7 @@
                 <div class="col" v-for="(tour, index) in filteredTourCuaToi" :key="index">
                     <div class="card premium-tour-card my-tour-card h-100 shadow-sm bg-white" style="border: 2px solid #1b7d6b !important;">
                         <div class="card-img-wrapper position-relative">
-                            <img :src="tour.hinh_anh || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'" class="card-img-top" alt="Tour Image">
+                            <img :src="getImageUrl(getFirstImage(tour.hinh_anh)) || 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&q=80'" class="card-img-top" alt="Tour Image">
                             <div class="overlay-gradient"></div>
                             <span class="badge-status shadow-sm rounded-pill px-3 py-1 fw-bold text-white" style="background-color: #22c55e;">
                                 <i class="fa-solid fa-check-circle me-1"></i> Đã nhận
@@ -153,6 +153,41 @@ export default {
         this.loadTourCuaToi(); 
     },
     methods: {
+        // HÀM MỚI: Xử lý bóc tách mảng JSON để lấy ảnh đầu tiên của Tour
+        getFirstImage(hinh_anh) {
+        if (!hinh_anh) return '';
+        let imgStr = hinh_anh;
+
+        try {
+            // Cố gắng dịch ngược chuỗi JSON mảng
+            let parsed = JSON.parse(hinh_anh);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+            imgStr = parsed[0];
+            }
+        } catch (e) {
+            // Dự phòng nếu chuỗi không chuẩn JSON (loại bỏ dấu ngoặc vuông và nháy kép)
+            if (typeof hinh_anh === 'string') {
+            imgStr = hinh_anh.replace(/[\[\]"]/g, '').split(',')[0];
+            }
+        }
+
+        // Xóa đuôi kích thước ảnh mờ (như -450x265) để lấy ảnh nét nhất
+        if (typeof imgStr === 'string') {
+            return imgStr.replace(/-\d+x\d+/g, '').trim();
+        }
+
+        return imgStr;
+        },
+        
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/600x300?text=No+Image';
+            if (url.startsWith('http') || url.startsWith('data:')) {
+                return url;
+            }
+            const baseApiUrl = apiUrl('');
+            const backendDomain = baseApiUrl.replace(/\/api\/?$/, '');
+            return backendDomain + (url.startsWith('/') ? '' : '/') + url;
+        },
         processData(list) {
             let result = [...list];
             if (this.searchQuery.trim() !== '') {

@@ -22,7 +22,7 @@
                 <div class="card h-100 shadow-sm border-0 rounded-4 tour-card overflow-hidden cursor-pointer" @click="xemChiTiet(tour.id)">
                     <!-- Hình ảnh -->
                     <div class="position-relative">
-                        <img :src="tour.hinh_anh" class="card-img-top tour-image" alt="Tour Image" style="height: 220px; object-fit: cover;">
+                        <img :src="getImageUrl(getFirstImage(tour.hinh_anh))" class="card-img-top tour-image" alt="Tour Image" style="height: 220px; object-fit: cover;">
                         <div class="position-absolute top-0 end-0 bg-danger text-white px-3 py-1 rounded-start-pill mt-3 fw-bold shadow">
                             Hot
                         </div>
@@ -112,6 +112,31 @@ export default {
         }
     },
     methods: {
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh;
+            }
+        },
+        
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            if (url.startsWith('http') || url.startsWith('data:')) return url;
+            
+            // Xóa các hậu tố kích thước ảnh bị cắt nhỏ (nếu có)
+            url = url.replace(/-\d+x\d+/g, '');
+            
+            // Lấy base domain từ hàm apiUrl (có sẵn trong file)
+            const baseApiUrl = apiUrl('');
+            const backendDomain = baseApiUrl.replace(/\/api\/?$/, '');
+            return backendDomain + (url.startsWith('/') ? '' : '/') + url;
+        },
         layDuLieuTimKiem() {
             this.isLoading = true;
             // API NÀY GIỜ ĐÃ NẰM NGOÀI PUBLIC, KHÔNG CẦN TOKEN
