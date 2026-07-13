@@ -43,7 +43,7 @@
           <template #title>Quản lý Vé & Hoá đơn</template>
           <a-menu-item key="/admin/ve">Vé</a-menu-item>
           <a-menu-item key="/admin/hoa-don">Hoá Đơn</a-menu-item>
-          <a-menu-item key="/admin/quet-hoa-don">Quét Mã Vé</a-menu-item>
+          <a-menu-item key="/admin/quet-ve">Quét Mã Vé</a-menu-item>
         </a-sub-menu>
 
         <a-menu-item key="/admin/quan-ly-phuong-tien">

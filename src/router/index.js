@@ -201,8 +201,8 @@ const routes = [
         beforeEnter: checkAdmin,
     },
     {
-        path: "/admin/quet-hoa-don",
-        component: () => import("../components/Admin/QuetHoaDon/index.vue"),
+        path: "/admin/quet-ve",
+        component: () => import("../components/Admin/QuetVe/index.vue"),
         beforeEnter: checkAdmin,
     },
     {

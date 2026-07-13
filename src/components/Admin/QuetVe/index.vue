@@ -52,7 +52,7 @@
                         
                         <div class="poster-container position-relative">
                             <span class="poster-badge">Ảnh chuyến đi</span>
-                            <img :src="ticket_info.hinh_anh" 
+                            <img :src="getImageUrl(getFirstImage(ticket_info.hinh_anh))"
                                  class="poster-img" 
                                  alt="Hình ảnh Tour"
                                  @error="$event.target.src='https://placehold.co/600x800?text=No+Image+Tour'">
@@ -166,6 +166,28 @@ export default {
         }
     },
     methods: {
+        // Hàm lấy ảnh đầu tiên an toàn từ mảng hoặc chuỗi
+        getFirstImage(hinh_anh) {
+            if (!hinh_anh) return 'https://via.placeholder.com/400x300?text=No+Image';
+
+            // Nếu là mảng
+            if (Array.isArray(hinh_anh)) {
+                return hinh_anh.length > 0 ? hinh_anh[0] : 'https://via.placeholder.com/400x300';
+            }
+
+            // Nếu là chuỗi JSON
+            try {
+                let parsed = JSON.parse(hinh_anh);
+                return Array.isArray(parsed) ? parsed[0] : parsed;
+            } catch (e) {
+                return hinh_anh; // Trả về nguyên bản nếu là chuỗi URL thường
+            }
+        },
+        // Hàm lấy URL ảnh sắc nét
+        getImageUrl(url) {
+            if (!url) return 'https://via.placeholder.com/400x300';
+            return url.replace(/-\d+x\d+/g, '');
+        },
         scanTicket() {
             if(!this.ma_ve_input.trim()) return;
 
