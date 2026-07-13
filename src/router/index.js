@@ -202,7 +202,7 @@ const routes = [
     },
     {
         path: "/admin/quet-ve",
-        component: () => import("../components/Admin/QuetVe/index.vue"),
+        component: () => import("../components/Admin/QuetVe/index-quet-ve.vue"),
         beforeEnter: checkAdmin,
     },
     {
