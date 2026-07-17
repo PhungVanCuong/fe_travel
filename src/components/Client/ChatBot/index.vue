@@ -544,7 +544,20 @@ export default {
 
         async callApiChat(keyword, offset) {
             try {
-                const response = await axios.post(apiUrl("client/chatbot/chat"), { message: keyword, offset: offset }, {
+                const history = this.messages
+                    .slice(0, -1)
+                    .filter(msg => (msg.type === 'text' || msg.type === 'tours') && msg.text)
+                    .slice(-8)
+                    .map(msg => ({
+                        role: msg.from === 'user' ? 'user' : 'model',
+                        text: String(msg.text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+                    }));
+
+                const response = await axios.post(apiUrl("client/chatbot/chat"), {
+                    message: keyword,
+                    offset: offset,
+                    history: history
+                }, {
                     headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
                 });
 
