@@ -706,11 +706,13 @@ export default {
                     endpointApi = 'client/zalopay/tao-thanh-toan';
                 } else if (this.selectedWallet === 'vnpay') {
                     endpointApi = 'client/vnpay/tao-thanh-toan';
+                } else if (this.selectedWallet === 'paypal') {
+                    endpointApi = 'client/paypal/tao-thanh-toan';
                 } else {
-                    // Trường hợp ví không khả dụng (Ví dụ: PayPal chưa kết nối)
+                    // Trường hợp ví không khả dụng
                     this.$toast.error('Phương thức thanh toán này hiện không khả dụng!');
-                    this.isLoading = false;
-                    return;
+                    this.isLoading = false; // Tắt trạng thái đang tải
+                    return; // Dừng lại, không thực hiện axios.post nữa
                 }
 
                 // Gửi Request chung

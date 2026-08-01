@@ -312,6 +312,7 @@ export default {
                 'vnpay': '#e0f2fe',       // Xanh dương nhạt
                 'momo': '#fdf2f8',        // Hồng nhạt (Light Pink)
                 'zalopay': '#e0f7fa',     // Xanh biển nhạt (Light Cyan)
+                'paypal': '#eef2ff',        // Màu xanh da trời nhạt đặc trưng của PayPal
                 'payos': '#ede9fe',       // Tím nhạt
                 'cash': '#dbeafe',        // Xanh nhạt
                 'chuyen_khoan': '#ede9fe',// Tím nhạt
@@ -325,6 +326,7 @@ export default {
                 'vnpay': '#0369a1',       // Xanh dương đậm
                 'momo': '#d82d8b',        // Hồng đậm MoMo
                 'zalopay': '#00a5d4',     // Xanh biển ZaloPay
+                'paypal': '#253b80',       // Màu xanh dương đậm thương hiệu PayPal
                 'payos': '#5b21b6',       // Tím
                 'cash': '#0284c7',        // Xanh
                 'chuyen_khoan': '#6d28d9',// Tím

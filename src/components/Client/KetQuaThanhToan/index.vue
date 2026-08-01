@@ -243,10 +243,45 @@ export default {
                 return;
             }
 
+            if (queryParams.gateway === 'paypal' && queryParams.token && queryParams.PayerID) {
+                this.verifyPayPalPayment(queryParams);
+                return;
+            } else if (queryParams.gateway === 'paypal' && queryParams.cancel === 'true') {
+                this.isLoading = false;
+                this.isSuccess = false;
+                this.errorMessage = 'Bạn đã hủy thanh toán trên hệ thống PayPal.';
+                return;
+            }
+
             // 5. Nếu không khớp phương thức nào
             this.isLoading = false;
             this.isSuccess = false;
             this.errorMessage = 'Không tìm thấy thông tin giao dịch hoặc phương thức thanh toán không hợp lệ.';
+        },
+
+        // --- XỬ LÝ KẾT QUẢ PAYPAL ---
+        verifyPayPalPayment(queryParams) {
+            axios.get(apiUrl('client/paypal/check-thanh-toan'), {
+                params: queryParams,
+                headers: { Authorization: 'Bearer ' + localStorage.getItem('key_client') }
+            })
+            .then((res) => {
+                this.isLoading = false;
+                if (res.data.status) {
+                    this.isSuccess = true;
+                    this.orderInfo.amount = res.data.data ? res.data.data.tong_tien : 0;
+                    this.orderInfo.transactionId = res.data.data?.transaction_id || queryParams.token;
+                    this.orderInfo.bank = 'PayPal';
+                } else {
+                    this.isSuccess = false;
+                    this.errorMessage = res.data.message || 'Xác thực thanh toán PayPal thất bại.';
+                }
+            })
+            .catch((error) => {
+                this.isLoading = false;
+                this.isSuccess = false;
+                this.errorMessage = 'Không thể kết nối máy chủ để xác thực PayPal.';
+            });
         },
 
         // --- XỬ LÝ KẾT QUẢ VNPAY ---
