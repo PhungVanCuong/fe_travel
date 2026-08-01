@@ -687,16 +687,8 @@ export default {
             if (this.method === 1) {
                 // Thanh toán qua Ví điện tử (VNPay, MoMo, hoặc ZaloPay)
                 this.isLoading = true;
+                const idGuiDi = this.hoa_don.id || this.hoa_don.id_hoa_don || this.ma_hoa_don;
                 
-                // SỬA LỖI: Lấy ID từ payment_hoa_don thay vì hoa_don
-                const idGuiDi = this.payment_hoa_don?.id || this.payment_hoa_don?.id_hoa_don || this.payment_hoa_don?.ma_hoa_don;
-                
-                if (!idGuiDi) {
-                    this.$toast.error('Không tìm thấy thông tin hóa đơn!');
-                    this.isLoading = false;
-                    return;
-                }
-
                 // Xác định tự động Endpoint API dựa trên radio button người dùng chọn
                 let endpointApi = '';
 
@@ -707,10 +699,10 @@ export default {
                 } else if (this.selectedWallet === 'vnpay') {
                     endpointApi = 'client/vnpay/tao-thanh-toan';
                 } else {
-                    // Trường hợp ví không khả dụng (Ví dụ: PayPal chưa kết nối)
+                    // Trường hợp ví không khả dụng
                     this.$toast.error('Phương thức thanh toán này hiện không khả dụng!');
-                    this.isLoading = false;
-                    return;
+                    this.isLoading = false; // Tắt trạng thái đang tải
+                    return; // Dừng lại, không thực hiện axios.post nữa
                 }
 
                 // Gửi Request chung
@@ -722,6 +714,7 @@ export default {
                 .then(response => {
                     if (response.data.status) {
                         this.$toast.success(`Đang kết nối cổng thanh toán ${this.selectedWallet.toUpperCase()}...`);
+                        // MoMo, VNPay, ZaloPay đều trả URL về thông qua response.data.data
                         window.location.href = response.data.data;
                     } else {
                         this.$toast.error(response.data.message || 'Có lỗi xảy ra khi tạo link thanh toán.');
@@ -734,7 +727,7 @@ export default {
                 });
             } 
             else if (this.method === 2) {
-                // Thanh toán qua payOS
+                // ... (Giữ nguyên logic của PayOS ở đây)
                 if (!this.payosPayment?.order_code) return;
 
                 this.isLoading = true;
@@ -743,10 +736,7 @@ export default {
                         this.payosPayment = { ...this.payosPayment, ...payment };
                         if (payment.status === 'PAID') {
                             this.$toast.success('payOS đã xác nhận thanh toán thành công!');
-                            
-                            // SỬA LỖI: Đóng đúng tên biến của drawer
-                            this.is_show_payment_modal = false; 
-                            
+                            this.is_show_modal = false;
                             this.$router.push({
                                 path: '/Ket-qua-thanh-toan',
                                 query: { gateway: 'payos', orderCode: payment.order_code }

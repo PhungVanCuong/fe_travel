@@ -300,6 +300,8 @@ export default {
         formatPaymentMethod(method) {
             const methods = {
                 'vnpay': 'VNPay',
+                'payos': 'payOS',
+                'PAYOS': 'payOS',
                 'cash': 'Tiền Mặt',
                 'chuyen_khoan': 'Chuyển Khoản',  
             };
@@ -307,19 +309,27 @@ export default {
         },
         getPaymentMethodBg(method) {
             const bgMap = {
-                'vnpay': '#e0f2fe',
-                'cash': '#dbeafe',
-                'chuyen_khoan': '#ede9fe',
+                'vnpay': '#e0f2fe',       // Xanh dương nhạt
+                'momo': '#fdf2f8',        // Hồng nhạt (Light Pink)
+                'zalopay': '#e0f7fa',     // Xanh biển nhạt (Light Cyan)
+                'payos': '#ede9fe',       // Tím nhạt
+                'cash': '#dbeafe',        // Xanh nhạt
+                'chuyen_khoan': '#ede9fe',// Tím nhạt
             };
-            return bgMap[method] || '#f3f4f6';
+            // Dùng .toLowerCase() để không cần khai báo trùng lặp 'PAYOS' hay 'VNPAY'
+            return bgMap[method?.toLowerCase()] || '#f3f4f6';
         },
+
         getPaymentMethodColor(method) {
             const colorMap = {
-                'vnpay': '#0369a1',
-                'cash': '#0284c7',
-                'chuyen_khoan': '#6d28d9',
+                'vnpay': '#0369a1',       // Xanh dương đậm
+                'momo': '#d82d8b',        // Hồng đậm MoMo
+                'zalopay': '#00a5d4',     // Xanh biển ZaloPay
+                'payos': '#5b21b6',       // Tím
+                'cash': '#0284c7',        // Xanh
+                'chuyen_khoan': '#6d28d9',// Tím
             };
-            return colorMap[method] || '#666';
+            return colorMap[method?.toLowerCase()] || '#666';
         },
         getStatusText(status) {
             const statuses = {

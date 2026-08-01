@@ -1,240 +1,308 @@
 <template>
-    <div v-if="hoa_don">
-        <div class="container my-4">
-            <div class="row">
-                <div class="col-lg-7">
-                    <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px;">
-                        <div class="card-header bg-white py-3">
-                            <h3 class="fw-bold mb-0">Thông tin liên lạc</h3>
+    <!-- THÊM THẺ DIV NÀY ĐỂ BỌC TOÀN BỘ COMPONENT (BẮT BUỘC) -->
+    <div>
+        <div v-if="hoa_don">
+            <div class="container my-4">
+                <div class="row">
+                    <div class="col-lg-7">
+                        <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px;">
+                            <div class="card-header bg-white py-3">
+                                <h3 class="fw-bold mb-0">Thông tin liên lạc</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-lg-4">
+                                        <p class="mb-1"><strong>Họ tên:</strong></p>
+                                        <p class="text-secondary">{{ khach_hang.ho_va_ten }}</p>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <p class="mb-1"><strong>Email:</strong></p>
+                                        <p class="text-secondary">{{ khach_hang.email }}</p>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <p class="mb-1"><strong>Số điện thoại:</strong></p>
+                                        <p class="text-secondary">{{ khach_hang.so_dien_thoai }}</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="mb-1"><strong>CCCD:</strong></p>
+                                        <p class="text-secondary">{{ khach_hang.cccd }}</p>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <p class="mb-1"><strong>Ngày sinh:</strong></p>
+                                        <p class="text-secondary">{{ khach_hang.ngay_sinh }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row g-3">
-                                <div class="col-lg-4">
-                                    <p class="mb-1"><strong>Họ tên:</strong></p>
-                                    <p class="text-secondary">{{ khach_hang.ho_va_ten }}</p>
-                                </div>
-                                <div class="col-lg-4">
-                                    <p class="mb-1"><strong>Email:</strong></p>
-                                    <p class="text-secondary">{{ khach_hang.email }}</p>
-                                </div>
-                                <div class="col-lg-4">
-                                    <p class="mb-1"><strong>Số điện thoại:</strong></p>
-                                    <p class="text-secondary">{{ khach_hang.so_dien_thoai }}</p>
-                                </div>
-                                <div class="col-lg-6">
-                                    <p class="mb-1"><strong>CCCD:</strong></p>
-                                    <p class="text-secondary">{{ khach_hang.cccd }}</p>
-                                </div>
-                                <div class="col-lg-6">
-                                    <p class="mb-1"><strong>Ngày sinh:</strong></p>
-                                    <p class="text-secondary">{{ khach_hang.ngay_sinh }}</p>
+
+                        <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px;">
+                            <div class="card-body">
+                                <h3 class="fw-bold mb-3">Chi tiết hoá đơn</h3>
+                                <p><strong>Mã hóa đơn:</strong> <span class="text-primary fw-bold">{{ hoa_don.ma_hoa_don }}</span></p>
+                                <p><strong>Ngày đặt:</strong> {{ hoa_don.ngay_dat }}</p>
+                                <p><strong>Số lượng người đi:</strong> {{ hoa_don.so_luong_nguoi }}</p>
+                                <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold fs-5">{{ formatVND(hoa_don.tong_tien) }}</span></p>
+                                <p>
+                                    <strong>Trạng thái:</strong>
+                                    <span v-if="hoa_don.trang_thai == 0" class="badge bg-danger ms-2 px-3 py-2">
+                                        <i class="fa-solid fa-circle-xmark me-1"></i> Đã hủy
+                                    </span>
+                                    <span v-else-if="hoa_don.trang_thai == 1" class="badge bg-warning text-dark ms-2 px-3 py-2">
+                                        <i class="fa-solid fa-clock me-1"></i> Chờ thanh toán
+                                    </span>
+                                    <span v-else-if="hoa_don.trang_thai == 2" class="badge bg-success ms-2 px-3 py-2">
+                                        <i class="fa-solid fa-circle-check me-1"></i> Đã thanh toán
+                                    </span>
+                                    <span v-else class="badge bg-secondary ms-2 px-3 py-2">Không xác định</span>
+                                </p>
+                                <p><strong>Ghi chú:</strong> <span style="white-space: pre-line;">{{ hoa_don.ghi_chu || 'Không có ghi chú' }}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                            <div class="card-header bg-white py-3">
+                                <h3 class="fw-bold mb-0"><i class="fa-solid fa-ticket me-2 text-primary"></i>Danh sách vé</h3>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="bg-light">
+                                            <tr class="text-secondary">
+                                                <th class="ps-4 py-3">Mã vé</th>
+                                                <th class="py-3">Giá vé</th>
+                                                <th class="py-3 text-center">Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(item, index) in ds_ve" :key="index">
+                                                <td class="ps-4 py-3 fw-bold text-primary">{{ item.ma_ve }}</td>
+                                                <td class="py-3">{{ formatVND(item.gia_ve) }}</td>
+                                                <td class="py-3 text-center">
+                                                    <span v-if="item.tinh_trang == '1'" class="badge bg-info text-dark">Chờ thanh toán</span>
+                                                    <span v-else-if="item.tinh_trang == '2'" class="badge bg-success">Đã thanh toán</span>
+                                                    <span v-else class="badge bg-secondary">Hủy vé</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card shadow-sm border-0 mb-4" style="border-radius: 15px;">
-                        <div class="card-body">
-                            <h3 class="fw-bold mb-3">Chi tiết hoá đơn</h3>
-                            <p><strong>Mã hóa đơn:</strong> <span class="text-primary fw-bold">{{ hoa_don.ma_hoa_don }}</span></p>
-                            <p><strong>Ngày đặt:</strong> {{ hoa_don.ngay_dat }}</p>
-                            <p><strong>Số lượng người đi:</strong> {{ hoa_don.so_luong_nguoi }}</p>
-                            <p><strong>Tổng tiền:</strong> <span class="text-danger fw-bold fs-5">{{ formatVND(hoa_don.tong_tien) }}</span></p>
-                            <p>
-                                <strong>Trạng thái:</strong>
-                                <span v-if="hoa_don.trang_thai == 0" class="badge bg-danger ms-2 px-3 py-2">
-                                    <i class="fa-solid fa-circle-xmark me-1"></i> Đã hủy
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
+                            <div class="card-header bg-white py-3 border-bottom-0">
+                                <h3 class="fw-bold mb-0 text-primary text-uppercase" style="letter-spacing: 1px;">Phiếu xác nhận Booking</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-flex mb-4">
+                                    <img :src="getImageUrl(getFirstImage(tour.hinh_anh))"  alt="Tour Image"
+                                        style="width: 150px; height: 100px; object-fit: cover; border-radius: 10px;"
+                                        class="me-3 shadow-sm border" />
+                                    <div class="flex-grow-1">
+                                        <h5 class="fw-bold text-dark mb-0" style="line-height: 1.4;">{{ tour.ten_tour }}</h5>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4 bg-light p-3 rounded-3 border">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <i class="fa-solid fa-ticket me-2 text-secondary"></i>
+                                        <span class="me-2">Số booking:</span>
+                                        <span class="fw-bold text-danger">{{ hoa_don.ma_hoa_don }}</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="fa-solid fa-users me-2 text-secondary"></i>
+                                        <span class="me-2">Số lượng người:</span>
+                                        <span class="fw-bold text-dark">{{ hoa_don.so_luong_nguoi }}</span>
+                                    </div>
+                                </div>
+
+                                <hr class="text-secondary opacity-25">
+                                
+                                <div class="mt-4">
+                                    <h6 class="fw-bold mb-3"><i class="fa-solid fa-bus me-2 text-primary"></i>THÔNG TIN CHUYẾN ĐI</h6>
+                                    <div class="row g-0 bg-light p-3 rounded-3 border">
+                                        <div class="col-6 border-end pe-3">
+                                            <div class="small text-secondary mb-1">Ngày đi</div>
+                                            <div class="fw-bold text-dark mb-1">{{ tour.ngay_bat_dau }}</div>
+                                            <div class="small text-muted">{{ tour.diem_don }}</div>
+                                        </div>
+                                        <div class="col-6 ps-3">
+                                            <div class="small text-secondary mb-1">Ngày về</div>
+                                            <div class="fw-bold text-dark mb-1">{{ tour.ngay_ket_thuc }}</div>
+                                            <div class="small text-muted">{{ tour.diem_tra }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-danger w-100 py-3 fw-bold mt-4 shadow-sm fs-5 d-flex align-items-center justify-content-center" 
+                                @click="is_show_modal = true">
+                            <i class="fa-solid fa-credit-card me-2"></i> THANH TOÁN NGAY
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div v-else class="text-center py-5 mt-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Đang tải...</span>
+            </div>
+            <h5 class="mt-3 text-secondary">Đang tải thông tin hóa đơn...</h5>
+        </div>
+
+        <!-- BẢNG CHỌN PHƯƠNG THỨC THANH TOÁN -->
+        <div v-if="is_show_modal" class="modal-payment-drawer" @click.self="is_show_modal = false">
+            <div class="drawer-content animate__animated animate__slideInRight">
+                <div class="drawer-header bg-white">
+                    <h5 class="fw-bold mb-0 text-dark">PHƯƠNG THỨC THANH TOÁN</h5>
+                    <button type="button" class="btn-close" @click="is_show_modal = false"></button>
+                </div>
+
+                <div class="drawer-body">
+                    <p class="text-muted small mb-4">Vui lòng chọn phương thức thanh toán phù hợp cho đơn hàng của bạn.</p>
+                    
+                    <!-- Phương thức 1: Ví điện tử -->
+                    <div class="payment-item" :class="{ 'active': method === 1 }" @click="method = 1">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <!-- Thêm flex-shrink-0 vào div chứa icon -->
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3 flex-shrink-0">
+                                    <i class="fa-solid fa-wallet"></i>
+                                </div>
+                                <!-- Thêm text-wrap để chữ dài có thể xuống dòng thay vì kéo giãn container -->
+                                <span class="fw-bold text-wrap">
+                                    Cổng thanh toán (VNPAY / MoMo / ZaloPay)
                                 </span>
-                                <span v-else-if="hoa_don.trang_thai == 1" class="badge bg-warning text-dark ms-2 px-3 py-2">
-                                    <i class="fa-solid fa-clock me-1"></i> Chờ thanh toán
-                                </span>
-                                <span v-else-if="hoa_don.trang_thai == 2" class="badge bg-success ms-2 px-3 py-2">
-                                    <i class="fa-solid fa-circle-check me-1"></i> Đã thanh toán
-                                </span>
-                                <span v-else class="badge bg-secondary ms-2 px-3 py-2">Không xác định</span>
-                            </p>
-                            <p><strong>Ghi chú:</strong> <span style="white-space: pre-line;">{{ hoa_don.ghi_chu || 'Không có ghi chú' }}</span></p>
+                            </div>
+                            
+                            <i v-if="method === 1" class="fa-solid fa-circle-check text-primary fs-5 flex-shrink-0"></i>
+                        </div>
+                        
+                        <div v-if="method === 1" class="method-details mt-3 pt-3 border-top">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <p class="small text-muted mb-1">Chọn ví điện tử bạn muốn sử dụng:</p>
+                                </div>
+                                <!-- Bọc các ví bằng col-12 và tạo 1 row con bên trong -->
+                                <div class="col-lg-12">
+                                    <div class="row g-4 px-2 ms-1">
+                                        <!-- VNPAY -->
+                                        <div class="col-3">
+                                            <div class="form-check d-flex align-items-center p-0 m-0 ms-1">
+                                                <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioVnpay" value="vnpay" v-model="selectedWallet" style="cursor: pointer;">
+                                                <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm w-100 text-center" for="radioVnpay" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'vnpay'}">
+                                                    <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418196384.png" height="30" alt="VNPAY">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- MOMO -->
+                                        <div class="col-3">
+                                            <div class="form-check d-flex align-items-center p-0 m-0 ms-1">
+                                                <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioMomo" value="momo" v-model="selectedWallet" style="cursor: pointer;">
+                                                <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm w-100 text-center" for="radioMomo" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'momo'}">
+                                                    <img src="https://homepage.momocdn.net/img/logo-momo.png" height="30" alt="MoMo">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- ZaloPay -->
+                                        <div class="col-3">
+                                            <div class="form-check d-flex align-items-center p-0 m-0 ms-1">
+                                                <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioZaloPay" value="zalopay" v-model="selectedWallet" style="cursor: pointer;">
+                                                <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm w-100 text-center" for="radioZaloPay" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'zalopay'}">
+                                                    <img src="https://play-lh.googleusercontent.com/rvpjYf8EqoCsOFG7IpSpzgmKt820BZpWDpCW2u6gaIAFsfHOIqvk8eGXhgvJLLymIlo0rqzWUjeyG_JqevNogA" height="30" alt="ZaloPay">
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <!-- PayPal-->
+                                        <div class="col-3">
+                                            <div class="form-check d-flex align-items-center p-0 m-0 ms-1">
+                                                <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioPayPal" value="paypal" v-model="selectedWallet" style="cursor: pointer;">
+                                                <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm w-100 text-center" for="radioPayPal" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'paypal'}">
+                                                    <img src="https://cdn.rgb.vn/wp-content/uploads/2014/05/rgb_vn_new_branding_paypal_2014_logo_detail.png" height="30" alt="PayPal">
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <div class="alert alert-info mt-3 mb-0 py-2 small">
+                                        <i class="fa-solid fa-circle-info me-1"></i> Bạn sẽ được chuyển hướng sang cổng thanh toán an toàn.
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
-                        <div class="card-header bg-white py-3">
-                            <h3 class="fw-bold mb-0"><i class="fa-solid fa-ticket me-2 text-primary"></i>Danh sách vé</h3>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover mb-0">
-                                    <thead class="bg-light">
-                                        <tr class="text-secondary">
-                                            <th class="ps-4 py-3">Mã vé</th>
-                                            <th class="py-3">Giá vé</th>
-                                            <th class="py-3 text-center">Trạng thái</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="(item, index) in ds_ve" :key="index">
-                                            <td class="ps-4 py-3 fw-bold text-primary">{{ item.ma_ve }}</td>
-                                            <td class="py-3">{{ formatVND(item.gia_ve) }}</td>
-                                            <td class="py-3 text-center">
-                                                <span v-if="item.tinh_trang == '1'" class="badge bg-info text-dark">Chờ thanh toán</span>
-                                                <span v-else-if="item.tinh_trang == '2'" class="badge bg-success">Đã thanh toán</span>
-                                                <span v-else class="badge bg-secondary">Hủy vé</span>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                    <!-- Phương thức 2: Chuyển khoản QR -->
+                    <div class="payment-item mt-3" :class="{ 'active': method === 2 }" @click="chonChuyenKhoanPayOS">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-box me-3"><i class="fa-solid fa-qrcode"></i></div>
+                                <span class="fw-bold">Chuyển khoản ngân hàng qua payOS</span>
                             </div>
+                            <i v-if="method === 2" class="fa-solid fa-circle-check text-primary fs-5"></i>
+                        </div>
+                        <div v-if="method === 2" class="method-details mt-3 pt-3 border-top text-center">
+                            <p class="small text-muted mb-3">Mở ứng dụng ngân hàng và quét QR payOS. Hệ thống chỉ xác nhận khi ngân hàng đã ghi nhận giao dịch.</p>
+                            <div v-if="isLoadingQr" class="py-4">
+                                <span class="spinner-border text-primary" role="status"></span>
+                                <p class="small text-muted mt-2 mb-0">Đang tạo mã QR payOS...</p>
+                            </div>
+                            <div v-else-if="payosPayment">
+                                <img :src="payosPayment.qr_image" alt="QR thanh toán payOS"
+                                    style="width: 240px; height: 240px; object-fit: contain; border-radius: 10px;"
+                                    class="shadow-sm border p-2 bg-white" />
+                                <div class="bg-light rounded-3 p-3 mt-3 text-start small">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Tên Tài Khoảng:</span><b>{{payosPayment.account_name }}</b>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Số Tài Khoảng:</span><b>{{payosPayment.account_number }}</b>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <span>Số tiền:</span><b class="text-danger">{{ formatVND(payosPayment.amount) }}</b>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Nội dung:</span><b>{{ payosPayment.description }}</b>
+                                    </div>
+                                </div>
+                                <div class="alert alert-warning mt-3 mb-0 py-2 small text-start">
+                                    Sau khi chuyển khoản, bấm <b>Tôi đã thanh toán</b> để kiểm tra trạng thái thật từ payOS.
+                                </div>
+                            </div>
+                            <p v-else class="text-danger small mt-2">Không thể tạo mã QR payOS.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-5">
-                    <div class="card shadow-sm border-0" style="border-radius: 15px; overflow: hidden;">
-                        <div class="card-header bg-white py-3 border-bottom-0">
-                            <h3 class="fw-bold mb-0 text-primary text-uppercase" style="letter-spacing: 1px;">Phiếu xác nhận Booking</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-flex mb-4">
-                                <img :src="getImageUrl(getFirstImage(tour.hinh_anh))"  alt="Tour Image"
-                                    style="width: 150px; height: 100px; object-fit: cover; border-radius: 10px;"
-                                    class="me-3 shadow-sm border">
-                                <div class="flex-grow-1">
-                                    <h5 class="fw-bold text-dark mb-0" style="line-height: 1.4;">{{ tour.ten_tour }}</h5>
-                                </div>
-                            </div>
-
-                            <div class="mb-4 bg-light p-3 rounded-3 border">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fa-solid fa-ticket me-2 text-secondary"></i>
-                                    <span class="me-2">Số booking:</span>
-                                    <span class="fw-bold text-danger">{{ hoa_don.ma_hoa_don }}</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <i class="fa-solid fa-users me-2 text-secondary"></i>
-                                    <span class="me-2">Số lượng người:</span>
-                                    <span class="fw-bold text-dark">{{ hoa_don.so_luong_nguoi }}</span>
-                                </div>
-                            </div>
-
-                            <hr class="text-secondary opacity-25">
-                            
-                            <div class="mt-4">
-                                <h6 class="fw-bold mb-3"><i class="fa-solid fa-bus me-2 text-primary"></i>THÔNG TIN CHUYẾN ĐI</h6>
-                                <div class="row g-0 bg-light p-3 rounded-3 border">
-                                    <div class="col-6 border-end pe-3">
-                                        <div class="small text-secondary mb-1">Ngày đi</div>
-                                        <div class="fw-bold text-dark mb-1">{{ tour.ngay_bat_dau }}</div>
-                                        <div class="small text-muted">{{ tour.diem_don }}</div>
-                                    </div>
-                                    <div class="col-6 ps-3">
-                                        <div class="small text-secondary mb-1">Ngày về</div>
-                                        <div class="fw-bold text-dark mb-1">{{ tour.ngay_ket_thuc }}</div>
-                                        <div class="small text-muted">{{ tour.diem_tra }}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <div class="drawer-footer">
+                    <div class="d-flex justify-content-between mb-3 align-items-end">
+                        <span class="text-secondary fw-semibold">Tổng thanh toán:</span>
+                        <!-- ĐÃ FIX LỖI ?. Ở ĐÂY BẰNG CÁCH CHUYỂN SANG ĐIỀU KIỆN 3 NGÔI TRUYỀN THỐNG -->
+                        <span class="fw-bold text-danger fs-3">{{ hoa_don ? formatVND(hoa_don.tong_tien) : formatVND(0) }}</span>
                     </div>
                     
-                    <button class="btn btn-danger w-100 py-3 fw-bold mt-4 shadow-sm fs-5 d-flex align-items-center justify-content-center" 
-                            @click="is_show_modal = true">
-                        <i class="fa-solid fa-credit-card me-2"></i> THANH TOÁN NGAY
+                    <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center fs-6" 
+                            @click="thanhToanAction" 
+                            :disabled="isLoading || isLoadingQr || (method === 2 && !payosPayment)">
+                        <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        {{ isLoading ? 'ĐANG KIỂM TRA...' : (method === 2 ? 'TÔI ĐÃ THANH TOÁN' : 'XÁC NHẬN THANH TOÁN') }}
                     </button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <div v-else class="text-center py-5 mt-5">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Đang tải...</span>
-        </div>
-        <h5 class="mt-3 text-secondary">Đang tải thông tin hóa đơn...</h5>
-    </div>
-
-    <!-- BẢNG CHỌN PHƯƠNG THỨC THANH TOÁN -->
-    <div v-if="is_show_modal" class="modal-payment-drawer" @click.self="is_show_modal = false">
-        <div class="drawer-content animate__animated animate__slideInRight">
-            <div class="drawer-header bg-white">
-                <h5 class="fw-bold mb-0 text-dark">PHƯƠNG THỨC THANH TOÁN</h5>
-                <button type="button" class="btn-close" @click="is_show_modal = false"></button>
-            </div>
-
-            <div class="drawer-body">
-                <p class="text-muted small mb-4">Vui lòng chọn phương thức thanh toán phù hợp cho đơn hàng của bạn.</p>
-                
-                <!-- Phương thức 1: Ví điện tử -->
-                <div class="payment-item" :class="{ 'active': method === 1 }" @click="method = 1">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box me-3"><i class="fa-solid fa-wallet"></i></div>
-                            <span class="fw-bold">Ví điện tử (VNPAY / MoMo)</span>
-                        </div>
-                        <i v-if="method === 1" class="fa-solid fa-circle-check text-primary fs-5"></i>
-                    </div>
-                    
-                    <div v-if="method === 1" class="method-details mt-3 pt-3 border-top">
-                        <div class="d-flex gap-4 ms-4">
-                            <!-- VNPAY -->
-                            <div class="form-check d-flex align-items-center p-0 m-0">
-                                <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioVnpay" value="vnpay" v-model="selectedWallet" style="cursor: pointer;">
-                                <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm" for="radioVnpay" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'vnpay'}">
-                                    <img src="https://vnpay.vn/s1/statics.vnpay.vn/2023/9/06ncktiwd6dc1694418196384.png" height="30" alt="VNPAY">
-                                </label>
-                            </div>
-                            <!-- MOMO -->
-                            <div class="form-check d-flex align-items-center p-0 m-0 ms-3">
-                                <input class="form-check-input mt-0 me-2" type="radio" name="walletRadio" id="radioMomo" value="momo" v-model="selectedWallet" style="cursor: pointer;">
-                                <label class="form-check-label bg-white border p-2 rounded-3 shadow-sm" for="radioMomo" style="cursor: pointer;" :class="{'border-primary': selectedWallet === 'momo'}">
-                                    <img src="https://homepage.momocdn.net/img/logo-momo.png" height="30" alt="MoMo">
-                                </label>
-                            </div>
-                        </div>
-                        <div class="alert alert-info mt-3 mb-0 py-2 small">
-                            <i class="fa-solid fa-circle-info me-1"></i> Bạn sẽ được chuyển hướng sang cổng thanh toán an toàn.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Phương thức 2: Chuyển khoản QR -->
-                <div class="payment-item mt-3" :class="{ 'active': method === 2 }" @click="method = 2">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            <div class="icon-box me-3"><i class="fa-solid fa-qrcode"></i></div>
-                            <span class="fw-bold">Chuyển khoản Ngân hàng</span>
-                        </div>
-                        <i v-if="method === 2" class="fa-solid fa-circle-check text-primary fs-5"></i>
-                    </div>
-                    <div v-if="method === 2" class="method-details mt-3 pt-3 border-top text-center">
-                        <p class="small text-muted mb-3">Mở ứng dụng ngân hàng và quét mã QR bên dưới để thanh toán nhanh.</p>
-                        <img v-if="thanh_toan && thanh_toan.link_qr_code" :src="thanh_toan.link_qr_code" alt="QR Code"
-                            style="width: 220px; height: 220px; object-fit: contain; border-radius: 10px;"
-                            class="shadow-sm border p-2 bg-white">
-                        <p v-else class="text-danger small mt-2">Mã QR đang được cập nhật...</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="drawer-footer">
-                <div class="d-flex justify-content-between mb-3 align-items-end">
-                    <span class="text-secondary fw-semibold">Tổng thanh toán:</span>
-                    <span class="fw-bold text-danger fs-3">{{ formatVND(hoa_don?.tong_tien) }}</span>
-                </div>
-                
-                <button class="btn btn-primary w-100 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center fs-6" 
-                        @click="thanhToanAction" 
-                        :disabled="isLoading">
-                    <span v-if="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                    {{ isLoading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN THANH TOÁN' }}
-                </button>
-            </div>
-        </div>
-    </div>
+    </div> <!-- ĐÓNG THẺ BỌC NGOÀI CÙNG NÀY -->
 </template>
 
 <script>
 import axios from 'axios';
 import apiUrl from '../../../utils/api';
+import { createPayOSQr, checkPayOSPayment } from '../../../utils/payos';
 
 export default {
     name: 'ThanhToan',
@@ -250,7 +318,9 @@ export default {
             is_show_modal: false,
             method: 1, 
             selectedWallet: 'vnpay', 
-            isLoading: false 
+            isLoading: false,
+            isLoadingQr: false,
+            payosPayment: null,
         }
     },
     mounted() {
@@ -307,25 +377,62 @@ export default {
             return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
         },
 
+        chonChuyenKhoanPayOS() {
+            this.method = 2;
+            if (!this.payosPayment && !this.isLoadingQr) {
+                this.taoMaQrPayOS();
+            }
+        },
+
+        async taoMaQrPayOS() {
+            const invoiceId = this.hoa_don?.id || this.hoa_don?.id_hoa_don;
+            if (!invoiceId) {
+                this.$toast.error('Không tìm thấy hóa đơn để tạo mã QR.');
+                return;
+            }
+
+            this.isLoadingQr = true;
+            try {
+                this.payosPayment = await createPayOSQr(invoiceId);
+            } catch (error) {
+                this.$toast.error(error.message);
+            } finally {
+                this.isLoadingQr = false;
+            }
+        },
+
         thanhToanAction() {
             if (this.method === 1) {
-                // Ví điện tử
-                if(this.selectedWallet === 'momo') {
-                    this.$toast.info("Tính năng thanh toán MoMo đang được bảo trì. Vui lòng chọn VNPay!");
-                    return;
-                }
-
+                // Thanh toán qua Ví điện tử (VNPay, MoMo, hoặc ZaloPay)
                 this.isLoading = true;
                 const idGuiDi = this.hoa_don.id || this.hoa_don.id_hoa_don || this.ma_hoa_don;
+                
+                // Xác định tự động Endpoint API dựa trên radio button người dùng chọn
+                let endpointApi = '';
 
-                axios.post(apiUrl('client/vnpay/tao-thanh-toan'), {
+                if (this.selectedWallet === 'momo') {
+                    endpointApi = 'client/momo/tao-thanh-toan';
+                } else if (this.selectedWallet === 'zalopay') {
+                    endpointApi = 'client/zalopay/tao-thanh-toan';
+                } else if (this.selectedWallet === 'vnpay') {
+                    endpointApi = 'client/vnpay/tao-thanh-toan';
+                } else {
+                    // Trường hợp ví không khả dụng
+                    this.$toast.error('Phương thức thanh toán này hiện không khả dụng!');
+                    this.isLoading = false; // Tắt trạng thái đang tải
+                    return; // Dừng lại, không thực hiện axios.post nữa
+                }
+
+                // Gửi Request chung
+                axios.post(apiUrl(endpointApi), {
                     id_hoa_don: idGuiDi
                 }, {
                     headers: { Authorization: "Bearer " + localStorage.getItem('key_client') }
                 })
                 .then(response => {
                     if (response.data.status) {
-                        this.$toast.success("Đang kết nối cổng thanh toán VNPAY...");
+                        this.$toast.success(`Đang kết nối cổng thanh toán ${this.selectedWallet.toUpperCase()}...`);
+                        // MoMo, VNPay, ZaloPay đều trả URL về thông qua response.data.data
                         window.location.href = response.data.data;
                     } else {
                         this.$toast.error(response.data.message || 'Có lỗi xảy ra khi tạo link thanh toán.');
@@ -338,20 +445,28 @@ export default {
                 });
             } 
             else if (this.method === 2) {
-                // Chuyển khoản QR: Đẩy qua màn kết quả trạng thái Pending
+                // ... (Giữ nguyên logic của PayOS ở đây)
+                if (!this.payosPayment?.order_code) return;
+
                 this.isLoading = true;
-                setTimeout(() => {
-                    this.isLoading = false;
-                    this.is_show_modal = false;
-                    this.$router.push({
-                        path: '/Ket-qua-thanh-toan',
-                        query: {
-                            method: 'bank_transfer',
-                            amount: this.hoa_don.tong_tien,
-                            txnRef: 'HDTOUR' + this.hoa_don.id 
+                checkPayOSPayment(this.payosPayment.order_code)
+                    .then(payment => {
+                        this.payosPayment = { ...this.payosPayment, ...payment };
+                        if (payment.status === 'PAID') {
+                            this.$toast.success('payOS đã xác nhận thanh toán thành công!');
+                            this.is_show_modal = false;
+                            this.$router.push({
+                                path: '/Ket-qua-thanh-toan',
+                                query: { gateway: 'payos', orderCode: payment.order_code }
+                            });
+                        } else if (payment.status === 'CANCELLED') {
+                            this.$toast.error('Liên kết thanh toán payOS đã bị hủy.');
+                        } else {
+                            this.$toast.info('payOS chưa ghi nhận giao dịch. Vui lòng kiểm tra chuyển khoản và thử lại.');
                         }
-                    });
-                }, 800);
+                    })
+                    .catch(error => this.$toast.error(error.message))
+                    .finally(() => { this.isLoading = false; });
             }
         }
     }
