@@ -225,8 +225,8 @@ export default {
                 return;
             }
 
-            // 2. Nhận diện MoMo (Có partnerCode và orderId)
-            if (queryParams.partnerCode && queryParams.orderId) {
+            // 2. NHẬN DIỆN MOMO (Đã sửa: Bắt theo gateway=momo để chống trượt)
+            if (queryParams.gateway === 'momo' || (queryParams.partnerCode && queryParams.orderId)) {
                 this.verifyMoMoPayment(queryParams);
                 return;
             }
@@ -317,38 +317,59 @@ export default {
             });
         },
 
-        // --- XỬ LÝ KẾT QUẢ MOMO ---
+        // --- XỬ LÝ KẾT QUẢ MOMO (ĐÃ ĐƯỢC TỐI ƯU CHỐNG LỖI SANDBOX) ---
         verifyMoMoPayment(queryParams) {
-            // MoMo trả về resultCode = '0' là thành công
-            if (String(queryParams.resultCode) !== '0') {
-                this.isLoading = false;
-                this.isSuccess = false;
-                this.errorMessage = queryParams.localMessage || queryParams.message || 'Giao dịch đã bị hủy hoặc thất bại tại MoMo.';
-                return;
-            }
-
-            axios.get(apiUrl('client/momo/check-thanh-toan'), {
-                params: queryParams,
-                headers: { Authorization: 'Bearer ' + localStorage.getItem('key_client') }
-            })
-            .then((res) => {
-                this.isLoading = false;
-                if (res.data.status) {
-                    this.isSuccess = true;
-                    // Lấy amount từ query của MoMo hoặc từ data backend trả về
-                    this.orderInfo.amount = queryParams.amount || (res.data.data ? res.data.data.tong_tien : 0);
-                    this.orderInfo.transactionId = queryParams.transId || queryParams.orderId;
-                    this.orderInfo.bank = 'MoMo';
-                } else {
+            // Trường hợp 1: MoMo trả về ĐẦY ĐỦ tham số (Chuẩn)
+            if (queryParams.signature && queryParams.resultCode !== undefined) {
+                if (String(queryParams.resultCode) !== '0') {
+                    this.isLoading = false;
                     this.isSuccess = false;
-                    this.errorMessage = res.data.message || 'Xác thực chữ ký thanh toán MoMo thất bại.';
+                    this.errorMessage = queryParams.localMessage || queryParams.message || 'Giao dịch đã bị hủy hoặc thất bại tại MoMo.';
+                    return;
                 }
-            })
-            .catch((error) => {
+
+                axios.get(apiUrl('client/momo/check-thanh-toan'), {
+                    params: queryParams,
+                    headers: { Authorization: 'Bearer ' + localStorage.getItem('key_client') }
+                })
+                .then((res) => {
+                    this.isLoading = false;
+                    if (res.data.status) {
+                        this.isSuccess = true;
+                        this.orderInfo.amount = queryParams.amount || (res.data.data ? res.data.data.tong_tien : 0);
+                        this.orderInfo.transactionId = queryParams.transId || queryParams.orderId;
+                        this.orderInfo.bank = 'MoMo';
+                    } else {
+                        this.isSuccess = false;
+                        this.errorMessage = res.data.message || 'Xác thực chữ ký thanh toán MoMo thất bại.';
+                    }
+                })
+                .catch((error) => {
+                    this.isLoading = false;
+                    this.isSuccess = false;
+                    this.errorMessage = 'Không thể kết nối máy chủ để xác thực MoMo.';
+                });
+            } 
+            // Trường hợp 2: Lỗi Sandbox MoMo bị rớt tham số chữ ký
+            else {
                 this.isLoading = false;
-                this.isSuccess = false;
-                this.errorMessage = 'Không thể kết nối máy chủ để xác thực MoMo.';
-            });
+                this.isPending = true;
+                this.pendingMessage = 'Đang đồng bộ kết quả từ MoMo. Trạng thái sẽ tự động cập nhật ngay khi hoàn tất.';
+                this.pendingGateway = 'momo';
+                this.orderInfo.bank = 'MoMo';
+                
+                // Lấy ID hóa đơn từ URL thủ công mà ta đã gắn vào ở Controller
+                this.hoaDonId = queryParams.uid || (queryParams.orderId ? queryParams.orderId.split('_')[0] : null);
+                
+                if (this.hoaDonId) {
+                    // Gọi cơ chế tự động check DB y hệt PayOS
+                    this.startPolling();
+                } else {
+                    this.isPending = false;
+                    this.isSuccess = false;
+                    this.errorMessage = 'Giao dịch MoMo bị gián đoạn, không thể xác định đơn hàng.';
+                }
+            }
         },
 
         // --- XỬ LÝ KẾT QUẢ ZALOPAY ---

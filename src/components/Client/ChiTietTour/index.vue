@@ -215,8 +215,12 @@
                                     <button class="btn btn-qty" type="button" @click="giamSoLuong">
                                         <i class="fa-solid fa-minus"></i>
                                     </button>
+                                    
                                     <input type="number" class="form-control text-center fw-bold input-qty"
-                                        v-model.number="dat_tour.so_luong_nguoi" @blur="validateSoLuong">
+                                        v-model.number="dat_tour.so_luong_nguoi" 
+                                        @blur="validateSoLuong"
+                                        @input="limitInputLength">
+                                        
                                     <button class="btn btn-qty" type="button" @click="tangSoLuong">
                                         <i class="fa-solid fa-plus"></i>
                                     </button>
@@ -636,41 +640,53 @@ export default {
          * Giảm số lượng người đặt tour.
          * Cách thức: Kiểm tra nếu số lượng lớn hơn 1 thì mới cho phép giảm đi 1, đảm bảo luôn có ít nhất 1 người.
          */
+        limitInputLength() {
+            // Chặn gõ quá 3 chữ số (VD: gõ 1000 sẽ bị cắt thành 100)
+            let val = String(this.dat_tour.so_luong_nguoi);
+            if (val.length > 3) {
+                this.dat_tour.so_luong_nguoi = parseInt(val.slice(0, 3));
+            }
+            
+            // Nếu vừa gõ mà lớn hơn số lượng tối đa thì ép về số tối đa luôn
+            if (this.dat_tour.so_luong_nguoi > this.chi_tiet_tour.so_nguoi_toi_da) {
+                this.dat_tour.so_luong_nguoi = this.chi_tiet_tour.so_nguoi_toi_da;
+                // Bật cảnh báo cho người dùng biết
+                this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
+            }
+        },
+
+        validateSoLuong() {
+            // Ép kiểu về số nguyên khi click ra ngoài (blur)
+            let val = parseInt(this.dat_tour.so_luong_nguoi);
+            
+            // Nếu người dùng xóa trống hoặc gõ số âm, số 0 -> ép về 1
+            if (isNaN(val) || val < 1) {
+                this.dat_tour.so_luong_nguoi = 1;
+            } 
+            // Nếu vượt quá số chỗ trống của tour -> ép về số chỗ còn trống
+            else if (val > this.chi_tiet_tour.so_nguoi_toi_da) {
+                this.dat_tour.so_luong_nguoi = this.chi_tiet_tour.so_nguoi_toi_da;
+            } 
+            else {
+                this.dat_tour.so_luong_nguoi = val;
+            }
+        },
+
         giamSoLuong() {
+            // Chỉ cho phép giảm nếu lớn hơn 1
             if (this.dat_tour.so_luong_nguoi > 1) {
                 this.dat_tour.so_luong_nguoi--;
             }
         },
 
-        /**
-         * Tăng số lượng người đặt tour.
-         * Cách thức: Kiểm tra nếu số lượng hiện tại nhỏ hơn số người tối đa của tour thì cho phép tăng.
-         * Nếu vượt quá, hiển thị thông báo toast cảnh báo không đủ chỗ.
-         */
         tangSoLuong() {
+            // Chỉ cho phép tăng nếu nhỏ hơn số lượng tối đa
             if (this.dat_tour.so_luong_nguoi < this.chi_tiet_tour.so_nguoi_toi_da) {
                 this.dat_tour.so_luong_nguoi++;
             } else {
-                this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
-            }
-        },
-
-        /**
-         * Kiểm tra (validate) giá trị nhập tay vào ô số lượng.
-         * Cách thức: Chuyển dữ liệu người dùng nhập thành số nguyên. 
-         * Nếu nhập sai (chữ, số âm, < 1) thì reset về 1.
-         * Nếu nhập số lớn hơn số chỗ còn trống thì gán bằng số chỗ trống và báo lỗi.
-         * Nếu hợp lệ thì gán đúng giá trị đó.
-         */
-        validateSoLuong() {
-            let val = parseInt(this.dat_tour.so_luong_nguoi);
-            if (isNaN(val) || val < 1) {
-                this.dat_tour.so_luong_nguoi = 1;
-            } else if (val > this.chi_tiet_tour.so_nguoi_toi_da) {
+                // Đã đạt tối đa, ép giữ nguyên và báo lỗi
                 this.dat_tour.so_luong_nguoi = this.chi_tiet_tour.so_nguoi_toi_da;
                 this.$toast.warning("Tour này chỉ còn " + this.chi_tiet_tour.so_nguoi_toi_da + " chỗ trống!");
-            } else {
-                this.dat_tour.so_luong_nguoi = val;
             }
         },
 
